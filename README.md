@@ -9,7 +9,7 @@
 The primary goal of this project is to integrate garden irrigation into a modern home automation ecosystem. By replacing traditional "dumb timers" with this intelligent, sensor-driven node, the system can leverage real-time weather data, soil moisture levels, and complex logic to optimize water usage—making it far more efficient and sustainable.
 
 <p align="center">
-  <img src="hardware/PCB%203D.png" width="400" alt="PCB 3D Render 1">
+  <img src="hardware/PCB 3D.png" width="400" alt="PCB 3D Render 1">
   <img src="hardware/PCB%203D%202.png" width="400" alt="PCB 3D Render 2">
 </p>
 
