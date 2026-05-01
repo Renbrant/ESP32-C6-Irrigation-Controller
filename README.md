@@ -1,6 +1,6 @@
 # irriBRANT - Advanced 9-Zone Smart Irrigation Controller
 
-![Banner](docs/banner.png)
+![Banner](docs/banner2.png)
 
 **irriBRANT** is a professional-grade smart irrigation controller designed to work natively with [Home Assistant](https://www.home-assistant.io/) and powered by [ESPHome](https://esphome.io/). 
 
