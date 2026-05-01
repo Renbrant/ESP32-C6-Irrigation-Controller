@@ -26,7 +26,7 @@ The project has reached a major milestone with the completion of the PCB layout.
 
 ## Hardware Visuals
 
-### 2D Layout (Top & Bottom)
+### 2.5D Layout (Top & Bottom)
 <p align="center">
   <img src="hardware/2D top.png" width="400" alt="PCB Top View">
   <img src="hardware/2D bottom.png" width="400" alt="PCB Bottom View">
@@ -44,6 +44,12 @@ The detailed circuit design can be found in the image below or via the source fi
 <p align="center">
   <img src="hardware/Schematic_IrrigBrant_2025-05-01.png" width="800" alt="irriBRANT Schematic">
 </p>
+
+---
+
+## 🌐 Open Source Hardware
+The full design, including the interactive BOM and PCB layout, is shared and available for the community here:
+👉 **[irriBRANT on OSHWLab](https://oshwlab.com/renatobrant/project_frurhuok)**
 
 ---
 
