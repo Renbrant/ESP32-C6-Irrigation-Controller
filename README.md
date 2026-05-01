@@ -1,15 +1,17 @@
 # irriBRANT - Advanced 9-Zone Smart Irrigation Controller
 
-![Banner](docs/banner2.png)
+<p align="center">
+  <img src="docs/banner2.png" width="400" alt="irriBRANT Banner">
+</p>
 
 **irriBRANT** is a professional-grade smart irrigation controller designed to work natively with [Home Assistant](https://www.home-assistant.io/) and powered by [ESPHome](https://esphome.io/). 
 
 The primary goal of this project is to integrate garden irrigation into a modern home automation ecosystem. By replacing traditional "dumb timers" with this intelligent, sensor-driven node, the system can leverage real-time weather data, soil moisture levels, and complex logic to optimize water usage—making it far more efficient and sustainable.
 
-
-![PCB 3D Render](hardware/PCB%203D.png)
-![PCB 3D Render](hardware/PCB%203D%202.png)
-
+<p align="center">
+  <img src="hardware/PCB%203D.png" width="400" alt="PCB 3D Render 1">
+  <img src="hardware/PCB%203D%202.png" width="400" alt="PCB 3D Render 2">
+</p>
 
 ## ⚠️ Current Project Status: DESIGN PHASE
 This project is currently in the active development stage.
