@@ -1,0 +1,939 @@
+# Command to install
+# python -m esphome run C:\esphome\irribrant\irribrant-pro.yaml
+
+esphome:
+  name: irribrant-pro
+  friendly_name: irriBRANT PRO
+
+esp32:
+  board: seeed_xiao_esp32c6
+  variant: esp32c6
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+  reboot_timeout: 0s
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  ap:
+    ssid: "irriBRANT Fallback"
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+web_server:
+  port: 80
+
+# =========================
+# TIME
+# =========================
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: "America/Denver"
+
+    on_time:
+      - seconds: 0
+        then:
+          - script.execute: scheduler_logic
+
+# =========================
+# GLOBALS
+# =========================
+globals:
+  - id: last_run_key_a
+    type: int
+    restore_value: no
+    initial_value: '-1'
+
+  - id: last_run_key_b
+    type: int
+    restore_value: no
+    initial_value: '-1'
+
+  - id: last_run_key_c
+    type: int
+    restore_value: no
+    initial_value: '-1'
+
+  - id: rain_delay_until
+    type: int64_t
+    restore_value: yes
+    initial_value: '0'
+
+  - id: run_program_a
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+  - id: run_program_b
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+  - id: run_program_c
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+# =========================
+# CONFIGURATION
+# =========================
+number:
+  - platform: template
+    id: rain_delay
+    name: "Rain Delay (Hours)"
+    min_value: 0
+    max_value: 72
+    step: 1
+    initial_value: 0
+    restore_value: true
+    optimistic: true
+    set_action:
+      - lambda: |-
+          if (x <= 0) {
+            id(rain_delay_until) = 0;
+            return;
+          }
+
+          auto now = id(sntp_time).now();
+
+          if (!now.is_valid()) {
+            id(rain_delay_until) = -1;
+            ESP_LOGW("rain_delay", "Time is not valid yet. Rain delay will start when SNTP becomes valid.");
+            return;
+          }
+
+          id(rain_delay_until) = now.timestamp + (int64_t) (x * 3600);
+
+  - platform: template
+    id: rain_intensity_threshold
+    name: "Rain Intensity Block Threshold"
+    min_value: 0
+    max_value: 20
+    step: 0.1
+    initial_value: 0.1
+    restore_value: true
+    optimistic: true
+    unit_of_measurement: "mm/h"
+
+# =========================
+# DIAGNOSTICS
+# =========================
+sensor:
+  - platform: wifi_signal
+    id: wifi_signal_db
+    name: "WiFi Signal"
+    update_interval: 60s
+    unit_of_measurement: "dBm"
+    device_class: signal_strength
+    state_class: measurement
+    entity_category: diagnostic
+
+  - platform: homeassistant
+    id: owm_rain_intensity
+    name: "OpenWeatherMap Rain Intensity"
+    entity_id: sensor.openweathermap_rain_intensity
+    internal: false
+    unit_of_measurement: "mm/h"
+    accuracy_decimals: 2
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+      entity_category: diagnostic
+
+  - platform: uptime
+    name: "Uptime"
+    update_interval: 60s
+    entity_category: diagnostic
+    format:
+      separator: " "
+      days: "d"
+      hours: "h"
+      minutes: "m"
+      seconds: "s"
+
+  - platform: version
+    name: "Firmware Version"
+    hide_timestamp: true
+    entity_category: diagnostic
+
+binary_sensor:
+  - platform: status
+    name: "Home Assistant Connection"
+    entity_category: diagnostic
+
+# =========================
+# PROGRAM START TIMES
+# =========================
+datetime:
+  - platform: template
+    id: prog_a_time
+    type: time
+    name: "Program A - Start Time"
+    initial_value: "06:00:00"
+    restore_value: true
+    optimistic: true
+
+  - platform: template
+    id: prog_b_time
+    type: time
+    name: "Program B - Start Time"
+    initial_value: "12:00:00"
+    restore_value: true
+    optimistic: true
+
+  - platform: template
+    id: prog_c_time
+    type: time
+    name: "Program C - Start Time"
+    initial_value: "18:00:00"
+    restore_value: true
+    optimistic: true
+
+# =========================
+# SWITCHES
+# =========================
+switch:
+
+  - platform: template
+    id: master_enable
+    name: "System Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Program enables
+  - platform: template
+    id: prog_a_enable
+    name: "Program A Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_enable
+    name: "Program B Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_enable
+    name: "Program C Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Program A days
+  - platform: template
+    id: prog_a_mon
+    name: "Program A Monday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_tue
+    name: "Program A Tuesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_wed
+    name: "Program A Wednesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_thu
+    name: "Program A Thursday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_fri
+    name: "Program A Friday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_sat
+    name: "Program A Saturday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_sun
+    name: "Program A Sunday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Program B days
+  - platform: template
+    id: prog_b_mon
+    name: "Program B Monday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_tue
+    name: "Program B Tuesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_wed
+    name: "Program B Wednesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_thu
+    name: "Program B Thursday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_fri
+    name: "Program B Friday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_sat
+    name: "Program B Saturday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_sun
+    name: "Program B Sunday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Program C days
+  - platform: template
+    id: prog_c_mon
+    name: "Program C Monday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_tue
+    name: "Program C Tuesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_wed
+    name: "Program C Wednesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_thu
+    name: "Program C Thursday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_fri
+    name: "Program C Friday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_sat
+    name: "Program C Saturday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_sun
+    name: "Program C Sunday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Program A zones
+  - platform: template
+    id: prog_a_zone_1
+    name: "Program A Zone 1"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_zone_2
+    name: "Program A Zone 2"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_zone_3
+    name: "Program A Zone 3"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_zone_4
+    name: "Program A Zone 4"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_a_zone_5
+    name: "Program A Zone 5"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Program B zones
+  - platform: template
+    id: prog_b_zone_1
+    name: "Program B Zone 1"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_zone_2
+    name: "Program B Zone 2"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_zone_3
+    name: "Program B Zone 3"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_zone_4
+    name: "Program B Zone 4"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_b_zone_5
+    name: "Program B Zone 5"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # Program C zones
+  - platform: template
+    id: prog_c_zone_1
+    name: "Program C Zone 1"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_zone_2
+    name: "Program C Zone 2"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_zone_3
+    name: "Program C Zone 3"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_zone_4
+    name: "Program C Zone 4"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: prog_c_zone_5
+    name: "Program C Zone 5"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  # =========================
+  # LED ONBOARD
+  # XIAO ESP32C6 user LED = GPIO15
+  # If your LED behaves inverted, change inverted to true.
+  # =========================
+  - platform: gpio
+    id: activity_led
+    internal: true
+    pin:
+      number: GPIO15
+      inverted: false
+    restore_mode: ALWAYS_OFF
+
+  # =========================
+  # SAFE INTERNAL GPIO OUTPUTS
+  # XIAO ESP32C6:
+  # D0 = GPIO0
+  # D1 = GPIO1
+  # D2 = GPIO2
+  # D3 = GPIO21
+  # D4 = GPIO22
+  # D5 = GPIO23
+  # =========================
+
+  # Zone 0 / Master Valve / Pump Relay
+  - platform: gpio
+    id: master_valve
+    internal: true
+    pin:
+      number: GPIO23
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - script.execute: update_activity_led
+    on_turn_off:
+      - script.execute: update_activity_led
+
+  - platform: gpio
+    id: zone_1
+    internal: true
+    pin:
+      number: GPIO0
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - script.execute: update_activity_led
+    on_turn_off:
+      - script.execute: update_activity_led
+
+  - platform: gpio
+    id: zone_2
+    internal: true
+    pin:
+      number: GPIO1
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - script.execute: update_activity_led
+    on_turn_off:
+      - script.execute: update_activity_led
+
+  - platform: gpio
+    id: zone_3
+    internal: true
+    pin:
+      number: GPIO2
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - script.execute: update_activity_led
+    on_turn_off:
+      - script.execute: update_activity_led
+
+  - platform: gpio
+    id: zone_4
+    internal: true
+    pin:
+      number: GPIO21
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - script.execute: update_activity_led
+    on_turn_off:
+      - script.execute: update_activity_led
+
+  - platform: gpio
+    id: zone_5
+    internal: true
+    pin:
+      number: GPIO22
+      inverted: true
+    restore_mode: ALWAYS_OFF
+    on_turn_on:
+      - script.execute: update_activity_led
+    on_turn_off:
+      - script.execute: update_activity_led
+
+# =========================
+# SPRINKLER CONTROLLER
+# =========================
+sprinkler:
+  - id: irribrant_ctrl
+
+    main_switch:
+      name: "Irrigation"
+      id: irrigation_main
+
+    auto_advance_switch:
+      name: "Auto Advance"
+      id: irrigation_auto_advance
+
+    queue_enable_switch:
+      name: "Queue Enabled"
+      id: irrigation_queue_enabled
+
+    multiplier_number:
+      id: irrigation_multiplier
+      name: "Seasonal Adjustment"
+      initial_value: 1
+      min_value: 0
+      max_value: 3
+      step: 0.1
+      restore_value: true
+
+    repeat_number:
+      id: irrigation_repeat
+      name: "Cycle Repeat"
+      initial_value: 0
+      min_value: 0
+      max_value: 5
+      step: 1
+      restore_value: true
+
+    pump_start_valve_delay: 2s
+    pump_stop_pump_delay: 2s
+    valve_open_delay: 2s
+
+    valves:
+      - valve_switch: "Zone 1"
+        enable_switch:
+          name: "Enable Zone 1"
+          id: zone_1_enable
+          restore_mode: RESTORE_DEFAULT_ON
+        pump_switch_id: master_valve
+        valve_switch_id: zone_1
+        run_duration_number:
+          id: zone_1_duration
+          name: "Zone 1 Duration"
+          initial_value: 5
+          min_value: 1
+          max_value: 120
+          step: 1
+          unit_of_measurement: min
+          restore_value: true
+
+      - valve_switch: "Zone 2"
+        enable_switch:
+          name: "Enable Zone 2"
+          id: zone_2_enable
+          restore_mode: RESTORE_DEFAULT_ON
+        pump_switch_id: master_valve
+        valve_switch_id: zone_2
+        run_duration_number:
+          id: zone_2_duration
+          name: "Zone 2 Duration"
+          initial_value: 5
+          min_value: 1
+          max_value: 120
+          step: 1
+          unit_of_measurement: min
+          restore_value: true
+
+      - valve_switch: "Zone 3"
+        enable_switch:
+          name: "Enable Zone 3"
+          id: zone_3_enable
+          restore_mode: RESTORE_DEFAULT_ON
+        pump_switch_id: master_valve
+        valve_switch_id: zone_3
+        run_duration_number:
+          id: zone_3_duration
+          name: "Zone 3 Duration"
+          initial_value: 5
+          min_value: 1
+          max_value: 120
+          step: 1
+          unit_of_measurement: min
+          restore_value: true
+
+      - valve_switch: "Zone 4"
+        enable_switch:
+          name: "Enable Zone 4"
+          id: zone_4_enable
+          restore_mode: RESTORE_DEFAULT_ON
+        pump_switch_id: master_valve
+        valve_switch_id: zone_4
+        run_duration_number:
+          id: zone_4_duration
+          name: "Zone 4 Duration"
+          initial_value: 5
+          min_value: 1
+          max_value: 120
+          step: 1
+          unit_of_measurement: min
+          restore_value: true
+
+      - valve_switch: "Zone 5"
+        enable_switch:
+          name: "Enable Zone 5"
+          id: zone_5_enable
+          restore_mode: RESTORE_DEFAULT_ON
+        pump_switch_id: master_valve
+        valve_switch_id: zone_5
+        run_duration_number:
+          id: zone_5_duration
+          name: "Zone 5 Duration"
+          initial_value: 5
+          min_value: 1
+          max_value: 120
+          step: 1
+          unit_of_measurement: min
+          restore_value: true
+
+# =========================
+# SCRIPTS
+# =========================
+script:
+  - id: update_activity_led
+    then:
+      - if:
+          condition:
+            lambda: |-
+              return id(master_valve).state ||
+                     id(zone_1).state ||
+                     id(zone_2).state ||
+                     id(zone_3).state ||
+                     id(zone_4).state ||
+                     id(zone_5).state;
+          then:
+            - switch.turn_on: activity_led
+          else:
+            - switch.turn_off: activity_led
+
+  - id: start_selected_programs
+    then:
+      - sprinkler.clear_queued_valves:
+          id: irribrant_ctrl
+
+      # Program A queue
+      - if:
+          condition:
+            lambda: 'return id(run_program_a) && id(prog_a_zone_1).state && id(zone_1_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 0
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_a) && id(prog_a_zone_2).state && id(zone_2_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 1
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_a) && id(prog_a_zone_3).state && id(zone_3_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 2
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_a) && id(prog_a_zone_4).state && id(zone_4_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 3
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_a) && id(prog_a_zone_5).state && id(zone_5_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 4
+
+      # Program B queue
+      - if:
+          condition:
+            lambda: 'return id(run_program_b) && id(prog_b_zone_1).state && id(zone_1_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 0
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_b) && id(prog_b_zone_2).state && id(zone_2_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 1
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_b) && id(prog_b_zone_3).state && id(zone_3_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 2
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_b) && id(prog_b_zone_4).state && id(zone_4_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 3
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_b) && id(prog_b_zone_5).state && id(zone_5_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 4
+
+      # Program C queue
+      - if:
+          condition:
+            lambda: 'return id(run_program_c) && id(prog_c_zone_1).state && id(zone_1_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 0
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_c) && id(prog_c_zone_2).state && id(zone_2_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 1
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_c) && id(prog_c_zone_3).state && id(zone_3_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 2
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_c) && id(prog_c_zone_4).state && id(zone_4_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 3
+
+      - if:
+          condition:
+            lambda: 'return id(run_program_c) && id(prog_c_zone_5).state && id(zone_5_enable).state;'
+          then:
+            - sprinkler.queue_valve:
+                id: irribrant_ctrl
+                valve_number: 4
+
+      - sprinkler.start_from_queue:
+          id: irribrant_ctrl
+
+      - lambda: |-
+          id(run_program_a) = false;
+          id(run_program_b) = false;
+          id(run_program_c) = false;
+
+  - id: scheduler_logic
+    then:
+      - lambda: |-
+          auto now = id(sntp_time).now();
+
+          if (!now.is_valid())
+            return;
+
+          int current_key = (int) (now.timestamp / 60);
+
+          if (!id(master_enable).state)
+            return;
+
+          if (id(rain_delay).state > 0 && id(rain_delay_until) <= 0) {
+            id(rain_delay_until) = now.timestamp + (int64_t) (id(rain_delay).state * 3600);
+          }
+
+          if (id(rain_delay_until) > now.timestamp)
+            return;
+
+          if (id(rain_delay_until) > 0 && id(rain_delay_until) <= now.timestamp) {
+            id(rain_delay_until) = 0;
+            id(rain_delay).publish_state(0);
+          }
+
+          if (id(rain_intensity_threshold).state > 0 &&
+              id(owm_rain_intensity).has_state() &&
+              id(owm_rain_intensity).state >= id(rain_intensity_threshold).state) {
+            ESP_LOGI("scheduler", "Irrigation blocked by OpenWeatherMap rain intensity.");
+            return;
+          }
+
+          bool day_ok_a =
+            (now.day_of_week == 2 && id(prog_a_mon).state) ||
+            (now.day_of_week == 3 && id(prog_a_tue).state) ||
+            (now.day_of_week == 4 && id(prog_a_wed).state) ||
+            (now.day_of_week == 5 && id(prog_a_thu).state) ||
+            (now.day_of_week == 6 && id(prog_a_fri).state) ||
+            (now.day_of_week == 7 && id(prog_a_sat).state) ||
+            (now.day_of_week == 1 && id(prog_a_sun).state);
+
+          bool day_ok_b =
+            (now.day_of_week == 2 && id(prog_b_mon).state) ||
+            (now.day_of_week == 3 && id(prog_b_tue).state) ||
+            (now.day_of_week == 4 && id(prog_b_wed).state) ||
+            (now.day_of_week == 5 && id(prog_b_thu).state) ||
+            (now.day_of_week == 6 && id(prog_b_fri).state) ||
+            (now.day_of_week == 7 && id(prog_b_sat).state) ||
+            (now.day_of_week == 1 && id(prog_b_sun).state);
+
+          bool day_ok_c =
+            (now.day_of_week == 2 && id(prog_c_mon).state) ||
+            (now.day_of_week == 3 && id(prog_c_tue).state) ||
+            (now.day_of_week == 4 && id(prog_c_wed).state) ||
+            (now.day_of_week == 5 && id(prog_c_thu).state) ||
+            (now.day_of_week == 6 && id(prog_c_fri).state) ||
+            (now.day_of_week == 7 && id(prog_c_sat).state) ||
+            (now.day_of_week == 1 && id(prog_c_sun).state);
+
+          bool program_a_due =
+            id(prog_a_enable).state &&
+            day_ok_a &&
+            id(last_run_key_a) != current_key &&
+            now.hour == id(prog_a_time).hour &&
+            now.minute == id(prog_a_time).minute;
+
+          bool program_b_due =
+            id(prog_b_enable).state &&
+            day_ok_b &&
+            id(last_run_key_b) != current_key &&
+            now.hour == id(prog_b_time).hour &&
+            now.minute == id(prog_b_time).minute;
+
+          bool program_c_due =
+            id(prog_c_enable).state &&
+            day_ok_c &&
+            id(last_run_key_c) != current_key &&
+            now.hour == id(prog_c_time).hour &&
+            now.minute == id(prog_c_time).minute;
+
+          if (!program_a_due && !program_b_due && !program_c_due)
+            return;
+
+          if (id(irrigation_main).state) {
+            ESP_LOGW("scheduler", "A scheduled program is due, but irrigation is already running.");
+            return;
+          }
+
+          id(run_program_a) = program_a_due;
+          id(run_program_b) = program_b_due;
+          id(run_program_c) = program_c_due;
+
+          if (program_a_due)
+            id(last_run_key_a) = current_key;
+
+          if (program_b_due)
+            id(last_run_key_b) = current_key;
+
+          if (program_c_due)
+            id(last_run_key_c) = current_key;
+
+          id(start_selected_programs).execute();

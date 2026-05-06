@@ -1,0 +1,408 @@
+type: sections
+max_columns: 4
+title: Garden
+path: garden
+icon: mdi:sprinkler-variant
+sections:
+  - type: grid
+    title: System Overview
+    cards:
+      - type: custom:mushroom-title-card
+        title: irraBRANT
+        subtitle: Backyard irrigation dashboard
+
+      - type: custom:mushroom-chips-card
+        chips:
+          - type: entity
+            entity: switch.irrabrant_system_enabled
+            name: System
+            icon: mdi:power
+          - type: entity
+            entity: sensor.irrabrant_wifi_signal
+            name: Wi-Fi
+            icon: mdi:wifi
+          - type: entity
+            entity: sensor.irrabrant_uptime
+            name: Uptime
+            icon: mdi:timer-outline
+          - type: entity
+            entity: sensor.openweathermap_rain_intensity
+            name: Rain
+            icon: mdi:weather-rainy
+
+      - type: custom:mushroom-template-card
+        primary: Irrigation Status
+        secondary: >
+          {% if is_state('switch.irrabrant_zone_1', 'on')
+             or is_state('switch.irrabrant_zone_2', 'on')
+             or is_state('switch.irrabrant_zone_3', 'on')
+             or is_state('switch.irrabrant_zone_4', 'on')
+             or is_state('switch.irrabrant_zone_5', 'on') %}
+            Irrigating now
+          {% elif is_state('switch.irrabrant_system_enabled', 'on') %}
+            System active and standing by
+          {% else %}
+            System disabled
+          {% endif %}
+        icon: >
+          {% if is_state('switch.irrabrant_zone_1', 'on')
+             or is_state('switch.irrabrant_zone_2', 'on')
+             or is_state('switch.irrabrant_zone_3', 'on')
+             or is_state('switch.irrabrant_zone_4', 'on')
+             or is_state('switch.irrabrant_zone_5', 'on') %}
+            mdi:sprinkler-variant
+          {% else %}
+            mdi:sprinkler
+          {% endif %}
+        icon_color: >
+          {% if is_state('switch.irrabrant_zone_1', 'on')
+             or is_state('switch.irrabrant_zone_2', 'on')
+             or is_state('switch.irrabrant_zone_3', 'on')
+             or is_state('switch.irrabrant_zone_4', 'on')
+             or is_state('switch.irrabrant_zone_5', 'on') %}
+            blue
+          {% elif is_state('switch.irrabrant_system_enabled', 'on') %}
+            green
+          {% else %}
+            grey
+          {% endif %}
+        entity: switch.irrabrant_system_enabled
+        tap_action:
+          action: toggle
+        fill_container: true
+
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: switch.irrabrant_system_enabled
+            name: System
+            icon: mdi:power
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-number-card
+            entity: number.irrabrant_rain_delay_hours
+            name: Rain Delay
+            icon: mdi:weather-pouring
+
+          - type: custom:mushroom-number-card
+            entity: number.irrabrant_seasonal_adjustment
+            name: Seasonal
+            icon: mdi:tune-variant
+
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Zone Activity - Last 24 Hours
+          show_states: false
+        graph_span: 24h
+        update_interval: 1min
+        apex_config:
+          chart:
+            height: 330
+            toolbar:
+              show: false
+          stroke:
+            curve: stepline
+            width: 8
+          markers:
+            size: 0
+          legend:
+            show: true
+            position: bottom
+          grid:
+            borderColor: "#e5e7eb"
+          yaxis:
+            min: 0
+            max: 6
+            tickAmount: 6
+            labels:
+              formatter: |
+                EVAL:function(value) {
+                  if (value === 1) return 'Zone 1';
+                  if (value === 2) return 'Zone 2';
+                  if (value === 3) return 'Zone 3';
+                  if (value === 4) return 'Zone 4';
+                  if (value === 5) return 'Zone 5';
+                  return '';
+                }
+        series:
+          - entity: switch.irrabrant_zone_1
+            name: Zone 1
+            color: "#2563eb"
+            transform: "return x === 'on' ? 1 : null;"
+          - entity: switch.irrabrant_zone_2
+            name: Zone 2
+            color: "#16a34a"
+            transform: "return x === 'on' ? 2 : null;"
+          - entity: switch.irrabrant_zone_3
+            name: Zone 3
+            color: "#f59e0b"
+            transform: "return x === 'on' ? 3 : null;"
+          - entity: switch.irrabrant_zone_4
+            name: Zone 4
+            color: "#dc2626"
+            transform: "return x === 'on' ? 4 : null;"
+          - entity: switch.irrabrant_zone_5
+            name: Zone 5
+            color: "#7c3aed"
+            transform: "return x === 'on' ? 5 : null;"
+
+      - type: history-graph
+        title: Zone Timeline - 48 Hours
+        hours_to_show: 48
+        entities:
+          - entity: switch.irrabrant_zone_1
+            name: Zone 1
+          - entity: switch.irrabrant_zone_2
+            name: Zone 2
+          - entity: switch.irrabrant_zone_3
+            name: Zone 3
+          - entity: switch.irrabrant_zone_4
+            name: Zone 4
+          - entity: switch.irrabrant_zone_5
+            name: Zone 5
+
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Rain and Wi-Fi Signal
+          show_states: true
+        graph_span: 24h
+        update_interval: 5min
+        apex_config:
+          chart:
+            height: 260
+            toolbar:
+              show: false
+          stroke:
+            curve: smooth
+            width: 3
+          legend:
+            show: true
+            position: bottom
+        yaxis:
+          - id: rain
+            min: 0
+            decimals: 2
+          - id: wifi
+            opposite: true
+            min: -100
+            max: -30
+            decimals: 0
+        series:
+          - entity: sensor.openweathermap_rain_intensity
+            name: Rain
+            yaxis_id: rain
+            type: area
+            color: "#38bdf8"
+            opacity: 0.35
+          - entity: sensor.irrabrant_wifi_signal
+            name: Wi-Fi dBm
+            yaxis_id: wifi
+            type: line
+            color: "#22c55e"
+
+      - type: logbook
+        title: Recent Events
+        hours_to_show: 24
+        entities:
+          - switch.irrabrant_zone_1
+          - switch.irrabrant_zone_2
+          - switch.irrabrant_zone_3
+          - switch.irrabrant_zone_4
+          - switch.irrabrant_zone_5
+          - switch.irrabrant_system_enabled
+
+  - type: grid
+    title: Program A
+    cards:
+      - type: custom:mushroom-title-card
+        title: Program A
+        subtitle: Schedule, weekdays, and selected zones
+
+      - type: entities
+        title: Program A Schedule
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_a_enabled
+            name: Enabled
+          - entity: time.irrabrant_program_a_start_time
+            name: Start Time
+
+      - type: entities
+        title: Program A Days
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_a_monday
+            name: Monday
+          - entity: switch.irrabrant_program_a_tuesday
+            name: Tuesday
+          - entity: switch.irrabrant_program_a_wednesday
+            name: Wednesday
+          - entity: switch.irrabrant_program_a_thursday
+            name: Thursday
+          - entity: switch.irrabrant_program_a_friday
+            name: Friday
+          - entity: switch.irrabrant_program_a_saturday
+            name: Saturday
+          - entity: switch.irrabrant_program_a_sunday
+            name: Sunday
+
+      - type: entities
+        title: Program A Zones
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_a_zone_1
+            name: Zone 1
+          - entity: switch.irrabrant_program_a_zone_2
+            name: Zone 2
+          - entity: switch.irrabrant_program_a_zone_3
+            name: Zone 3
+          - entity: switch.irrabrant_program_a_zone_4
+            name: Zone 4
+          - entity: switch.irrabrant_program_a_zone_5
+            name: Zone 5
+
+  - type: grid
+    title: Program B
+    cards:
+      - type: custom:mushroom-title-card
+        title: Program B
+        subtitle: Schedule, weekdays, and selected zones
+
+      - type: entities
+        title: Program B Schedule
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_b_enabled
+            name: Enabled
+          - entity: time.irrabrant_program_b_start_time
+            name: Start Time
+
+      - type: entities
+        title: Program B Days
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_b_monday
+            name: Monday
+          - entity: switch.irrabrant_program_b_tuesday
+            name: Tuesday
+          - entity: switch.irrabrant_program_b_wednesday
+            name: Wednesday
+          - entity: switch.irrabrant_program_b_thursday
+            name: Thursday
+          - entity: switch.irrabrant_program_b_friday
+            name: Friday
+          - entity: switch.irrabrant_program_b_saturday
+            name: Saturday
+          - entity: switch.irrabrant_program_b_sunday
+            name: Sunday
+
+      - type: entities
+        title: Program B Zones
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_b_zone_1
+            name: Zone 1
+          - entity: switch.irrabrant_program_b_zone_2
+            name: Zone 2
+          - entity: switch.irrabrant_program_b_zone_3
+            name: Zone 3
+          - entity: switch.irrabrant_program_b_zone_4
+            name: Zone 4
+          - entity: switch.irrabrant_program_b_zone_5
+            name: Zone 5
+
+  - type: grid
+    title: Program C
+    cards:
+      - type: custom:mushroom-title-card
+        title: Program C
+        subtitle: Schedule, weekdays, and selected zones
+
+      - type: entities
+        title: Program C Schedule
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_c_enabled
+            name: Enabled
+          - entity: time.irrabrant_program_c_start_time
+            name: Start Time
+
+      - type: entities
+        title: Program C Days
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_c_monday
+            name: Monday
+          - entity: switch.irrabrant_program_c_tuesday
+            name: Tuesday
+          - entity: switch.irrabrant_program_c_wednesday
+            name: Wednesday
+          - entity: switch.irrabrant_program_c_thursday
+            name: Thursday
+          - entity: switch.irrabrant_program_c_friday
+            name: Friday
+          - entity: switch.irrabrant_program_c_saturday
+            name: Saturday
+          - entity: switch.irrabrant_program_c_sunday
+            name: Sunday
+
+      - type: entities
+        title: Program C Zones
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_program_c_zone_1
+            name: Zone 1
+          - entity: switch.irrabrant_program_c_zone_2
+            name: Zone 2
+          - entity: switch.irrabrant_program_c_zone_3
+            name: Zone 3
+          - entity: switch.irrabrant_program_c_zone_4
+            name: Zone 4
+          - entity: switch.irrabrant_program_c_zone_5
+            name: Zone 5
+
+  - type: grid
+    title: Zone Settings
+    cards:
+      - type: custom:mushroom-title-card
+        title: Zone Settings
+        subtitle: Manual control, durations, and global adjustments
+
+      - type: entities
+        title: Manual Zone Control
+        show_header_toggle: false
+        entities:
+          - entity: switch.irrabrant_zone_1
+          - entity: switch.irrabrant_zone_2
+          - entity: switch.irrabrant_zone_3
+          - entity: switch.irrabrant_zone_4
+          - entity: switch.irrabrant_zone_5
+
+      - type: entities
+        title: Zone Durations
+        show_header_toggle: false
+        entities:
+          - entity: number.irrabrant_zone_1_duration
+            name: Zone 1 Duration
+          - entity: number.irrabrant_zone_2_duration
+            name: Zone 2 Duration
+          - entity: number.irrabrant_zone_3_duration
+            name: Zone 3 Duration
+          - entity: number.irrabrant_zone_4_duration
+            name: Zone 4 Duration
+          - entity: number.irrabrant_zone_5_duration
+            name: Zone 5 Duration
+
+      - type: entities
+        title: Global Adjustments
+        show_header_toggle: false
+        entities:
+          - entity: number.irrabrant_seasonal_adjustment
+            name: Seasonal Adjustment
+          - entity: number.irrabrant_rain_delay_hours
+            name: Rain Delay
+          - entity: number.irrabrant_rain_intensity_block_threshold
+            name: Rain Intensity Block Threshold
