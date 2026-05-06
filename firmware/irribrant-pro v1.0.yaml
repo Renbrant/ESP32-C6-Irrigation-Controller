@@ -606,7 +606,7 @@ sprinkler:
           name: "Zone 1 Duration"
           initial_value: 5
           min_value: 1
-          max_value: 120
+          max_value: 20
           step: 1
           unit_of_measurement: min
           restore_value: true
@@ -623,7 +623,7 @@ sprinkler:
           name: "Zone 2 Duration"
           initial_value: 5
           min_value: 1
-          max_value: 120
+          max_value: 20
           step: 1
           unit_of_measurement: min
           restore_value: true
@@ -640,7 +640,7 @@ sprinkler:
           name: "Zone 3 Duration"
           initial_value: 5
           min_value: 1
-          max_value: 120
+          max_value: 20
           step: 1
           unit_of_measurement: min
           restore_value: true
@@ -657,7 +657,7 @@ sprinkler:
           name: "Zone 4 Duration"
           initial_value: 5
           min_value: 1
-          max_value: 120
+          max_value: 20
           step: 1
           unit_of_measurement: min
           restore_value: true
@@ -674,7 +674,7 @@ sprinkler:
           name: "Zone 5 Duration"
           initial_value: 5
           min_value: 1
-          max_value: 120
+          max_value: 20
           step: 1
           unit_of_measurement: min
           restore_value: true
