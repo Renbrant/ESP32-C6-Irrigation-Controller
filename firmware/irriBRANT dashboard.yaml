@@ -353,16 +353,25 @@ sections:
         tap_action:
           action: toggle
         fill_container: true
-    column_span: 4
-  - type: grid
-    cards:
       - type: custom:history-explorer-card
-        header: Zone Runtime Timeline
-        defaultTimeRange: 48h
+        cardName: irrabrant-history-overview
+        header: irriBRANT History
+        defaultTimeRange: 24h
         showUnavailable: true
+        stateTextMode: hide
+        lineMode: lines
+        timelineBarHeight: 24
+        timelineBarSpacing: 36
+        lineGraphHeight: 150
+        tooltip:
+          size: slim
+          showDuration: true
+        uiLayout:
+          toolbar: top
+          selector: hide
         stateColors:
           switch.on: "#22c55e"
-          switch.off: rgba(148, 163, 184, 0.18)
+          switch.off: rgba(148, 163, 184, 0.20)
           unavailable: rgba(239, 68, 68, 0.35)
         graphs:
           - type: timeline
@@ -378,63 +387,43 @@ sections:
                 name: Zone 4
               - entity: switch.irrabrant_zone_5
                 name: Zone 5
+          - type: line
+            title: Rain and Snow
+            options:
+              height: 150
+              ymin: 0
+            entities:
+              - entity: sensor.openweathermap_rain_intensity
+                name: Rain
+                color: "#38bdf8"
+                fill: rgba(56, 189, 248, 0.22)
+                width: 3
+              - entity: sensor.openweathermap_snow_intensity
+                name: Snow
+                color: "#e5e7eb"
+                fill: rgba(229, 231, 235, 0.30)
+                width: 3
+          - type: line
+            title: Wi-Fi Signal
+            options:
+              height: 130
+              ymin: -100
+              ymax: -30
+            entities:
+              - entity: sensor.irrabrant_wifi_signal
+                name: Wi-Fi dBm
+                color: "#22c55e"
+                fill: rgba(34, 197, 94, 0.16)
+                width: 3
         grid_options:
           columns: full
-          rows: 8
-      - type: custom:apexcharts-card
-        header:
-          show: true
-          title: Rain and Wi-Fi Signal
-          show_states: true
-        graph_span: 24h
-        update_interval: 5min
-        apex_config:
-          chart:
-            height: 260
-            toolbar:
-              show: false
-          stroke:
-            curve: smooth
-            width: 3
-          legend:
-            show: true
-            position: bottom
-        yaxis:
-          - id: rain
-            min: 0
-            decimals: 2
-          - id: wifi
-            opposite: true
-            min: -100
-            max: -30
-            decimals: 0
-        series:
-          - entity: sensor.openweathermap_rain_intensity
-            name: Rain
-            yaxis_id: rain
-            type: area
-            color: "#38bdf8"
-            opacity: 0.35
-          - entity: sensor.irrabrant_wifi_signal
-            name: Wi-Fi dBm
-            yaxis_id: wifi
-            type: line
-            color: "#22c55e"
-        grid_options:
-          columns: full
+          rows: 12
       - type: logbook
-        title: Recent Events
-        hours_to_show: 24
-        entities:
-          - switch.irrabrant_zone_1
-          - switch.irrabrant_zone_2
-          - switch.irrabrant_zone_3
-          - switch.irrabrant_zone_4
-          - switch.irrabrant_zone_5
-          - switch.irrabrant_system_enabled
+        target:
+          entity_id:
+            - switch.irrabrant_irrigation
         grid_options:
           columns: full
-          rows: 5
     column_span: 4
   - type: grid
     cards:
@@ -609,6 +598,9 @@ sections:
             name: Rain Delay
           - entity: number.irrabrant_rain_intensity_block_threshold
             name: Rain Intensity Block Threshold
+  - type: grid
+    cards: []
+    column_span: 4
 header:
   card:
     type: markdown
