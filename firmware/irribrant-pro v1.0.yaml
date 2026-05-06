@@ -121,12 +121,12 @@ number:
     id: rain_intensity_threshold
     name: "Rain Intensity Block Threshold"
     min_value: 0
-    max_value: 20
-    step: 0.1
-    initial_value: 0.1
+    max_value: 2
+    step: 0.01
+    initial_value: 0.02
     restore_value: true
     optimistic: true
-    unit_of_measurement: "mm/h"
+    unit_of_measurement: "in/h"
 
 # =========================
 # DIAGNOSTICS
@@ -146,7 +146,7 @@ sensor:
     name: "OpenWeatherMap Rain Intensity"
     entity_id: sensor.openweathermap_rain_intensity
     internal: false
-    unit_of_measurement: "mm/h"
+    unit_of_measurement: "in/h"
     accuracy_decimals: 2
 
 text_sensor:
