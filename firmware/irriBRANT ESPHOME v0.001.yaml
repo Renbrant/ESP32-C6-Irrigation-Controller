@@ -8,9 +8,13 @@ esp32:
   framework:
     type: esp-idf
 
+#enable logging
 logger:
 
 api:
+  encryption:
+    key: !secret api_encryption_key
+  reboot_timeout: 0s
 
 ota:
   - platform: esphome
@@ -213,3 +217,6 @@ script:
             id(last_run_minute) = current_minute;
             id(irribrant_ctrl).start_full_cycle();
           }
+          
+web_server:
+  port: 80
