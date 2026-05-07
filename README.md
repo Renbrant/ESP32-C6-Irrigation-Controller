@@ -53,6 +53,14 @@ The detailed circuit design for version 1.01 can be found below.
   <img src="hardware/PCB v1.2/Schematic_IrrigBrant_v1.2.png">
 </p>
 
+## Firmware Visuals
+
+### Dashboard samples
+<p align="center">
+  <img src="Photos/Dashboard/Dashboard sample 01.png">
+  <img src="Photos/Dashboard/Dashboard sample 02.png">
+</p>
+
 ---
 
 ## Technical Overview & Component Selection
