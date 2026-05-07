@@ -17,7 +17,7 @@ The project has officially moved into the production stage. **Version V1.01** ha
 - [x] Full Schematic Design (v1.01)
 - [x] PCB Routing & Gerber Generation
 - [x] **Sent to Production:** Fabrication and assembly of the V1.01 prototypes are currently underway.
-- [ ] Firmware Development (ESPHome YAML)
+- [x] Firmware Development (ESPHome YAML)
 - [ ] Field Testing & Validation
 
 ---
