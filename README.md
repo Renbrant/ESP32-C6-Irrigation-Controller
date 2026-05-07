@@ -36,28 +36,22 @@ The transition to V1.01 focused on improving the user interface and local diagno
 
 ### 2D Layout (Top & Bottom)
 <p align="center">
-  <img src="hardware/PCB v1.01/PCB 2D top.png" width="400" alt="PCB Top View">
-  <img src="hardware/PCB v1.01/PCB 2D bottom.png" width="400" alt="PCB Bottom View">
+  <img src="hardware/PCB v1.2/PCB v1.2 top.png" width="400" alt="PCB Top View">
+  <img src="hardware/PCB v1.2/PCB v1.2 bottom.png" width="400" alt="PCB Bottom View">
 </p>
 
 ### 3D Renderings
 <p align="center">
-  <img src="hardware/PCB v1.01/PCB 3D 1.png" width="280" alt="PCB 3D Render 1">
-  <img src="hardware/PCB v1.01/PCB 3D 2.png" width="280" alt="PCB 3D Render 2">
-  <img src="hardware/PCB v1.01/PCB 3D 3.png" width="280" alt="PCB 3D Render 3">
+  <img src="hardware/PCB v1.2/PCB 3D v1.2 a.png" width="280" alt="PCB 3D Render 1">
+  <img src="hardware/PCB v1.2/PCB 3D v1.2 b.png" width="280" alt="PCB 3D Render 2">
+  <img src="hardware/PCB v1.2/PCB 3D v1.2 c.png" width="280" alt="PCB 3D Render 3">
 </p>
 
 ### Schematic
 The detailed circuit design for version 1.01 can be found below.
 <p align="center">
-  <img src="hardware/PCB v1.01/Schematic_IrrigBrant_2025-05-02.png" width="800" alt="irriBRANT Schematic">
+  <img src="hardware/PCB v1.2/Schematic_IrrigBrant_v1.2.png">
 </p>
-
----
-
-## 🌐 Open Source Hardware
-The full design, including the interactive BOM and PCB layout, is shared and available for the community here:
-👉 **[irriBRANT on OSHWLab](https://oshwlab.com/renatobrant/project_frurhuok)**
 
 ---
 
