@@ -1,0 +1,15 @@
+# Command to install
+# WIN + R
+# python -m esphome run C:\esphome\irribrant\irribrant_v1_1.yaml
+
+# =========================================================
+# irriBRANT PRO v1.1
+# =========================================================
+
+packages:
+
+  hardware: !include packages/hardware.yaml
+  irrigation: !include packages/irrigation.yaml
+  scheduler: !include packages/scheduler.yaml
+  programs: !include packages/programs.yaml
+  diagnostics: !include packages/diagnostics.yaml

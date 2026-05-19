@@ -1,0 +1,86 @@
+# =========================================================
+# SCHEDULER
+# =========================================================
+
+globals:
+  # -------------------------------------------------------
+  # RAIN DELAY
+  # -------------------------------------------------------
+  - id: rain_delay_until
+    type: int64_t
+    restore_value: yes
+    initial_value: '0'
+
+# =========================================================
+# TIME
+# =========================================================
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: "America/Denver"
+
+# =========================================================
+# WEATHER
+# =========================================================
+sensor:
+  # -------------------------------------------------------
+  # RAIN INTENSITY
+  # -------------------------------------------------------
+  - platform: homeassistant
+    id: rain_intensity
+    entity_id: sensor.openweathermap_rain_intensity
+    filters:
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 1
+
+# =========================================================
+# INTERVALS & LED UPDATE
+# =========================================================
+interval:
+  - interval: 2s
+    then:
+      - script.execute: update_status_led
+
+# =========================================================
+# SCRIPTS (LED & BOOT)
+# =========================================================
+script:
+  # -------------------------------------------------------
+  # LED BOOT ANIMATION
+  # -------------------------------------------------------
+  - id: led_boot_animation
+    then:
+      - light.turn_on:
+          id: status_led
+          red: 1.0
+          green: 1.0
+          blue: 1.0
+          brightness: 100%
+      - delay: 2s
+      - light.turn_off: status_led
+
+  # -------------------------------------------------------
+  # STATUS LED LOGIC
+  # -------------------------------------------------------
+  - id: update_status_led
+    then:
+      - lambda: |-
+          // If any zone is ON, LED turns Blue
+          if (id(zone_1_output).state || id(zone_2_output).state || id(zone_3_output).state || 
+              id(zone_4_output).state || id(zone_5_output).state || id(zone_6_output).state || 
+              id(zone_7_output).state || id(zone_8_output).state || id(zone_9_output).state) {
+            auto call = id(status_led)->turn_on();
+            call.set_red(0.0);
+            call.set_green(0.0);
+            call.set_blue(1.0);
+            call.perform();
+          } 
+          // Otherwise, if connected, LED turns Green
+          else if (id(wifi_signal_db).has_state()) {
+            auto call = id(status_led)->turn_on();
+            call.set_red(0.0);
+            call.set_green(1.0);
+            call.set_blue(0.0);
+            call.perform();
+          }

@@ -1,0 +1,46 @@
+# =========================================================
+# DIAGNOSTICS
+# =========================================================
+
+sensor:
+
+  # -------------------------------------------------------
+  # WIFI SIGNAL dBm
+  # -------------------------------------------------------
+  - platform: wifi_signal
+    id: wifi_signal_db
+    internal: true
+    update_interval: 60s
+
+  # -------------------------------------------------------
+  # WIFI SIGNAL %
+  # -------------------------------------------------------
+  - platform: copy
+    source_id: wifi_signal_db
+    id: wifi_signal_percent
+    name: "WiFi Signal"
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    filters:
+      - lambda: |-
+          if (x <= -100) {
+            return 0;
+          }
+          if (x >= -50) {
+            return 100;
+          }
+          return 2 * (x + 100);
+
+  # -------------------------------------------------------
+  # UPTIME
+  # -------------------------------------------------------
+  - platform: uptime
+    id: uptime_seconds
+    name: "Uptime"
+    type: seconds
+
+  # -------------------------------------------------------
+  # INTERNAL TEMPERATURE (ESP32-C6)
+  # -------------------------------------------------------
+  - platform: internal_temperature
+    name: "Internal Temperature"
