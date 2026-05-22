@@ -3,435 +3,341 @@ max_columns: 4
 title: Garden
 path: garden
 icon: mdi:sprinkler-variant
-
 sections:
-
-  # =========================================================
-  # MAIN CONTROL
-  # =========================================================
-
   - type: grid
     column_span: 4
-
     cards:
-
-      # =====================================================
-      # ZONE BUTTONS
-      # =====================================================
-
+      - type: heading
+        icon: mdi:sprinkler-variant
+        heading: irriBRANT
+        heading_style: title
       - type: grid
-
         columns: 3
         square: false
-
         cards:
-
           - type: tile
-            entity: switch.irrabrant_zone_1
+            entity: switch.irrabrant_zone_1_valve
             name: Zone 1
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_2
+            entity: switch.irrabrant_zone_2_valve
             name: Zone 2
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_3
+            entity: switch.irrabrant_zone_3_valve
             name: Zone 3
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_4
+            entity: switch.irrabrant_zone_4_valve
             name: Zone 4
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_5
+            entity: switch.irrabrant_zone_5_valve
             name: Zone 5
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_6
+            entity: switch.irrabrant_zone_6_valve
             name: Zone 6
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_7
+            entity: switch.irrabrant_zone_7_valve
             name: Zone 7
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_8
+            entity: switch.irrabrant_zone_8_valve
             name: Zone 8
             icon: mdi:sprinkler-variant
-
           - type: tile
-            entity: switch.irrabrant_zone_9
+            entity: switch.irrabrant_zone_9_valve
             name: Zone 9
             icon: mdi:sprinkler-variant
-
-      # =====================================================
-      # GLOBAL CONTROLS
-      # =====================================================
-
+      - type: vertical-stack
+        cards:
+          - type: entities
+            title: Irrigation Control
+            show_header_toggle: false
+            entities:
+              - entity: switch.irrabrant_active_cycle
+                name: Active Cycle
+              - entity: switch.irrabrant_auto_advance_zones
+                name: Auto Advance Zones
+              - entity: number.irrabrant_rain_delay_hours
+                name: Rain Delay Hours
+              - entity: number.irrabrant_rain_intensity_block_threshold
+                name: Rain Intensity Block Threshold
+          - type: entities
+            title: Run Programs
+            show_header_toggle: false
+            entities:
+              - entity: switch.irrabrant_run_program_a
+                name: Run Program A
+              - entity: switch.irrabrant_run_program_b
+                name: Run Program B
+              - entity: switch.irrabrant_run_program_c
+                name: Run Program C
       - type: entities
-
-        title: Irrigation Control
-
-        show_header_toggle: false
-
-        entities:
-
-          - entity: switch.irrabrant_irrigation_controller
-            name: Irrigation Controller
-
-          - entity: switch.irrabrant_auto_advance
-            name: Auto Advance
-
-          - entity: switch.irrabrant_queue_enabled
-            name: Queue Enabled
-
-          - entity: number.irrabrant_seasonal_adjustment
-            name: Seasonal Adjustment
-
-          - entity: number.irrabrant_cycle_repeat
-            name: Cycle Repeat
-
-          - entity: number.irrabrant_rain_delay_hours
-            name: Rain Delay Hours
-
-          - entity: number.irrabrant_rain_intensity_block_threshold
-            name: Rain Block Threshold
-
-      # =====================================================
-      # ZONE DURATIONS
-      # =====================================================
-
-      - type: entities
-
         title: Zone Durations
-
         show_header_toggle: false
-
         entities:
-
           - entity: number.irrabrant_zone_1_duration
-            name: Zone 1
-
+            name: Zone 1 Duration
           - entity: number.irrabrant_zone_2_duration
-            name: Zone 2
-
+            name: Zone 2 Duration
           - entity: number.irrabrant_zone_3_duration
-            name: Zone 3
-
+            name: Zone 3 Duration
           - entity: number.irrabrant_zone_4_duration
-            name: Zone 4
-
+            name: Zone 4 Duration
           - entity: number.irrabrant_zone_5_duration
-            name: Zone 5
-
+            name: Zone 5 Duration
           - entity: number.irrabrant_zone_6_duration
-            name: Zone 6
-
+            name: Zone 6 Duration
           - entity: number.irrabrant_zone_7_duration
-            name: Zone 7
-
+            name: Zone 7 Duration
           - entity: number.irrabrant_zone_8_duration
-            name: Zone 8
-
+            name: Zone 8 Duration
           - entity: number.irrabrant_zone_9_duration
-            name: Zone 9
-
-      # =====================================================
-      # DIAGNOSTICS
-      # =====================================================
-
+            name: Zone 9 Duration
       - type: entities
-
-        title: Diagnostics
-
+        title: Enable Zones
         show_header_toggle: false
-
         entities:
-
-          - entity: sensor.irrabrant_wifi_signal_percent
+          - entity: switch.irrabrant_enable_zone_1
+            name: Enable Zone 1
+          - entity: switch.irrabrant_enable_zone_2
+            name: Enable Zone 2
+          - entity: switch.irrabrant_enable_zone_3
+            name: Enable Zone 3
+          - entity: switch.irrabrant_enable_zone_4
+            name: Enable Zone 4
+          - entity: switch.irrabrant_enable_zone_5
+            name: Enable Zone 5
+          - entity: switch.irrabrant_enable_zone_6
+            name: Enable Zone 6
+          - entity: switch.irrabrant_enable_zone_7
+            name: Enable Zone 7
+          - entity: switch.irrabrant_enable_zone_8
+            name: Enable Zone 8
+          - entity: switch.irrabrant_enable_zone_9
+            name: Enable Zone 9
+      - type: entities
+        title: Diagnostics
+        show_header_toggle: false
+        entities:
+          - entity: sensor.irrabrant_wifi_signal
             name: WiFi Signal
-
           - entity: sensor.irrabrant_uptime
             name: Uptime
-
           - entity: sensor.irrabrant_internal_temperature
-            name: ESP Temperature
-
-          - entity: binary_sensor.irrabrant_status
-            name: Device Status
-
-  # =========================================================
-  # PROGRAM A
-  # =========================================================
-
+            name: Internal Temperature
+          - entity: binary_sensor.irrabrant_front_button
+            name: Front Button
   - type: grid
-
     cards:
-
       - type: heading
+        icon: mdi:alpha-a-circle
         heading: Program A
-
+        heading_style: title
       - type: entities
-
         title: Schedule
-
+        show_header_toggle: false
         entities:
-
           - entity: switch.irrabrant_program_a_enabled
             name: Enabled
-
-          - entity: time.irrabrant_program_a_start_time
-            name: Start Time
-
+          - entity: number.irrabrant_prog_a_start_hour
+            name: Start Hour
+          - entity: number.irrabrant_prog_a_start_minute
+            name: Start Minute
       - type: entities
-
         title: Weekdays
-
+        show_header_toggle: false
         entities:
-
-          - entity: switch.irrabrant_program_a_monday
+          - entity: switch.irrabrant_prog_a_monday
             name: Monday
-
-          - entity: switch.irrabrant_program_a_tuesday
+          - entity: switch.irrabrant_prog_a_tuesday
             name: Tuesday
-
-          - entity: switch.irrabrant_program_a_wednesday
+          - entity: switch.irrabrant_prog_a_wednesday
             name: Wednesday
-
-          - entity: switch.irrabrant_program_a_thursday
+          - entity: switch.irrabrant_prog_a_thursday
             name: Thursday
-
-          - entity: switch.irrabrant_program_a_friday
+          - entity: switch.irrabrant_prog_a_friday
             name: Friday
-
-          - entity: switch.irrabrant_program_a_saturday
+          - entity: switch.irrabrant_prog_a_saturday
             name: Saturday
-
-          - entity: switch.irrabrant_program_a_sunday
+          - entity: switch.irrabrant_prog_a_sunday
             name: Sunday
-
       - type: entities
-
         title: Zones
-
+        show_header_toggle: false
         entities:
-
           - entity: switch.irrabrant_program_a_zone_1
             name: Zone 1
-
           - entity: switch.irrabrant_program_a_zone_2
             name: Zone 2
-
           - entity: switch.irrabrant_program_a_zone_3
             name: Zone 3
-
           - entity: switch.irrabrant_program_a_zone_4
             name: Zone 4
-
           - entity: switch.irrabrant_program_a_zone_5
             name: Zone 5
-
           - entity: switch.irrabrant_program_a_zone_6
             name: Zone 6
-
           - entity: switch.irrabrant_program_a_zone_7
             name: Zone 7
-
           - entity: switch.irrabrant_program_a_zone_8
             name: Zone 8
-
           - entity: switch.irrabrant_program_a_zone_9
             name: Zone 9
-
-  # =========================================================
-  # PROGRAM B
-  # =========================================================
-
   - type: grid
-
     cards:
-
       - type: heading
+        icon: mdi:alpha-b-circle
         heading: Program B
-
+        heading_style: title
       - type: entities
-
         title: Schedule
-
+        show_header_toggle: false
         entities:
-
           - entity: switch.irrabrant_program_b_enabled
             name: Enabled
-
-          - entity: time.irrabrant_program_b_start_time
-            name: Start Time
-
+          - entity: number.irrabrant_prog_b_start_hour
+            name: Start Hour
+          - entity: number.irrabrant_prog_b_start_minute
+            name: Start Minute
       - type: entities
-
         title: Weekdays
-
+        show_header_toggle: false
         entities:
-
-          - entity: switch.irrabrant_program_b_monday
+          - entity: switch.irrabrant_prog_b_monday
             name: Monday
-
-          - entity: switch.irrabrant_program_b_tuesday
+          - entity: switch.irrabrant_prog_b_tuesday
             name: Tuesday
-
-          - entity: switch.irrabrant_program_b_wednesday
+          - entity: switch.irrabrant_prog_b_wednesday
             name: Wednesday
-
-          - entity: switch.irrabrant_program_b_thursday
+          - entity: switch.irrabrant_prog_b_thursday
             name: Thursday
-
-          - entity: switch.irrabrant_program_b_friday
+          - entity: switch.irrabrant_prog_b_friday
             name: Friday
-
-          - entity: switch.irrabrant_program_b_saturday
+          - entity: switch.irrabrant_prog_b_saturday
             name: Saturday
-
-          - entity: switch.irrabrant_program_b_sunday
+          - entity: switch.irrabrant_prog_b_sunday
             name: Sunday
-
       - type: entities
-
         title: Zones
-
+        show_header_toggle: false
         entities:
-
           - entity: switch.irrabrant_program_b_zone_1
             name: Zone 1
-
           - entity: switch.irrabrant_program_b_zone_2
             name: Zone 2
-
           - entity: switch.irrabrant_program_b_zone_3
             name: Zone 3
-
           - entity: switch.irrabrant_program_b_zone_4
             name: Zone 4
-
           - entity: switch.irrabrant_program_b_zone_5
             name: Zone 5
-
           - entity: switch.irrabrant_program_b_zone_6
             name: Zone 6
-
           - entity: switch.irrabrant_program_b_zone_7
             name: Zone 7
-
           - entity: switch.irrabrant_program_b_zone_8
             name: Zone 8
-
           - entity: switch.irrabrant_program_b_zone_9
             name: Zone 9
-
-  # =========================================================
-  # PROGRAM C
-  # =========================================================
-
   - type: grid
-
     cards:
-
       - type: heading
+        icon: mdi:alpha-c-circle
         heading: Program C
-
+        heading_style: title
       - type: entities
-
         title: Schedule
-
+        show_header_toggle: false
         entities:
-
           - entity: switch.irrabrant_program_c_enabled
             name: Enabled
-
-          - entity: time.irrabrant_program_c_start_time
-            name: Start Time
-
+          - entity: number.irrabrant_prog_c_start_hour
+            name: Start Hour
+          - entity: number.irrabrant_prog_c_start_minute
+            name: Start Minute
       - type: entities
-
         title: Weekdays
-
+        show_header_toggle: false
         entities:
-
-          - entity: switch.irrabrant_program_c_monday
+          - entity: switch.irrabrant_prog_c_monday
             name: Monday
-
-          - entity: switch.irrabrant_program_c_tuesday
+          - entity: switch.irrabrant_prog_c_tuesday
             name: Tuesday
-
-          - entity: switch.irrabrant_program_c_wednesday
+          - entity: switch.irrabrant_prog_c_wednesday
             name: Wednesday
-
-          - entity: switch.irrabrant_program_c_thursday
+          - entity: switch.irrabrant_prog_c_thursday
             name: Thursday
-
-          - entity: switch.irrabrant_program_c_friday
+          - entity: switch.irrabrant_prog_c_friday
             name: Friday
-
-          - entity: switch.irrabrant_program_c_saturday
+          - entity: switch.irrabrant_prog_c_saturday
             name: Saturday
-
-          - entity: switch.irrabrant_program_c_sunday
+          - entity: switch.irrabrant_prog_c_sunday
             name: Sunday
-
       - type: entities
-
         title: Zones
-
+        show_header_toggle: false
         entities:
-
           - entity: switch.irrabrant_program_c_zone_1
             name: Zone 1
-
           - entity: switch.irrabrant_program_c_zone_2
             name: Zone 2
-
           - entity: switch.irrabrant_program_c_zone_3
             name: Zone 3
-
           - entity: switch.irrabrant_program_c_zone_4
             name: Zone 4
-
           - entity: switch.irrabrant_program_c_zone_5
             name: Zone 5
-
           - entity: switch.irrabrant_program_c_zone_6
             name: Zone 6
-
           - entity: switch.irrabrant_program_c_zone_7
             name: Zone 7
-
           - entity: switch.irrabrant_program_c_zone_8
             name: Zone 8
-
           - entity: switch.irrabrant_program_c_zone_9
             name: Zone 9
-
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section
+      - type: history-graph
+        title: History
+        hours_to_show: 24
+        entities:
+          - entity: switch.irrabrant_zone_1_valve
+            name: Zona 1
+          - entity: switch.irrabrant_zone_2_valve
+            name: Zona 2
+          - entity: switch.irrabrant_zone_3_valve
+            name: Zona 3
+          - entity: switch.irrabrant_zone_4_valve
+            name: Zona 4
+          - entity: switch.irrabrant_zone_5_valve
+            name: Zona 5
+          - entity: switch.irrabrant_zone_6_valve
+            name: Zona 6
+          - entity: switch.irrabrant_zone_7_valve
+            name: Zona 7
+          - entity: switch.irrabrant_zone_8_valve
+            name: Zona 8
+          - entity: switch.irrabrant_zone_9_valve
+            name: Zona 9
+        grid_options:
+          columns: full
+    column_span: 4
 header:
-
   card:
     type: markdown
     text_only: true
     content: "# irriBRANT"
-
 badges:
-
   - type: entity
-    entity: switch.irrabrant_irrigation_controller
-
+    entity: switch.irrabrant_active_cycle
   - type: entity
-    entity: sensor.irrabrant_wifi_signal_percent
-
+    entity: sensor.irrabrant_wifi_signal
   - type: entity
-    entity: sensor.irrabrant_uptime
-
+    entity: sensor.irrabrant_uptime_2
 cards: []

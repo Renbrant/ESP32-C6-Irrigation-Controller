@@ -1,6 +1,6 @@
 # Command to install
 # WIN + R
-# python -m esphome run C:\esphome\irribrant\irribrant_v1_1.yaml
+# python -m esphome run G:\My Drive\0 Diversos\GitHub\ESP32-C6-Irrigation-Controller\firmware\v1.1\irribrant_v1_1.yaml
 
 # =========================================================
 # irriBRANT PRO v1.1
