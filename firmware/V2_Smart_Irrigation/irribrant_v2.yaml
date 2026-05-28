@@ -1,0 +1,278 @@
+# Command to install
+# WIN + R
+# python -m esphome run "X:\ESP32-C6-Irrigation-Controller\firmware\V2_Smart_Irrigation\irribrant_v2.yaml"
+
+
+
+# =========================================================
+# irriBRANT v2
+# ESP32-C6 + MCP23017 + 9 Valves
+# Home Assistant + ESPHome
+# =========================================================
+
+# =========================================================
+# ESPHOME
+# =========================================================
+
+esphome:
+  name: irribrant-v2
+  friendly_name: irriBRANT v2
+
+# =========================================================
+# ESP32
+# =========================================================
+
+esp32:
+  board: seeed_xiao_esp32c6
+  variant: esp32c6
+
+  framework:
+    type: esp-idf
+
+# =========================================================
+# LOGGER
+# =========================================================
+
+logger:
+
+# =========================================================
+# API
+# =========================================================
+
+api:
+
+# =========================================================
+# OTA
+# =========================================================
+
+ota:
+  - platform: esphome
+
+# =========================================================
+# WIFI
+# =========================================================
+
+wifi:
+  ssid: "SEU_WIFI"
+  password: "SUA_SENHA"
+
+  ap:
+    ssid: "irriBRANT Fallback"
+    password: "irribrant123"
+
+# =========================================================
+# WEB SERVER
+# =========================================================
+
+web_server:
+  port: 80
+
+# =========================================================
+# DIAGNOSTICS
+# =========================================================
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Uptime"
+
+# =========================================================
+# I2C
+# =========================================================
+
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+  scan: true
+
+# =========================================================
+# MCP23017
+# =========================================================
+
+mcp23017:
+  - id: mcp23017_hub
+    address: 0x20
+
+# =========================================================
+# RELAYS
+# =========================================================
+
+switch:
+  - platform: gpio
+    id: relay_zone_1
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 0
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_2
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 1
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_3
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 2
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_4
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 3
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_5
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 4
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_6
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 5
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_7
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 6
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_8
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 7
+      mode: OUTPUT
+
+  - platform: gpio
+    id: relay_zone_9
+    internal: true
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 8
+      mode: OUTPUT
+
+# =========================================================
+# VALVES
+# =========================================================
+
+valve:
+  - platform: template
+    name: "Zone 1"
+    id: valve_zone_1
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_1
+
+    close_action:
+      - switch.turn_off: relay_zone_1
+
+  - platform: template
+    name: "Zone 2"
+    id: valve_zone_2
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_2
+
+    close_action:
+      - switch.turn_off: relay_zone_2
+
+  - platform: template
+    name: "Zone 3"
+    id: valve_zone_3
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_3
+
+    close_action:
+      - switch.turn_off: relay_zone_3
+
+  - platform: template
+    name: "Zone 4"
+    id: valve_zone_4
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_4
+
+    close_action:
+      - switch.turn_off: relay_zone_4
+
+  - platform: template
+    name: "Zone 5"
+    id: valve_zone_5
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_5
+
+    close_action:
+      - switch.turn_off: relay_zone_5
+
+  - platform: template
+    name: "Zone 6"
+    id: valve_zone_6
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_6
+
+    close_action:
+      - switch.turn_off: relay_zone_6
+
+  - platform: template
+    name: "Zone 7"
+    id: valve_zone_7
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_7
+
+    close_action:
+      - switch.turn_off: relay_zone_7
+
+  - platform: template
+    name: "Zone 8"
+    id: valve_zone_8
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_8
+
+    close_action:
+      - switch.turn_off: relay_zone_8
+
+  - platform: template
+    name: "Zone 9"
+    id: valve_zone_9
+    optimistic: true
+
+    open_action:
+      - switch.turn_on: relay_zone_9
+
+    close_action:
+      - switch.turn_off: relay_zone_9
