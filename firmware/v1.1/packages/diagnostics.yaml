@@ -2,11 +2,27 @@
 # DIAGNOSTICS
 # =========================================================
 
+# =========================================================
+# GLOBALS
+# =========================================================
+
+globals:
+
+  - id: rain_lock
+    type: bool
+    restore_value: true
+    initial_value: 'false'
+
+# =========================================================
+# SENSORS
+# =========================================================
+
 sensor:
 
   # -------------------------------------------------------
   # WIFI SIGNAL dBm
   # -------------------------------------------------------
+
   - platform: wifi_signal
     id: wifi_signal_db
     internal: true
@@ -15,32 +31,191 @@ sensor:
   # -------------------------------------------------------
   # WIFI SIGNAL %
   # -------------------------------------------------------
+
   - platform: copy
     source_id: wifi_signal_db
     id: wifi_signal_percent
     name: "WiFi Signal"
+
     unit_of_measurement: "%"
     accuracy_decimals: 0
+
     filters:
       - lambda: |-
           if (x <= -100) {
             return 0;
           }
+
           if (x >= -50) {
             return 100;
           }
+
           return 2 * (x + 100);
 
   # -------------------------------------------------------
   # UPTIME
   # -------------------------------------------------------
+
   - platform: uptime
     id: uptime_seconds
     name: "Uptime"
     type: seconds
 
-  # -------------------------------------------------------
-  # INTERNAL TEMPERATURE (ESP32-C6)
-  # -------------------------------------------------------
-  - platform: internal_temperature
-    name: "Internal Temperature"
+# =========================================================
+# BINARY SENSORS
+# =========================================================
+
+binary_sensor:
+
+  - platform: template
+    id: system_has_schedule
+    name: "System Has Schedule"
+
+    lambda: |-
+      return id(program_a_schedule_enabled).state ||
+             id(program_b_schedule_enabled).state ||
+             id(program_c_schedule_enabled).state;
+
+# =========================================================
+# SELECTS
+# =========================================================
+
+select:
+
+  - platform: template
+    id: rain_source
+    name: "Rain Source"
+
+    optimistic: true
+    restore_value: true
+
+    options:
+      - "Disabled"
+      - "Home Assistant"
+      - "Local Sensor"
+
+    initial_option: "Home Assistant"
+
+# =========================================================
+# INTERVALS
+# =========================================================
+
+interval:
+
+  - interval: 1s
+    then:
+      - script.execute: update_status_led
+
+# =========================================================
+# SCRIPTS
+# =========================================================
+
+script:
+
+  - id: update_status_led
+    mode: restart
+
+    then:
+
+      - lambda: |-
+
+          auto call = id(status_led)->turn_on();
+
+          // ------------------------------------------------
+          // RED SOLID = NO SCHEDULE
+          // ------------------------------------------------
+
+          if (!id(system_has_schedule).state) {
+
+            call.set_red(1.0);
+            call.set_green(0.0);
+            call.set_blue(0.0);
+            call.set_brightness(1.0);
+
+          }
+
+          // ------------------------------------------------
+          // RED BLINK = NO WIFI
+          // ------------------------------------------------
+
+          else if (!WiFi.isConnected()) {
+
+            static bool blink_red = false;
+            blink_red = !blink_red;
+
+            if (blink_red) {
+
+              call.set_red(1.0);
+              call.set_green(0.0);
+              call.set_blue(0.0);
+              call.set_brightness(0.3);
+
+            } else {
+
+              call.set_brightness(0.0);
+
+            }
+
+          }
+
+          // ------------------------------------------------
+          // YELLOW = RAIN LOCK
+          // ------------------------------------------------
+
+          else if (id(rain_lock)) {
+
+            call.set_red(1.0);
+            call.set_green(1.0);
+            call.set_blue(0.0);
+            call.set_brightness(1.0);
+
+          }
+
+          // ------------------------------------------------
+          // BLUE = VALVE ACTIVE
+          // ------------------------------------------------
+
+          else if (
+              id(zone_1_output).state ||
+              id(zone_2_output).state ||
+              id(zone_3_output).state ||
+              id(zone_4_output).state ||
+              id(zone_5_output).state ||
+              id(zone_6_output).state ||
+              id(zone_7_output).state ||
+              id(zone_8_output).state ||
+              id(zone_9_output).state
+          ) {
+
+            call.set_red(0.0);
+            call.set_green(0.0);
+            call.set_blue(1.0);
+            call.set_brightness(1.0);
+
+          }
+
+          // ------------------------------------------------
+          // GREEN BLINK = NORMAL
+          // ------------------------------------------------
+
+          else {
+
+            static bool blink_green = false;
+            blink_green = !blink_green;
+
+            if (blink_green) {
+
+              call.set_red(0.0);
+              call.set_green(1.0);
+              call.set_blue(0.0);
+              call.set_brightness(0.3);
+
+            } else {
+
+              call.set_brightness(0.0);
+
+            }
+
+          }
+
+          call.perform();

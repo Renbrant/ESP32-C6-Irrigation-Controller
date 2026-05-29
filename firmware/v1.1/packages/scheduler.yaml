@@ -2,85 +2,290 @@
 # SCHEDULER
 # =========================================================
 
+# =========================================================
+# GLOBALS
+# =========================================================
+
 globals:
-  # -------------------------------------------------------
-  # RAIN DELAY
-  # -------------------------------------------------------
+
   - id: rain_delay_until
     type: int64_t
     restore_value: yes
     initial_value: '0'
 
+  - id: last_scheduler_minute
+    type: int
+    restore_value: no
+    initial_value: '-1'
+
+# =========================================================
+# PROGRAM SCHEDULE SETTINGS
+# =========================================================
+
+switch:
+
+  - platform: template
+    id: program_a_schedule_enabled
+    name: "Program A Schedule Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_schedule_enabled
+    name: "Program B Schedule Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_schedule_enabled
+    name: "Program C Schedule Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+number:
+
+  - platform: template
+    id: program_a_hour
+    name: "Program A Hour"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 23
+    step: 1
+    initial_value: 6
+
+  - platform: template
+    id: program_a_minute
+    name: "Program A Minute"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 59
+    step: 1
+    initial_value: 0
+
+  - platform: template
+    id: program_b_hour
+    name: "Program B Hour"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 23
+    step: 1
+    initial_value: 18
+
+  - platform: template
+    id: program_b_minute
+    name: "Program B Minute"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 59
+    step: 1
+    initial_value: 0
+
+  - platform: template
+    id: program_c_hour
+    name: "Program C Hour"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 23
+    step: 1
+    initial_value: 5
+
+  - platform: template
+    id: program_c_minute
+    name: "Program C Minute"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 59
+    step: 1
+    initial_value: 30
+
+# =========================================================
+# MANUAL ACTIONS
+# =========================================================
+
+button:
+
+  - platform: template
+    name: "Run Program A"
+    on_press:
+      - script.execute: program_a_run
+
+  - platform: template
+    name: "Run Program B"
+    on_press:
+      - script.execute: program_b_run
+
+  - platform: template
+    name: "Run Program C"
+    on_press:
+      - script.execute: program_c_run
+
+  - platform: template
+    name: "Apply Rain Delay"
+    on_press:
+      - lambda: |-
+          auto now = id(ha_time).now();
+
+          if (!now.is_valid()) {
+            ESP_LOGW("scheduler", "Cannot apply rain delay: Home Assistant time is not valid");
+            return;
+          }
+
+          if (id(rain_delay_hours).state <= 0) {
+            id(rain_delay_until) = 0;
+            id(rain_lock) = false;
+            ESP_LOGI("scheduler", "Rain delay cleared");
+            return;
+          }
+
+          id(rain_delay_until) = now.timestamp + (int64_t) (id(rain_delay_hours).state * 3600);
+          id(rain_lock) = true;
+          ESP_LOGI("scheduler", "Rain delay applied for %.0f hour(s)", id(rain_delay_hours).state);
+
+  - platform: template
+    name: "Clear Rain Delay"
+    on_press:
+      - globals.set:
+          id: rain_delay_until
+          value: '0'
+      - globals.set:
+          id: rain_lock
+          value: 'false'
+
 # =========================================================
 # TIME
 # =========================================================
+
 time:
-  - platform: sntp
-    id: sntp_time
-    timezone: "America/Denver"
+
+  - platform: homeassistant
+    id: ha_time
 
 # =========================================================
 # WEATHER
 # =========================================================
+
 sensor:
-  # -------------------------------------------------------
-  # RAIN INTENSITY
-  # -------------------------------------------------------
+
   - platform: homeassistant
     id: rain_intensity
     entity_id: sensor.openweathermap_rain_intensity
+
     filters:
       - sliding_window_moving_average:
           window_size: 5
           send_every: 1
 
 # =========================================================
-# INTERVALS & LED UPDATE
+# SCRIPTS
 # =========================================================
-interval:
-  - interval: 2s
-    then:
-      - script.execute: update_status_led
 
-# =========================================================
-# SCRIPTS (LED & BOOT)
-# =========================================================
 script:
-  # -------------------------------------------------------
-  # LED BOOT ANIMATION
-  # -------------------------------------------------------
+
   - id: led_boot_animation
+
     then:
+
       - light.turn_on:
           id: status_led
           red: 1.0
           green: 1.0
           blue: 1.0
           brightness: 100%
+
       - delay: 2s
+
       - light.turn_off: status_led
 
-  # -------------------------------------------------------
-  # STATUS LED LOGIC
-  # -------------------------------------------------------
-  - id: update_status_led
+  - id: refresh_rain_lock
+    mode: restart
+
     then:
+
       - lambda: |-
-          // If any zone is ON, LED turns Blue
-          if (id(zone_1_output).state || id(zone_2_output).state || id(zone_3_output).state || 
-              id(zone_4_output).state || id(zone_5_output).state || id(zone_6_output).state || 
-              id(zone_7_output).state || id(zone_8_output).state || id(zone_9_output).state) {
-            auto call = id(status_led)->turn_on();
-            call.set_red(0.0);
-            call.set_green(0.0);
-            call.set_blue(1.0);
-            call.perform();
-          } 
-          // Otherwise, if connected, LED turns Green
-          else if (id(wifi_signal_db).has_state()) {
-            auto call = id(status_led)->turn_on();
-            call.set_red(0.0);
-            call.set_green(1.0);
-            call.set_blue(0.0);
-            call.perform();
+          auto now = id(ha_time).now();
+          const bool rain_disabled = id(rain_source).state == "Disabled";
+
+          if (rain_disabled) {
+            id(rain_delay_until) = 0;
+            id(rain_lock) = false;
+            return;
           }
+
+          bool delay_active = false;
+
+          if (now.is_valid()) {
+            if (id(rain_delay_until) > now.timestamp) {
+              delay_active = true;
+            } else if (id(rain_delay_until) != 0) {
+              id(rain_delay_until) = 0;
+            }
+          }
+
+          bool rain_active = false;
+
+          if (id(rain_source).state == "Home Assistant" &&
+              id(rain_intensity).has_state() &&
+              id(rain_intensity).state > 0 &&
+              id(rain_intensity).state >= id(rain_threshold).state) {
+            rain_active = true;
+
+            if (now.is_valid() && id(rain_delay_hours).state > 0) {
+              id(rain_delay_until) = now.timestamp + (int64_t) (id(rain_delay_hours).state * 3600);
+              delay_active = true;
+            }
+          }
+
+          id(rain_lock) = delay_active || rain_active;
+
+  - id: scheduler_tick
+    mode: single
+
+    then:
+
+      - script.execute: refresh_rain_lock
+
+      - lambda: |-
+          auto now = id(ha_time).now();
+
+          if (!now.is_valid()) {
+            return;
+          }
+
+          const int current_minute = (now.hour * 60) + now.minute;
+
+          if (id(last_scheduler_minute) == current_minute) {
+            return;
+          }
+
+          if (id(program_a_schedule_enabled).state &&
+              now.hour == (int) id(program_a_hour).state &&
+              now.minute == (int) id(program_a_minute).state) {
+            id(last_scheduler_minute) = current_minute;
+            id(program_a_run).execute();
+          } else if (id(program_b_schedule_enabled).state &&
+                     now.hour == (int) id(program_b_hour).state &&
+                     now.minute == (int) id(program_b_minute).state) {
+            id(last_scheduler_minute) = current_minute;
+            id(program_b_run).execute();
+          } else if (id(program_c_schedule_enabled).state &&
+                     now.hour == (int) id(program_c_hour).state &&
+                     now.minute == (int) id(program_c_minute).state) {
+            id(last_scheduler_minute) = current_minute;
+            id(program_c_run).execute();
+          }
+
+# =========================================================
+# INTERVALS
+# =========================================================
+
+interval:
+
+  - interval: 30s
+    then:
+      - script.execute: scheduler_tick

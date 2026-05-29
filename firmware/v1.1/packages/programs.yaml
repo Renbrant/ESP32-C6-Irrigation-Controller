@@ -1,648 +1,127 @@
 # =========================================================
 # PROGRAMS
-# irriBRANT PRO v1.1 - DYNAMIC ZONE SELECTION
 # =========================================================
 
-# =========================================================
-# GLOBALS
-# =========================================================
 globals:
-  - id: program_a_running
+
+  - id: prog_a_running
     type: bool
-    restore_value: false
+    restore_value: no
     initial_value: 'false'
 
-  - id: program_b_running
+  - id: prog_b_running
     type: bool
-    restore_value: false
+    restore_value: no
     initial_value: 'false'
 
-  - id: program_c_running
+  - id: prog_c_running
     type: bool
-    restore_value: false
+    restore_value: no
     initial_value: 'false'
 
-# =========================================================
-# EXECUTION SCRIPTS WITH DYNAMIC QUEUING
-# =========================================================
 script:
-  # --- PROGRAM A SCRIPT ---
+
+  # =======================================================
+  # PROGRAM A
+  # =======================================================
+
   - id: program_a_run
     mode: single
-    then:
-      - globals.set:
-          id: program_a_running
-          value: 'true'
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_1).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 0 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_2).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 1 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_3).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 2 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_4).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 3 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_5).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 4 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_6).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 5 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_7).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 6 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_8).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 7 }
-      - if:
-          condition:
-            lambda: 'return id(program_a_zone_9).state;'
-          then:
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 8 }
-      - wait_until:
-          condition:
-            lambda: 'return !id(irribrant_controller).active_valve().has_value();'
-      - globals.set:
-          id: program_a_running
-          value: 'false'
 
-  # --- PROGRAM B SCRIPT ---
+    then:
+
+      - if:
+          condition:
+            lambda: |-
+              return id(main_irrigation_switch).state &&
+                     !id(rain_lock) &&
+                     !id(irribrant_controller).active_valve().has_value();
+          then:
+
+            - globals.set:
+                id: prog_a_running
+                value: 'true'
+
+            - sprinkler.start_full_cycle:
+                id: irribrant_controller
+
+            - wait_until:
+                condition:
+                  lambda: |-
+                    return !id(irribrant_controller).active_valve().has_value();
+
+            - globals.set:
+                id: prog_a_running
+                value: 'false'
+          else:
+            - logger.log: "Program A skipped: system disabled, rain lock active, or cycle already running"
+
+  # =======================================================
+  # PROGRAM B
+  # =======================================================
+
   - id: program_b_run
     mode: single
-    then:
-      - globals.set:
-          id: program_b_running
-          value: 'true'
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_1).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 0 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_2).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 1 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_3).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 2 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_4).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 3 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_5).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 4 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_6).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 5 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_7).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 6 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_8).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 7 }
-      - if:
-          condition: 
-            lambda: 'return id(program_b_zone_9).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 8 }
-      - wait_until:
-          condition:
-            lambda: 'return !id(irribrant_controller).active_valve().has_value();'
-      - globals.set:
-          id: program_b_running
-          value: 'false'
 
-  # --- PROGRAM C SCRIPT ---
+    then:
+
+      - if:
+          condition:
+            lambda: |-
+              return id(main_irrigation_switch).state &&
+                     !id(rain_lock) &&
+                     !id(irribrant_controller).active_valve().has_value();
+          then:
+
+            - globals.set:
+                id: prog_b_running
+                value: 'true'
+
+            - sprinkler.start_full_cycle:
+                id: irribrant_controller
+
+            - wait_until:
+                condition:
+                  lambda: |-
+                    return !id(irribrant_controller).active_valve().has_value();
+
+            - globals.set:
+                id: prog_b_running
+                value: 'false'
+          else:
+            - logger.log: "Program B skipped: system disabled, rain lock active, or cycle already running"
+
+  # =======================================================
+  # PROGRAM C
+  # =======================================================
+
   - id: program_c_run
     mode: single
+
     then:
-      - globals.set:
-          id: program_c_running
-          value: 'true'
+
       - if:
-          condition: 
-            lambda: 'return id(program_c_zone_1).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 0 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_2).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 1 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_3).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 2 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_4).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 3 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_5).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 4 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_6).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 5 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_7).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 6 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_8).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 7 }
-      - if:
-          condition: 
-            lambda: 'return id(program_c_zone_9).state;'
-          then: 
-            - sprinkler.queue_valve: { id: irribrant_controller, valve_number: 8 }
-      - wait_until:
           condition:
-            lambda: 'return !id(irribrant_controller).active_valve().has_value();'
-      - globals.set:
-          id: program_c_running
-          value: 'false'
+            lambda: |-
+              return id(main_irrigation_switch).state &&
+                     !id(rain_lock) &&
+                     !id(irribrant_controller).active_valve().has_value();
+          then:
 
-# =========================================================
-# SWITCHES & SELECTIONS
-# =========================================================
-switch:
-  # Manual Trigger Template Switches - FIXED: Only shutdowns active queue instead of killing global master switch
-  - platform: template
-    name: "Run Program A"
-    id: program_a_switch
-    lambda: 'return id(program_a_running);'
-    turn_on_action:
-      - script.execute: program_a_run
-    turn_off_action:
-      - script.stop: program_a_run
-      - sprinkler.shutdown: irribrant_controller
-      - globals.set: { id: program_a_running, value: 'false' }
+            - globals.set:
+                id: prog_c_running
+                value: 'true'
 
-  - platform: template
-    name: "Run Program B"
-    id: program_b_switch
-    lambda: 'return id(program_b_running);'
-    turn_on_action:
-      - script.execute: program_b_run
-    turn_off_action:
-      - script.stop: program_b_run
-      - sprinkler.shutdown: irribrant_controller
-      - globals.set: { id: program_b_running, value: 'false' }
+            - sprinkler.start_full_cycle:
+                id: irribrant_controller
 
-  - platform: template
-    name: "Run Program C"
-    id: program_c_switch
-    lambda: 'return id(program_c_running);'
-    turn_on_action:
-      - script.execute: program_c_run
-    turn_off_action:
-      - script.stop: program_c_run
-      - sprinkler.shutdown: irribrant_controller
-      - globals.set: { id: program_c_running, value: 'false' }
+            - wait_until:
+                condition:
+                  lambda: |-
+                    return !id(irribrant_controller).active_valve().has_value();
 
-  # Automation Enable Switches
-  - platform: template
-    id: program_a_enabled
-    name: "Program A Enabled"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  - platform: template
-    id: program_b_enabled
-    name: "Program B Enabled"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  - platform: template
-    id: program_c_enabled
-    name: "Program C Enabled"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  # --- WEEKDAYS SWITCHES ---
-  # Prog A
-  - platform: template
-    id: prog_a_sun
-    name: "Prog A Sunday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_a_mon
-    name: "Prog A Monday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_a_tue
-    name: "Prog A Tuesday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_a_wed
-    name: "Prog A Wednesday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_a_thu
-    name: "Prog A Thursday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_a_fri
-    name: "Prog A Friday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_a_sat
-    name: "Prog A Saturday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  # Prog B
-  - platform: template
-    id: prog_b_sun
-    name: "Prog B Sunday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_b_mon
-    name: "Prog B Monday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_b_tue
-    name: "Prog B Tuesday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_b_wed
-    name: "Prog B Wednesday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_b_thu
-    name: "Prog B Thursday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_b_fri
-    name: "Prog B Friday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_b_sat
-    name: "Prog B Saturday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  # Prog C
-  - platform: template
-    id: prog_c_sun
-    name: "Prog C Sunday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_c_mon
-    name: "Prog C Monday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_c_tue
-    name: "Prog C Tuesday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_c_wed
-    name: "Prog C Wednesday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_c_thu
-    name: "Prog C Thursday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_c_fri
-    name: "Prog C Friday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: prog_c_sat
-    name: "Prog C Saturday"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  # --- DYNAMIC ZONE MAPPING SWITCHES ---
-  # Program A Zone Switches
-  - platform: template
-    id: program_a_zone_1
-    name: "Program A Zone 1"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_2
-    name: "Program A Zone 2"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_3
-    name: "Program A Zone 3"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_4
-    name: "Program A Zone 4"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_5
-    name: "Program A Zone 5"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_6
-    name: "Program A Zone 6"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_7
-    name: "Program A Zone 7"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_8
-    name: "Program A Zone 8"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_a_zone_9
-    name: "Program A Zone 9"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  # Program B Zone Switches
-  - platform: template
-    id: program_b_zone_1
-    name: "Program B Zone 1"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_2
-    name: "Program B Zone 2"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_3
-    name: "Program B Zone 3"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_4
-    name: "Program B Zone 4"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_5
-    name: "Program B Zone 5"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_6
-    name: "Program B Zone 6"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_7
-    name: "Program B Zone 7"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_8
-    name: "Program B Zone 8"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_b_zone_9
-    name: "Program B Zone 9"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-  # Program C Zone Switches
-  - platform: template
-    id: program_c_zone_1
-    name: "Program C Zone 1"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_2
-    name: "Program C Zone 2"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_3
-    name: "Program C Zone 3"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_4
-    name: "Program C Zone 4"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_5
-    name: "Program C Zone 5"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_6
-    name: "Program C Zone 6"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_7
-    name: "Program C Zone 7"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_8
-    name: "Program C Zone 8"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-  - platform: template
-    id: program_c_zone_9
-    name: "Program C Zone 9"
-    optimistic: true
-    restore_mode: RESTORE_DEFAULT_OFF
-
-# =========================================================
-# START TIMES (NUMBERS)
-# =========================================================
-number:
-  - platform: template
-    id: prog_a_hour
-    name: "Prog A Start Hour"
-    min_value: 0
-    max_value: 23
-    step: 1
-    optimistic: true
-    restore_value: true
-    initial_value: 6
-  - platform: template
-    id: prog_a_min
-    name: "Prog A Start Minute"
-    min_value: 0
-    max_value: 59
-    step: 1
-    optimistic: true
-    restore_value: true
-    initial_value: 0
-
-  - platform: template
-    id: prog_b_hour
-    name: "Prog B Start Hour"
-    min_value: 0
-    max_value: 23
-    step: 1
-    optimistic: true
-    restore_value: true
-    initial_value: 7
-  - platform: template
-    id: prog_b_min
-    name: "Prog B Start Minute"
-    min_value: 0
-    max_value: 59
-    step: 1
-    optimistic: true
-    restore_value: true
-    initial_value: 0
-
-  - platform: template
-    id: prog_c_hour
-    name: "Prog C Start Hour"
-    min_value: 0
-    max_value: 23
-    step: 1
-    optimistic: true
-    restore_value: true
-    initial_value: 8
-  - platform: template
-    id: prog_c_min
-    name: "Prog C Start Minute"
-    min_value: 0
-    max_value: 59
-    step: 1
-    optimistic: true
-    restore_value: true
-    initial_value: 0
-
-# =========================================================
-# AUTOMATION ENGINE (INTERVAL SCHEDULER)
-# =========================================================
-interval:
-  - interval: 1min
-    then:
-      - lambda: |-
-          auto time = id(sntp_time).now();
-          if (!time.is_valid()) return;
-
-          // CRITICAL FIXED: Global hardware/software shutdown check. 
-          // If Main Irrigation System switch is OFF, abort everything immediately.
-          if (!id(main_irrigation_switch).state) {
-            return;
-          }
-
-          bool rain_blocked = false;
-          if (id(rain_intensity).has_state() && id(rain_threshold).has_state()) {
-            if (id(rain_intensity).state >= id(rain_threshold).state) {
-              rain_blocked = true;
-            }
-          }
-          if (rain_blocked) return;
-
-          // --- PROGRAM A CHECK ---
-          if (id(program_a_enabled).state && !id(program_a_running)) {
-            bool day_match = false;
-            if (time.day_of_week == 1 && id(prog_a_sun).state) day_match = true;
-            if (time.day_of_week == 2 && id(prog_a_mon).state) day_match = true;
-            if (time.day_of_week == 3 && id(prog_a_tue).state) day_match = true;
-            if (time.day_of_week == 4 && id(prog_a_wed).state) day_match = true;
-            if (time.day_of_week == 5 && id(prog_a_thu).state) day_match = true;
-            if (time.day_of_week == 6 && id(prog_a_fri).state) day_match = true;
-            if (time.day_of_week == 7 && id(prog_a_sat).state) day_match = true;
-
-            if (day_match && time.hour == (int)id(prog_a_hour).state && time.minute == (int)id(prog_a_min).state) {
-              id(program_a_run).execute();
-            }
-          }
-
-          // --- PROGRAM B CHECK ---
-          if (id(program_b_enabled).state && !id(program_b_running)) {
-            bool day_match = false;
-            if (time.day_of_week == 1 && id(prog_b_sun).state) day_match = true;
-            if (time.day_of_week == 2 && id(prog_b_mon).state) day_match = true;
-            if (time.day_of_week == 3 && id(prog_b_tue).state) day_match = true;
-            if (time.day_of_week == 4 && id(prog_b_wed).state) day_match = true;
-            if (time.day_of_week == 5 && id(prog_b_thu).state) day_match = true;
-            if (time.day_of_week == 6 && id(prog_b_fri).state) day_match = true;
-            if (time.day_of_week == 7 && id(prog_b_sat).state) day_match = true;
-
-            if (day_match && time.hour == (int)id(prog_b_hour).state && time.minute == (int)id(prog_b_min).state) {
-              id(program_b_run).execute();
-            }
-          }
-
-          // --- PROGRAM C CHECK ---
-          if (id(program_c_enabled).state && !id(program_c_running)) {
-            bool day_match = false;
-            if (time.day_of_week == 1 && id(prog_c_sun).state) day_match = true;
-            if (time.day_of_week == 2 && id(prog_c_mon).state) day_match = true;
-            if (time.day_of_week == 3 && id(prog_c_tue).state) day_match = true;
-            if (time.day_of_week == 4 && id(prog_c_wed).state) day_match = true;
-            if (time.day_of_week == 5 && id(prog_c_thu).state) day_match = true;
-            if (time.day_of_week == 6 && id(prog_c_fri).state) day_match = true;
-            if (time.day_of_week == 7 && id(prog_c_sat).state) day_match = true;
-
-            if (day_match && time.hour == (int)id(prog_c_hour).state && time.minute == (int)id(prog_c_min).state) {
-              id(program_c_run).execute();
-            }
-          }
+            - globals.set:
+                id: prog_c_running
+                value: 'false'
+          else:
+            - logger.log: "Program C skipped: system disabled, rain lock active, or cycle already running"

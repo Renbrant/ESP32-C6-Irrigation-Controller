@@ -111,6 +111,10 @@ light:
 
     restore_mode: ALWAYS_OFF
 
+    effects:
+      - pulse:
+
+
 # =========================================================
 # BUTTON
 # =========================================================
@@ -125,6 +129,7 @@ binary_sensor:
 
     pin:
       number: GPIO8
+      ignore_strapping_warning: true
       mode:
         input: true
         pullup: true
