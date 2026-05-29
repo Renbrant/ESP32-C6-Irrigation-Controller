@@ -1,1 +1,1 @@
-python -m esphome run "C:\GitHub\ESP32-C6-Irrigation-Controller\firmware\v3.0\irribrant_v3_0.yaml"
+python -m esphome run "C:\GitHub\ESP32-C6-Irrigation-Controller\firmware\v3.0\irribrant_v3_1.yaml"

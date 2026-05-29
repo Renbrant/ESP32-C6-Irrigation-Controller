@@ -42,15 +42,15 @@ script:
                      !id(rain_lock) &&
                      !id(irribrant_controller).active_valve().has_value() &&
                      (
-                       id(program_a_zone_1_enabled).state ||
-                       id(program_a_zone_2_enabled).state ||
-                       id(program_a_zone_3_enabled).state ||
-                       id(program_a_zone_4_enabled).state ||
-                       id(program_a_zone_5_enabled).state ||
-                       id(program_a_zone_6_enabled).state ||
-                       id(program_a_zone_7_enabled).state ||
-                       id(program_a_zone_8_enabled).state ||
-                       id(program_a_zone_9_enabled).state
+                       (id(zone_1_enabled).state && id(program_a_zone_1_enabled).state) ||
+                       (id(zone_2_enabled).state && id(program_a_zone_2_enabled).state) ||
+                       (id(zone_3_enabled).state && id(program_a_zone_3_enabled).state) ||
+                       (id(zone_4_enabled).state && id(program_a_zone_4_enabled).state) ||
+                       (id(zone_5_enabled).state && id(program_a_zone_5_enabled).state) ||
+                       (id(zone_6_enabled).state && id(program_a_zone_6_enabled).state) ||
+                       (id(zone_7_enabled).state && id(program_a_zone_7_enabled).state) ||
+                       (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) ||
+                       (id(zone_9_enabled).state && id(program_a_zone_9_enabled).state)
                      );
           then:
 
@@ -77,31 +77,31 @@ script:
                   - lambda: |-
                       id(irribrant_controller).clear_queued_valves();
 
-                      if (id(program_a_zone_1_enabled).state) {
+                      if (id(zone_1_enabled).state && id(program_a_zone_1_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 0, id(irribrant_controller).valve_run_duration_adjusted(0));
                       }
-                      if (id(program_a_zone_2_enabled).state) {
+                      if (id(zone_2_enabled).state && id(program_a_zone_2_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 1, id(irribrant_controller).valve_run_duration_adjusted(1));
                       }
-                      if (id(program_a_zone_3_enabled).state) {
+                      if (id(zone_3_enabled).state && id(program_a_zone_3_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 2, id(irribrant_controller).valve_run_duration_adjusted(2));
                       }
-                      if (id(program_a_zone_4_enabled).state) {
+                      if (id(zone_4_enabled).state && id(program_a_zone_4_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 3, id(irribrant_controller).valve_run_duration_adjusted(3));
                       }
-                      if (id(program_a_zone_5_enabled).state) {
+                      if (id(zone_5_enabled).state && id(program_a_zone_5_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 4, id(irribrant_controller).valve_run_duration_adjusted(4));
                       }
-                      if (id(program_a_zone_6_enabled).state) {
+                      if (id(zone_6_enabled).state && id(program_a_zone_6_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 5, id(irribrant_controller).valve_run_duration_adjusted(5));
                       }
-                      if (id(program_a_zone_7_enabled).state) {
+                      if (id(zone_7_enabled).state && id(program_a_zone_7_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 6, id(irribrant_controller).valve_run_duration_adjusted(6));
                       }
-                      if (id(program_a_zone_8_enabled).state) {
+                      if (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 7, id(irribrant_controller).valve_run_duration_adjusted(7));
                       }
-                      if (id(program_a_zone_9_enabled).state) {
+                      if (id(zone_9_enabled).state && id(program_a_zone_9_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 8, id(irribrant_controller).valve_run_duration_adjusted(8));
                       }
 
@@ -148,15 +148,15 @@ script:
                      !id(rain_lock) &&
                      !id(irribrant_controller).active_valve().has_value() &&
                      (
-                       id(program_b_zone_1_enabled).state ||
-                       id(program_b_zone_2_enabled).state ||
-                       id(program_b_zone_3_enabled).state ||
-                       id(program_b_zone_4_enabled).state ||
-                       id(program_b_zone_5_enabled).state ||
-                       id(program_b_zone_6_enabled).state ||
-                       id(program_b_zone_7_enabled).state ||
-                       id(program_b_zone_8_enabled).state ||
-                       id(program_b_zone_9_enabled).state
+                       (id(zone_1_enabled).state && id(program_b_zone_1_enabled).state) ||
+                       (id(zone_2_enabled).state && id(program_b_zone_2_enabled).state) ||
+                       (id(zone_3_enabled).state && id(program_b_zone_3_enabled).state) ||
+                       (id(zone_4_enabled).state && id(program_b_zone_4_enabled).state) ||
+                       (id(zone_5_enabled).state && id(program_b_zone_5_enabled).state) ||
+                       (id(zone_6_enabled).state && id(program_b_zone_6_enabled).state) ||
+                       (id(zone_7_enabled).state && id(program_b_zone_7_enabled).state) ||
+                       (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) ||
+                       (id(zone_9_enabled).state && id(program_b_zone_9_enabled).state)
                      );
           then:
 
@@ -183,31 +183,31 @@ script:
                   - lambda: |-
                       id(irribrant_controller).clear_queued_valves();
 
-                      if (id(program_b_zone_1_enabled).state) {
+                      if (id(zone_1_enabled).state && id(program_b_zone_1_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 0, id(irribrant_controller).valve_run_duration_adjusted(0));
                       }
-                      if (id(program_b_zone_2_enabled).state) {
+                      if (id(zone_2_enabled).state && id(program_b_zone_2_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 1, id(irribrant_controller).valve_run_duration_adjusted(1));
                       }
-                      if (id(program_b_zone_3_enabled).state) {
+                      if (id(zone_3_enabled).state && id(program_b_zone_3_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 2, id(irribrant_controller).valve_run_duration_adjusted(2));
                       }
-                      if (id(program_b_zone_4_enabled).state) {
+                      if (id(zone_4_enabled).state && id(program_b_zone_4_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 3, id(irribrant_controller).valve_run_duration_adjusted(3));
                       }
-                      if (id(program_b_zone_5_enabled).state) {
+                      if (id(zone_5_enabled).state && id(program_b_zone_5_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 4, id(irribrant_controller).valve_run_duration_adjusted(4));
                       }
-                      if (id(program_b_zone_6_enabled).state) {
+                      if (id(zone_6_enabled).state && id(program_b_zone_6_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 5, id(irribrant_controller).valve_run_duration_adjusted(5));
                       }
-                      if (id(program_b_zone_7_enabled).state) {
+                      if (id(zone_7_enabled).state && id(program_b_zone_7_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 6, id(irribrant_controller).valve_run_duration_adjusted(6));
                       }
-                      if (id(program_b_zone_8_enabled).state) {
+                      if (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 7, id(irribrant_controller).valve_run_duration_adjusted(7));
                       }
-                      if (id(program_b_zone_9_enabled).state) {
+                      if (id(zone_9_enabled).state && id(program_b_zone_9_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 8, id(irribrant_controller).valve_run_duration_adjusted(8));
                       }
 
@@ -254,15 +254,15 @@ script:
                      !id(rain_lock) &&
                      !id(irribrant_controller).active_valve().has_value() &&
                      (
-                       id(program_c_zone_1_enabled).state ||
-                       id(program_c_zone_2_enabled).state ||
-                       id(program_c_zone_3_enabled).state ||
-                       id(program_c_zone_4_enabled).state ||
-                       id(program_c_zone_5_enabled).state ||
-                       id(program_c_zone_6_enabled).state ||
-                       id(program_c_zone_7_enabled).state ||
-                       id(program_c_zone_8_enabled).state ||
-                       id(program_c_zone_9_enabled).state
+                       (id(zone_1_enabled).state && id(program_c_zone_1_enabled).state) ||
+                       (id(zone_2_enabled).state && id(program_c_zone_2_enabled).state) ||
+                       (id(zone_3_enabled).state && id(program_c_zone_3_enabled).state) ||
+                       (id(zone_4_enabled).state && id(program_c_zone_4_enabled).state) ||
+                       (id(zone_5_enabled).state && id(program_c_zone_5_enabled).state) ||
+                       (id(zone_6_enabled).state && id(program_c_zone_6_enabled).state) ||
+                       (id(zone_7_enabled).state && id(program_c_zone_7_enabled).state) ||
+                       (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) ||
+                       (id(zone_9_enabled).state && id(program_c_zone_9_enabled).state)
                      );
           then:
 
@@ -289,31 +289,31 @@ script:
                   - lambda: |-
                       id(irribrant_controller).clear_queued_valves();
 
-                      if (id(program_c_zone_1_enabled).state) {
+                      if (id(zone_1_enabled).state && id(program_c_zone_1_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 0, id(irribrant_controller).valve_run_duration_adjusted(0));
                       }
-                      if (id(program_c_zone_2_enabled).state) {
+                      if (id(zone_2_enabled).state && id(program_c_zone_2_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 1, id(irribrant_controller).valve_run_duration_adjusted(1));
                       }
-                      if (id(program_c_zone_3_enabled).state) {
+                      if (id(zone_3_enabled).state && id(program_c_zone_3_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 2, id(irribrant_controller).valve_run_duration_adjusted(2));
                       }
-                      if (id(program_c_zone_4_enabled).state) {
+                      if (id(zone_4_enabled).state && id(program_c_zone_4_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 3, id(irribrant_controller).valve_run_duration_adjusted(3));
                       }
-                      if (id(program_c_zone_5_enabled).state) {
+                      if (id(zone_5_enabled).state && id(program_c_zone_5_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 4, id(irribrant_controller).valve_run_duration_adjusted(4));
                       }
-                      if (id(program_c_zone_6_enabled).state) {
+                      if (id(zone_6_enabled).state && id(program_c_zone_6_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 5, id(irribrant_controller).valve_run_duration_adjusted(5));
                       }
-                      if (id(program_c_zone_7_enabled).state) {
+                      if (id(zone_7_enabled).state && id(program_c_zone_7_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 6, id(irribrant_controller).valve_run_duration_adjusted(6));
                       }
-                      if (id(program_c_zone_8_enabled).state) {
+                      if (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 7, id(irribrant_controller).valve_run_duration_adjusted(7));
                       }
-                      if (id(program_c_zone_9_enabled).state) {
+                      if (id(zone_9_enabled).state && id(program_c_zone_9_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 8, id(irribrant_controller).valve_run_duration_adjusted(8));
                       }
 

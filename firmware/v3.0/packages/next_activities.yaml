@@ -93,35 +93,35 @@ text_sensor:
         uint32_t duration = 0;
 
         if (program == 'A') {
-          if (id(program_a_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
-          if (id(program_a_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
-          if (id(program_a_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
-          if (id(program_a_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
-          if (id(program_a_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
-          if (id(program_a_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
-          if (id(program_a_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
-          if (id(program_a_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
-          if (id(program_a_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
+          if (id(zone_1_enabled).state && id(program_a_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
+          if (id(zone_2_enabled).state && id(program_a_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
+          if (id(zone_3_enabled).state && id(program_a_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
+          if (id(zone_4_enabled).state && id(program_a_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
+          if (id(zone_5_enabled).state && id(program_a_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
+          if (id(zone_6_enabled).state && id(program_a_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
+          if (id(zone_7_enabled).state && id(program_a_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
+          if (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
+          if (id(zone_9_enabled).state && id(program_a_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
         } else if (program == 'B') {
-          if (id(program_b_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
-          if (id(program_b_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
-          if (id(program_b_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
-          if (id(program_b_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
-          if (id(program_b_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
-          if (id(program_b_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
-          if (id(program_b_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
-          if (id(program_b_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
-          if (id(program_b_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
+          if (id(zone_1_enabled).state && id(program_b_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
+          if (id(zone_2_enabled).state && id(program_b_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
+          if (id(zone_3_enabled).state && id(program_b_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
+          if (id(zone_4_enabled).state && id(program_b_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
+          if (id(zone_5_enabled).state && id(program_b_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
+          if (id(zone_6_enabled).state && id(program_b_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
+          if (id(zone_7_enabled).state && id(program_b_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
+          if (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
+          if (id(zone_9_enabled).state && id(program_b_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
         } else if (program == 'C') {
-          if (id(program_c_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
-          if (id(program_c_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
-          if (id(program_c_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
-          if (id(program_c_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
-          if (id(program_c_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
-          if (id(program_c_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
-          if (id(program_c_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
-          if (id(program_c_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
-          if (id(program_c_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
+          if (id(zone_1_enabled).state && id(program_c_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
+          if (id(zone_2_enabled).state && id(program_c_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
+          if (id(zone_3_enabled).state && id(program_c_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
+          if (id(zone_4_enabled).state && id(program_c_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
+          if (id(zone_5_enabled).state && id(program_c_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
+          if (id(zone_6_enabled).state && id(program_c_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
+          if (id(zone_7_enabled).state && id(program_c_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
+          if (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
+          if (id(zone_9_enabled).state && id(program_c_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
         }
 
         int repeats = (int) id(cycle_repeat_count).state;
@@ -358,35 +358,35 @@ text_sensor:
         uint32_t duration = 0;
 
         if (program == 'A') {
-          if (id(program_a_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
-          if (id(program_a_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
-          if (id(program_a_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
-          if (id(program_a_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
-          if (id(program_a_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
-          if (id(program_a_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
-          if (id(program_a_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
-          if (id(program_a_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
-          if (id(program_a_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
+          if (id(zone_1_enabled).state && id(program_a_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
+          if (id(zone_2_enabled).state && id(program_a_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
+          if (id(zone_3_enabled).state && id(program_a_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
+          if (id(zone_4_enabled).state && id(program_a_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
+          if (id(zone_5_enabled).state && id(program_a_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
+          if (id(zone_6_enabled).state && id(program_a_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
+          if (id(zone_7_enabled).state && id(program_a_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
+          if (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
+          if (id(zone_9_enabled).state && id(program_a_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
         } else if (program == 'B') {
-          if (id(program_b_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
-          if (id(program_b_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
-          if (id(program_b_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
-          if (id(program_b_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
-          if (id(program_b_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
-          if (id(program_b_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
-          if (id(program_b_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
-          if (id(program_b_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
-          if (id(program_b_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
+          if (id(zone_1_enabled).state && id(program_b_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
+          if (id(zone_2_enabled).state && id(program_b_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
+          if (id(zone_3_enabled).state && id(program_b_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
+          if (id(zone_4_enabled).state && id(program_b_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
+          if (id(zone_5_enabled).state && id(program_b_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
+          if (id(zone_6_enabled).state && id(program_b_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
+          if (id(zone_7_enabled).state && id(program_b_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
+          if (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
+          if (id(zone_9_enabled).state && id(program_b_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
         } else if (program == 'C') {
-          if (id(program_c_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
-          if (id(program_c_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
-          if (id(program_c_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
-          if (id(program_c_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
-          if (id(program_c_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
-          if (id(program_c_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
-          if (id(program_c_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
-          if (id(program_c_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
-          if (id(program_c_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
+          if (id(zone_1_enabled).state && id(program_c_zone_1_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(0);
+          if (id(zone_2_enabled).state && id(program_c_zone_2_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(1);
+          if (id(zone_3_enabled).state && id(program_c_zone_3_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(2);
+          if (id(zone_4_enabled).state && id(program_c_zone_4_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(3);
+          if (id(zone_5_enabled).state && id(program_c_zone_5_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(4);
+          if (id(zone_6_enabled).state && id(program_c_zone_6_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(5);
+          if (id(zone_7_enabled).state && id(program_c_zone_7_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(6);
+          if (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(7);
+          if (id(zone_9_enabled).state && id(program_c_zone_9_enabled).state) duration += id(irribrant_controller).valve_run_duration_adjusted(8);
         }
 
         int repeats = (int) id(cycle_repeat_count).state;

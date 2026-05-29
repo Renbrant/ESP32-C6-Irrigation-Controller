@@ -107,6 +107,48 @@ select:
     initial_option: "Home Assistant"
 
 # =========================================================
+# DASHBOARD CONTROLS
+# =========================================================
+
+switch:
+
+  - platform: template
+    id: show_zone_settings
+    name: "Show Zone Settings"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: show_rain_settings
+    name: "Show Rain Settings"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: show_program_a_settings
+    name: "Show Program A Settings"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: show_program_b_settings
+    name: "Show Program B Settings"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: show_program_c_settings
+    name: "Show Program C Settings"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: show_history
+    name: "Show History"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+# =========================================================
 # INTERVALS
 # =========================================================
 

@@ -1,5 +1,5 @@
 # =========================================================
-# irriBRANT v3.0
+# irriBRANT v3.1
 # irrigation.yaml
 # =========================================================
 
@@ -157,7 +157,13 @@ sprinkler:
     valves:
       - valve_switch: "Zone 1 Valve"
         valve_switch_id: zone_1_output
-        enable_switch: "Enable Zone 1"
+        enable_switch:
+          name: "Enable Zone 1"
+          id: zone_1_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_1_enabled
+            - switch.turn_off: program_b_zone_1_enabled
+            - switch.turn_off: program_c_zone_1_enabled
         run_duration_number:
           id: zone_1_duration
           name: "Zone 1 Duration"
@@ -170,7 +176,13 @@ sprinkler:
 
       - valve_switch: "Zone 2 Valve"
         valve_switch_id: zone_2_output
-        enable_switch: "Enable Zone 2"
+        enable_switch:
+          name: "Enable Zone 2"
+          id: zone_2_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_2_enabled
+            - switch.turn_off: program_b_zone_2_enabled
+            - switch.turn_off: program_c_zone_2_enabled
         run_duration_number:
           id: zone_2_duration
           name: "Zone 2 Duration"
@@ -183,7 +195,13 @@ sprinkler:
 
       - valve_switch: "Zone 3 Valve"
         valve_switch_id: zone_3_output
-        enable_switch: "Enable Zone 3"
+        enable_switch:
+          name: "Enable Zone 3"
+          id: zone_3_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_3_enabled
+            - switch.turn_off: program_b_zone_3_enabled
+            - switch.turn_off: program_c_zone_3_enabled
         run_duration_number:
           id: zone_3_duration
           name: "Zone 3 Duration"
@@ -196,7 +214,13 @@ sprinkler:
 
       - valve_switch: "Zone 4 Valve"
         valve_switch_id: zone_4_output
-        enable_switch: "Enable Zone 4"
+        enable_switch:
+          name: "Enable Zone 4"
+          id: zone_4_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_4_enabled
+            - switch.turn_off: program_b_zone_4_enabled
+            - switch.turn_off: program_c_zone_4_enabled
         run_duration_number:
           id: zone_4_duration
           name: "Zone 4 Duration"
@@ -209,7 +233,13 @@ sprinkler:
 
       - valve_switch: "Zone 5 Valve"
         valve_switch_id: zone_5_output
-        enable_switch: "Enable Zone 5"
+        enable_switch:
+          name: "Enable Zone 5"
+          id: zone_5_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_5_enabled
+            - switch.turn_off: program_b_zone_5_enabled
+            - switch.turn_off: program_c_zone_5_enabled
         run_duration_number:
           id: zone_5_duration
           name: "Zone 5 Duration"
@@ -222,7 +252,13 @@ sprinkler:
 
       - valve_switch: "Zone 6 Valve"
         valve_switch_id: zone_6_output
-        enable_switch: "Enable Zone 6"
+        enable_switch:
+          name: "Enable Zone 6"
+          id: zone_6_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_6_enabled
+            - switch.turn_off: program_b_zone_6_enabled
+            - switch.turn_off: program_c_zone_6_enabled
         run_duration_number:
           id: zone_6_duration
           name: "Zone 6 Duration"
@@ -235,7 +271,13 @@ sprinkler:
 
       - valve_switch: "Zone 7 Valve"
         valve_switch_id: zone_7_output
-        enable_switch: "Enable Zone 7"
+        enable_switch:
+          name: "Enable Zone 7"
+          id: zone_7_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_7_enabled
+            - switch.turn_off: program_b_zone_7_enabled
+            - switch.turn_off: program_c_zone_7_enabled
         run_duration_number:
           id: zone_7_duration
           name: "Zone 7 Duration"
@@ -248,7 +290,13 @@ sprinkler:
 
       - valve_switch: "Zone 8 Valve"
         valve_switch_id: zone_8_output
-        enable_switch: "Enable Zone 8"
+        enable_switch:
+          name: "Enable Zone 8"
+          id: zone_8_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_8_enabled
+            - switch.turn_off: program_b_zone_8_enabled
+            - switch.turn_off: program_c_zone_8_enabled
         run_duration_number:
           id: zone_8_duration
           name: "Zone 8 Duration"
@@ -261,7 +309,13 @@ sprinkler:
 
       - valve_switch: "Zone 9 Valve"
         valve_switch_id: zone_9_output
-        enable_switch: "Enable Zone 9"
+        enable_switch:
+          name: "Enable Zone 9"
+          id: zone_9_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_9_enabled
+            - switch.turn_off: program_b_zone_9_enabled
+            - switch.turn_off: program_c_zone_9_enabled
         run_duration_number:
           id: zone_9_duration
           name: "Zone 9 Duration"
