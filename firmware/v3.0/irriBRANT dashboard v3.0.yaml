@@ -203,54 +203,63 @@ sections:
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_2_valve
             name: Zone 2
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_3_valve
             name: Zone 3
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_4_valve
             name: Zone 4
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_5_valve
             name: Zone 5
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_6_valve
             name: Zone 6
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_7_valve
             name: Zone 7
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_8_valve
             name: Zone 8
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
           - type: custom:mushroom-entity-card
             entity: switch.irribrant_pro_zone_9_valve
             name: Zone 9
             icon: mdi:sprinkler-variant
             tap_action:
               action: toggle
+            secondary_info: last-changed
   - type: grid
     column_span: 4
     cards:
