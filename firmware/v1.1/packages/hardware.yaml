@@ -25,14 +25,14 @@ esp32:
 logger:
 
 api:
-  encryption:
-    key: !secret api_encryption_key
+#  encryption:
+#    key: !secret api_encryption_key
 
   reboot_timeout: 0s
 
 ota:
-  - platform: esphome
-    password: !secret ota_password
+#  - platform: esphome
+#    password: !secret ota_password
 
 wifi:
   ssid: !secret wifi_ssid
@@ -42,7 +42,7 @@ wifi:
 
   ap:
     ssid: "irriBRANT Fallback"
-    password: !secret fallback_ap_password
+    password: "12345678"
 
   on_connect:
     then:
