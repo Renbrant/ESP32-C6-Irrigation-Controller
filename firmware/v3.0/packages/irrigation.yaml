@@ -1,0 +1,273 @@
+# =========================================================
+# irriBRANT v3.0
+# irrigation.yaml
+# =========================================================
+
+# =========================================================
+# RAIN SETTINGS
+# =========================================================
+number:
+  - platform: template
+    id: rain_delay_hours
+    name: "Rain Delay Hours"
+    optimistic: true
+    min_value: 0
+    max_value: 240
+    step: 1
+    initial_value: 0
+    restore_value: true
+
+  - platform: template
+    id: rain_threshold
+    name: "Rain Intensity Block Threshold"
+    optimistic: true
+    min_value: 0
+    max_value: 100
+    step: 1
+    initial_value: 20
+    restore_value: true
+
+  - platform: template
+    id: cycle_repeat_count
+    name: "Cycle Repeat Count"
+    optimistic: true
+    min_value: 1
+    max_value: 5
+    step: 1
+    initial_value: 1
+    restore_value: true
+
+  - platform: template
+    id: cycle_repeat_delay
+    name: "Cycle Repeat Delay"
+    optimistic: true
+    min_value: 0
+    max_value: 120
+    step: 1
+    initial_value: 20
+    restore_value: true
+    unit_of_measurement: "min"
+
+# =========================================================
+# PHYSICAL OUTPUTS & MASTER SWITCH
+# =========================================================
+switch:
+  # --- MASTER SYSTEM ENABLE SWITCH ---
+  # Atua como um "Disjuntor Lógico". Se desligado, corta a rega imediatamente
+  # e o painel de automação ignorará os agendamentos.
+  - platform: template
+    id: main_irrigation_switch
+    name: "Main Irrigation System"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_off_action:
+      - switch.turn_off: sprinkler_active_cycle
+
+  # ZONE 1 (Mapped to MCP23017 - GPB0)
+  - platform: gpio
+    id: zone_1_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 8  
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 2 (Botão 9 -> Z2)
+  - platform: gpio
+    id: zone_2_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 7  
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 3 (Botão 8 -> Z3)
+  - platform: gpio
+    id: zone_3_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 6
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 4 (Botão 7 -> Z4)
+  - platform: gpio
+    id: zone_4_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 5
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 5 (Botão 6 -> Z5)
+  - platform: gpio
+    id: zone_5_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 4
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 6 (Botão 5 -> Z6)
+  - platform: gpio
+    id: zone_6_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 3
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 7 (Botão 4 -> Z7)
+  - platform: gpio
+    id: zone_7_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 2
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 8 (Botão 3 -> Z8)
+  - platform: gpio
+    id: zone_8_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 1
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 9 (Botão 2 -> Z9)
+  - platform: gpio
+    id: zone_9_output
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 0 
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+# =========================================================
+# IRRIGATION CONTROLLER
+# =========================================================
+sprinkler:
+  - id: irribrant_controller
+    main_switch:
+      name: "Active Cycle"
+      id: sprinkler_active_cycle
+    auto_advance_switch: "Auto Advance Zones"
+    
+    valves:
+      - valve_switch: "Zone 1 Valve"
+        valve_switch_id: zone_1_output
+        enable_switch: "Enable Zone 1"
+        run_duration_number:
+          id: zone_1_duration
+          name: "Zone 1 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 2 Valve"
+        valve_switch_id: zone_2_output
+        enable_switch: "Enable Zone 2"
+        run_duration_number:
+          id: zone_2_duration
+          name: "Zone 2 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 3 Valve"
+        valve_switch_id: zone_3_output
+        enable_switch: "Enable Zone 3"
+        run_duration_number:
+          id: zone_3_duration
+          name: "Zone 3 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 4 Valve"
+        valve_switch_id: zone_4_output
+        enable_switch: "Enable Zone 4"
+        run_duration_number:
+          id: zone_4_duration
+          name: "Zone 4 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 5 Valve"
+        valve_switch_id: zone_5_output
+        enable_switch: "Enable Zone 5"
+        run_duration_number:
+          id: zone_5_duration
+          name: "Zone 5 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 6 Valve"
+        valve_switch_id: zone_6_output
+        enable_switch: "Enable Zone 6"
+        run_duration_number:
+          id: zone_6_duration
+          name: "Zone 6 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 7 Valve"
+        valve_switch_id: zone_7_output
+        enable_switch: "Enable Zone 7"
+        run_duration_number:
+          id: zone_7_duration
+          name: "Zone 7 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 8 Valve"
+        valve_switch_id: zone_8_output
+        enable_switch: "Enable Zone 8"
+        run_duration_number:
+          id: zone_8_duration
+          name: "Zone 8 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 9 Valve"
+        valve_switch_id: zone_9_output
+        enable_switch: "Enable Zone 9"
+        run_duration_number:
+          id: zone_9_duration
+          name: "Zone 9 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"

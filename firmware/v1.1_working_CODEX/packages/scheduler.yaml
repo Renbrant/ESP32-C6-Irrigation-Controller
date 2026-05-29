@@ -1,0 +1,702 @@
+# =========================================================
+# SCHEDULER
+# =========================================================
+
+# =========================================================
+# GLOBALS
+# =========================================================
+
+globals:
+
+  - id: rain_delay_until
+    type: int64_t
+    restore_value: yes
+    initial_value: '0'
+
+  - id: last_scheduler_minute
+    type: int
+    restore_value: no
+    initial_value: '-1'
+
+# =========================================================
+# PROGRAM SCHEDULE SETTINGS
+# =========================================================
+
+switch:
+
+  - platform: template
+    id: program_a_schedule_enabled
+    name: "Program A Schedule Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_schedule_enabled
+    name: "Program B Schedule Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_schedule_enabled
+    name: "Program C Schedule Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_a_zone_1_enabled
+    name: "Program A Zone 1 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_2_enabled
+    name: "Program A Zone 2 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_3_enabled
+    name: "Program A Zone 3 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_4_enabled
+    name: "Program A Zone 4 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_5_enabled
+    name: "Program A Zone 5 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_6_enabled
+    name: "Program A Zone 6 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_7_enabled
+    name: "Program A Zone 7 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_8_enabled
+    name: "Program A Zone 8 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_zone_9_enabled
+    name: "Program A Zone 9 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_1_enabled
+    name: "Program B Zone 1 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_2_enabled
+    name: "Program B Zone 2 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_3_enabled
+    name: "Program B Zone 3 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_4_enabled
+    name: "Program B Zone 4 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_5_enabled
+    name: "Program B Zone 5 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_6_enabled
+    name: "Program B Zone 6 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_7_enabled
+    name: "Program B Zone 7 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_8_enabled
+    name: "Program B Zone 8 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_b_zone_9_enabled
+    name: "Program B Zone 9 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_1_enabled
+    name: "Program C Zone 1 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_2_enabled
+    name: "Program C Zone 2 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_3_enabled
+    name: "Program C Zone 3 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_4_enabled
+    name: "Program C Zone 4 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_5_enabled
+    name: "Program C Zone 5 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_6_enabled
+    name: "Program C Zone 6 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_7_enabled
+    name: "Program C Zone 7 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_8_enabled
+    name: "Program C Zone 8 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_c_zone_9_enabled
+    name: "Program C Zone 9 Enabled"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+
+  - platform: template
+    id: program_a_sunday
+    name: "Program A Sunday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_a_monday
+    name: "Program A Monday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_a_tuesday
+    name: "Program A Tuesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_a_wednesday
+    name: "Program A Wednesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_a_thursday
+    name: "Program A Thursday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_a_friday
+    name: "Program A Friday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_a_saturday
+    name: "Program A Saturday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_sunday
+    name: "Program B Sunday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_monday
+    name: "Program B Monday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_tuesday
+    name: "Program B Tuesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_wednesday
+    name: "Program B Wednesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_thursday
+    name: "Program B Thursday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_friday
+    name: "Program B Friday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_b_saturday
+    name: "Program B Saturday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_sunday
+    name: "Program C Sunday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_monday
+    name: "Program C Monday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_tuesday
+    name: "Program C Tuesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_wednesday
+    name: "Program C Wednesday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_thursday
+    name: "Program C Thursday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_friday
+    name: "Program C Friday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+  - platform: template
+    id: program_c_saturday
+    name: "Program C Saturday"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+
+select:
+
+  - platform: template
+    id: program_a_frequency
+    name: "Program A Frequency"
+    optimistic: true
+    restore_value: true
+    options:
+      - "Selected Weekdays"
+      - "Daily"
+      - "Every 2 Days"
+      - "Every 3 Days"
+    initial_option: "Daily"
+
+  - platform: template
+    id: program_b_frequency
+    name: "Program B Frequency"
+    optimistic: true
+    restore_value: true
+    options:
+      - "Selected Weekdays"
+      - "Daily"
+      - "Every 2 Days"
+      - "Every 3 Days"
+    initial_option: "Daily"
+
+  - platform: template
+    id: program_c_frequency
+    name: "Program C Frequency"
+    optimistic: true
+    restore_value: true
+    options:
+      - "Selected Weekdays"
+      - "Daily"
+      - "Every 2 Days"
+      - "Every 3 Days"
+    initial_option: "Daily"
+
+number:
+
+  - platform: template
+    id: program_a_hour
+    name: "Program A Hour"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 23
+    step: 1
+    initial_value: 6
+
+  - platform: template
+    id: program_a_minute
+    name: "Program A Minute"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 59
+    step: 1
+    initial_value: 0
+
+  - platform: template
+    id: program_b_hour
+    name: "Program B Hour"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 23
+    step: 1
+    initial_value: 18
+
+  - platform: template
+    id: program_b_minute
+    name: "Program B Minute"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 59
+    step: 1
+    initial_value: 0
+
+  - platform: template
+    id: program_c_hour
+    name: "Program C Hour"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 23
+    step: 1
+    initial_value: 5
+
+  - platform: template
+    id: program_c_minute
+    name: "Program C Minute"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 59
+    step: 1
+    initial_value: 30
+
+# =========================================================
+# MANUAL ACTIONS
+# =========================================================
+
+button:
+
+  - platform: template
+    name: "Run Program A"
+    on_press:
+      - script.execute: program_a_run
+
+  - platform: template
+    name: "Run Program B"
+    on_press:
+      - script.execute: program_b_run
+
+  - platform: template
+    name: "Run Program C"
+    on_press:
+      - script.execute: program_c_run
+
+  - platform: template
+    name: "Apply Rain Delay"
+    on_press:
+      - lambda: |-
+          auto now = id(ha_time).now();
+
+          if (!now.is_valid()) {
+            ESP_LOGW("scheduler", "Cannot apply rain delay: Home Assistant time is not valid");
+            return;
+          }
+
+          if (id(rain_delay_hours).state <= 0) {
+            id(rain_delay_until) = 0;
+            id(rain_lock) = false;
+            ESP_LOGI("scheduler", "Rain delay cleared");
+            return;
+          }
+
+          id(rain_delay_until) = now.timestamp + (int64_t) (id(rain_delay_hours).state * 3600);
+          id(rain_lock) = true;
+          ESP_LOGI("scheduler", "Rain delay applied for %.0f hour(s)", id(rain_delay_hours).state);
+
+  - platform: template
+    name: "Clear Rain Delay"
+    on_press:
+      - globals.set:
+          id: rain_delay_until
+          value: '0'
+      - globals.set:
+          id: rain_lock
+          value: 'false'
+
+# =========================================================
+# TIME
+# =========================================================
+
+time:
+
+  - platform: homeassistant
+    id: ha_time
+
+# =========================================================
+# WEATHER
+# =========================================================
+
+sensor:
+
+  - platform: homeassistant
+    id: rain_intensity
+    entity_id: sensor.openweathermap_rain_intensity
+
+    filters:
+      - sliding_window_moving_average:
+          window_size: 5
+          send_every: 1
+
+# =========================================================
+# SCRIPTS
+# =========================================================
+
+script:
+
+  - id: led_boot_animation
+
+    then:
+
+      - light.turn_on:
+          id: status_led
+          red: 1.0
+          green: 1.0
+          blue: 1.0
+          brightness: 100%
+
+      - delay: 2s
+
+      - light.turn_off: status_led
+
+  - id: refresh_rain_lock
+    mode: restart
+
+    then:
+
+      - lambda: |-
+          auto now = id(ha_time).now();
+          const bool rain_disabled = id(rain_source).current_option() == "Disabled";
+
+          if (rain_disabled) {
+            id(rain_delay_until) = 0;
+            id(rain_lock) = false;
+            return;
+          }
+
+          bool delay_active = false;
+
+          if (now.is_valid()) {
+            if (id(rain_delay_until) > now.timestamp) {
+              delay_active = true;
+            } else if (id(rain_delay_until) != 0) {
+              id(rain_delay_until) = 0;
+            }
+          }
+
+          bool rain_active = false;
+
+          if (id(rain_source).current_option() == "Home Assistant" &&
+              id(rain_intensity).has_state() &&
+              id(rain_intensity).state > 0 &&
+              id(rain_intensity).state >= id(rain_threshold).state) {
+            rain_active = true;
+
+            if (now.is_valid() && id(rain_delay_hours).state > 0) {
+              id(rain_delay_until) = now.timestamp + (int64_t) (id(rain_delay_hours).state * 3600);
+              delay_active = true;
+            }
+          }
+
+          id(rain_lock) = delay_active || rain_active;
+
+  - id: scheduler_tick
+    mode: single
+
+    then:
+
+      - script.execute: refresh_rain_lock
+
+      - lambda: |-
+          auto now = id(ha_time).now();
+
+          if (!now.is_valid()) {
+            return;
+          }
+
+          const int current_minute = (now.hour * 60) + now.minute;
+          const int date_index = (now.year * 366) + now.day_of_year;
+
+          if (id(last_scheduler_minute) == current_minute) {
+            return;
+          }
+
+          auto program_a_day_allowed = [&]() -> bool {
+            const auto frequency = id(program_a_frequency).current_option();
+
+            if (frequency == "Daily") {
+              return true;
+            }
+
+            if (frequency == "Every 2 Days") {
+              return (date_index % 2) == 0;
+            }
+
+            if (frequency == "Every 3 Days") {
+              return (date_index % 3) == 0;
+            }
+
+            switch (now.day_of_week) {
+              case 1: return id(program_a_sunday).state;
+              case 2: return id(program_a_monday).state;
+              case 3: return id(program_a_tuesday).state;
+              case 4: return id(program_a_wednesday).state;
+              case 5: return id(program_a_thursday).state;
+              case 6: return id(program_a_friday).state;
+              case 7: return id(program_a_saturday).state;
+              default: return false;
+            }
+          }();
+
+          auto program_b_day_allowed = [&]() -> bool {
+            const auto frequency = id(program_b_frequency).current_option();
+
+            if (frequency == "Daily") {
+              return true;
+            }
+
+            if (frequency == "Every 2 Days") {
+              return (date_index % 2) == 0;
+            }
+
+            if (frequency == "Every 3 Days") {
+              return (date_index % 3) == 0;
+            }
+
+            switch (now.day_of_week) {
+              case 1: return id(program_b_sunday).state;
+              case 2: return id(program_b_monday).state;
+              case 3: return id(program_b_tuesday).state;
+              case 4: return id(program_b_wednesday).state;
+              case 5: return id(program_b_thursday).state;
+              case 6: return id(program_b_friday).state;
+              case 7: return id(program_b_saturday).state;
+              default: return false;
+            }
+          }();
+
+          auto program_c_day_allowed = [&]() -> bool {
+            const auto frequency = id(program_c_frequency).current_option();
+
+            if (frequency == "Daily") {
+              return true;
+            }
+
+            if (frequency == "Every 2 Days") {
+              return (date_index % 2) == 0;
+            }
+
+            if (frequency == "Every 3 Days") {
+              return (date_index % 3) == 0;
+            }
+
+            switch (now.day_of_week) {
+              case 1: return id(program_c_sunday).state;
+              case 2: return id(program_c_monday).state;
+              case 3: return id(program_c_tuesday).state;
+              case 4: return id(program_c_wednesday).state;
+              case 5: return id(program_c_thursday).state;
+              case 6: return id(program_c_friday).state;
+              case 7: return id(program_c_saturday).state;
+              default: return false;
+            }
+          }();
+
+          if (id(program_a_schedule_enabled).state &&
+              program_a_day_allowed &&
+              now.hour == (int) id(program_a_hour).state &&
+              now.minute == (int) id(program_a_minute).state) {
+            id(last_scheduler_minute) = current_minute;
+            id(program_a_run).execute();
+          } else if (id(program_b_schedule_enabled).state &&
+                     program_b_day_allowed &&
+                     now.hour == (int) id(program_b_hour).state &&
+                     now.minute == (int) id(program_b_minute).state) {
+            id(last_scheduler_minute) = current_minute;
+            id(program_b_run).execute();
+          } else if (id(program_c_schedule_enabled).state &&
+                     program_c_day_allowed &&
+                     now.hour == (int) id(program_c_hour).state &&
+                     now.minute == (int) id(program_c_minute).state) {
+            id(last_scheduler_minute) = current_minute;
+            id(program_c_run).execute();
+          }
+
+# =========================================================
+# INTERVALS
+# =========================================================
+
+interval:
+
+  - interval: 30s
+    then:
+      - script.execute: scheduler_tick

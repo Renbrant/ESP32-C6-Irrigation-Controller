@@ -76,6 +76,16 @@ binary_sensor:
              id(program_b_schedule_enabled).state ||
              id(program_c_schedule_enabled).state;
 
+  - platform: template
+    id: rain_lock_status
+    name: "Rain Lock"
+
+    lambda: |-
+      return id(rain_lock);
+
+  - platform: status
+    id: wifi_status
+    name: "WiFi Status"
 # =========================================================
 # SELECTS
 # =========================================================
@@ -102,7 +112,7 @@ select:
 
 interval:
 
-  - interval: 1s
+  - interval: 200ms
     then:
       - script.execute: update_status_led
 
@@ -121,16 +131,55 @@ script:
 
           auto call = id(status_led)->turn_on();
 
+          int active_zone = 0;
+
+          if (id(zone_1_output).state) {
+            active_zone = 1;
+          } else if (id(zone_2_output).state) {
+            active_zone = 2;
+          } else if (id(zone_3_output).state) {
+            active_zone = 3;
+          } else if (id(zone_4_output).state) {
+            active_zone = 4;
+          } else if (id(zone_5_output).state) {
+            active_zone = 5;
+          } else if (id(zone_6_output).state) {
+            active_zone = 6;
+          } else if (id(zone_7_output).state) {
+            active_zone = 7;
+          } else if (id(zone_8_output).state) {
+            active_zone = 8;
+          } else if (id(zone_9_output).state) {
+            active_zone = 9;
+          }
+
           // ------------------------------------------------
-          // RED SOLID = NO SCHEDULE
+          // BLUE BLINKS = ACTIVE ZONE NUMBER
+          // GAP COLOR = GREEN WHEN CONNECTED, RED WHEN AUTONOMOUS
           // ------------------------------------------------
 
-          if (!id(system_has_schedule).state) {
+          if (active_zone > 0) {
 
-            call.set_red(1.0);
-            call.set_green(0.0);
-            call.set_blue(0.0);
-            call.set_brightness(1.0);
+            static int previous_zone = 0;
+            static int zone_phase = 0;
+
+            if (active_zone != previous_zone) {
+              previous_zone = active_zone;
+              zone_phase = 0;
+            }
+
+            const int blink_ticks = active_zone * 2;
+            const int pause_ticks = 10;
+            const bool led_on = zone_phase < blink_ticks && (zone_phase % 2) == 0;
+            const bool connected = wifi::global_wifi_component->is_connected() && id(ha_connected).state;
+
+            zone_phase = (zone_phase + 1) % (blink_ticks + pause_ticks);
+
+            call.set_transition_length(0);
+            call.set_red(led_on ? 0.0 : (connected ? 0.0 : 1.0));
+            call.set_green(led_on ? 0.0 : (connected ? 1.0 : 0.0));
+            call.set_blue(led_on ? 1.0 : 0.0);
+            call.set_brightness(led_on ? 1.0 : 0.35);
 
           }
 
@@ -138,23 +187,17 @@ script:
           // RED BLINK = NO WIFI
           // ------------------------------------------------
 
-          else if (!WiFi.isConnected()) {
+          else if (!wifi::global_wifi_component->is_connected()) {
 
-            static bool blink_red = false;
-            blink_red = !blink_red;
+            static int no_wifi_phase = 0;
+            const bool led_on = no_wifi_phase < 3;
+            no_wifi_phase = (no_wifi_phase + 1) % 6;
 
-            if (blink_red) {
-
-              call.set_red(1.0);
-              call.set_green(0.0);
-              call.set_blue(0.0);
-              call.set_brightness(0.3);
-
-            } else {
-
-              call.set_brightness(0.0);
-
-            }
+            call.set_transition_length(0);
+            call.set_red(1.0);
+            call.set_green(0.0);
+            call.set_blue(0.0);
+            call.set_brightness(led_on ? 0.5 : 0.0);
 
           }
 
@@ -164,6 +207,7 @@ script:
 
           else if (id(rain_lock)) {
 
+            call.set_transition_length(0);
             call.set_red(1.0);
             call.set_green(1.0);
             call.set_blue(0.0);
@@ -172,49 +216,41 @@ script:
           }
 
           // ------------------------------------------------
-          // BLUE = VALVE ACTIVE
+          // RED/GREEN ALTERNATING = CONNECTED BUT NO SCHEDULE
           // ------------------------------------------------
 
-          else if (
-              id(zone_1_output).state ||
-              id(zone_2_output).state ||
-              id(zone_3_output).state ||
-              id(zone_4_output).state ||
-              id(zone_5_output).state ||
-              id(zone_6_output).state ||
-              id(zone_7_output).state ||
-              id(zone_8_output).state ||
-              id(zone_9_output).state
-          ) {
+          else if (!id(system_has_schedule).state) {
 
-            call.set_red(0.0);
-            call.set_green(0.0);
-            call.set_blue(1.0);
-            call.set_brightness(1.0);
+            static bool no_schedule_red = false;
+            no_schedule_red = !no_schedule_red;
+
+            call.set_transition_length(0);
+            call.set_red(no_schedule_red ? 1.0 : 0.0);
+            call.set_green(no_schedule_red ? 0.0 : 1.0);
+            call.set_blue(0.0);
+            call.set_brightness(0.5);
 
           }
 
           // ------------------------------------------------
-          // GREEN BLINK = NORMAL
+          // GREEN PULSE = WIFI CONNECTED AND IDLE
           // ------------------------------------------------
 
           else {
 
-            static bool blink_green = false;
-            blink_green = !blink_green;
+            static int green_phase = 0;
+            const float brightness_steps[] = {
+              0.02, 0.06, 0.12, 0.22, 0.35,
+              0.50, 0.35, 0.22, 0.12, 0.06
+            };
 
-            if (blink_green) {
+            call.set_transition_length(200);
+            call.set_red(0.0);
+            call.set_green(1.0);
+            call.set_blue(0.0);
+            call.set_brightness(brightness_steps[green_phase]);
 
-              call.set_red(0.0);
-              call.set_green(1.0);
-              call.set_blue(0.0);
-              call.set_brightness(0.3);
-
-            } else {
-
-              call.set_brightness(0.0);
-
-            }
+            green_phase = (green_phase + 1) % 10;
 
           }
 

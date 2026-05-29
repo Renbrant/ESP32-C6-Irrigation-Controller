@@ -1,0 +1,16 @@
+# Command to install
+# WIN + R
+# python -m esphome run "X:\ESP32-C6-Irrigation-Controller\firmware\v1.1\irribrant_v1_1.yaml"
+
+# =========================================================
+# irriBRANT PRO v1.1
+# =========================================================
+
+packages:
+
+  hardware: !include packages/hardware.yaml
+  irrigation: !include packages/irrigation.yaml
+  scheduler: !include packages/scheduler.yaml
+  next_activities: !include packages/next_activities.yaml
+  programs: !include packages/programs.yaml
+  diagnostics: !include packages/diagnostics.yaml

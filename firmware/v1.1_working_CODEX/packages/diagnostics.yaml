@@ -1,0 +1,248 @@
+# =========================================================
+# DIAGNOSTICS
+# =========================================================
+
+# =========================================================
+# GLOBALS
+# =========================================================
+
+globals:
+
+  - id: rain_lock
+    type: bool
+    restore_value: true
+    initial_value: 'false'
+
+# =========================================================
+# SENSORS
+# =========================================================
+
+sensor:
+
+  # -------------------------------------------------------
+  # WIFI SIGNAL dBm
+  # -------------------------------------------------------
+
+  - platform: wifi_signal
+    id: wifi_signal_db
+    internal: true
+    update_interval: 60s
+
+  # -------------------------------------------------------
+  # WIFI SIGNAL %
+  # -------------------------------------------------------
+
+  - platform: copy
+    source_id: wifi_signal_db
+    id: wifi_signal_percent
+    name: "WiFi Signal"
+
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+
+    filters:
+      - lambda: |-
+          if (x <= -100) {
+            return 0;
+          }
+
+          if (x >= -50) {
+            return 100;
+          }
+
+          return 2 * (x + 100);
+
+  # -------------------------------------------------------
+  # UPTIME
+  # -------------------------------------------------------
+
+  - platform: uptime
+    id: uptime_seconds
+    name: "Uptime"
+    type: seconds
+
+# =========================================================
+# BINARY SENSORS
+# =========================================================
+
+binary_sensor:
+
+  - platform: template
+    id: system_has_schedule
+    name: "System Has Schedule"
+
+    lambda: |-
+      return id(program_a_schedule_enabled).state ||
+             id(program_b_schedule_enabled).state ||
+             id(program_c_schedule_enabled).state;
+
+  - platform: status
+    id: wifi_status
+    name: "WiFi Status"
+# =========================================================
+# SELECTS
+# =========================================================
+
+select:
+
+  - platform: template
+    id: rain_source
+    name: "Rain Source"
+
+    optimistic: true
+    restore_value: true
+
+    options:
+      - "Disabled"
+      - "Home Assistant"
+      - "Local Sensor"
+
+    initial_option: "Home Assistant"
+
+# =========================================================
+# INTERVALS
+# =========================================================
+
+interval:
+
+  - interval: 200ms
+    then:
+      - script.execute: update_status_led
+
+# =========================================================
+# SCRIPTS
+# =========================================================
+
+script:
+
+  - id: update_status_led
+    mode: restart
+
+    then:
+
+      - lambda: |-
+
+          auto call = id(status_led)->turn_on();
+
+          int active_zone = 0;
+
+          if (id(zone_1_output).state) {
+            active_zone = 1;
+          } else if (id(zone_2_output).state) {
+            active_zone = 2;
+          } else if (id(zone_3_output).state) {
+            active_zone = 3;
+          } else if (id(zone_4_output).state) {
+            active_zone = 4;
+          } else if (id(zone_5_output).state) {
+            active_zone = 5;
+          } else if (id(zone_6_output).state) {
+            active_zone = 6;
+          } else if (id(zone_7_output).state) {
+            active_zone = 7;
+          } else if (id(zone_8_output).state) {
+            active_zone = 8;
+          } else if (id(zone_9_output).state) {
+            active_zone = 9;
+          }
+
+          // ------------------------------------------------
+          // RED BLINK = NO WIFI
+          // ------------------------------------------------
+
+          if (!wifi::global_wifi_component->is_connected()) {
+
+            static int no_wifi_phase = 0;
+            const bool led_on = no_wifi_phase < 3;
+            no_wifi_phase = (no_wifi_phase + 1) % 6;
+
+            call.set_transition_length(0);
+            call.set_red(1.0);
+            call.set_green(0.0);
+            call.set_blue(0.0);
+            call.set_brightness(led_on ? 0.5 : 0.0);
+
+          }
+
+          // ------------------------------------------------
+          // YELLOW = RAIN LOCK
+          // ------------------------------------------------
+
+          else if (id(rain_lock)) {
+
+            call.set_transition_length(0);
+            call.set_red(1.0);
+            call.set_green(1.0);
+            call.set_blue(0.0);
+            call.set_brightness(1.0);
+
+          }
+
+          // ------------------------------------------------
+          // BLUE RAPID BLINKS = ACTIVE ZONE NUMBER
+          // ------------------------------------------------
+
+          else if (active_zone > 0) {
+
+            static int previous_zone = 0;
+            static int zone_phase = 0;
+
+            if (active_zone != previous_zone) {
+              previous_zone = active_zone;
+              zone_phase = 0;
+            }
+
+            const int blink_ticks = active_zone * 2;
+            const int pause_ticks = 10;
+            const bool led_on = zone_phase < blink_ticks && (zone_phase % 2) == 0;
+
+            zone_phase = (zone_phase + 1) % (blink_ticks + pause_ticks);
+
+            call.set_transition_length(0);
+            call.set_red(0.0);
+            call.set_green(0.0);
+            call.set_blue(1.0);
+            call.set_brightness(led_on ? 1.0 : 0.0);
+
+          }
+
+          // ------------------------------------------------
+          // RED/GREEN ALTERNATING = CONNECTED BUT NO SCHEDULE
+          // ------------------------------------------------
+
+          else if (!id(system_has_schedule).state) {
+
+            static bool no_schedule_red = false;
+            no_schedule_red = !no_schedule_red;
+
+            call.set_transition_length(0);
+            call.set_red(no_schedule_red ? 1.0 : 0.0);
+            call.set_green(no_schedule_red ? 0.0 : 1.0);
+            call.set_blue(0.0);
+            call.set_brightness(0.5);
+
+          }
+
+          // ------------------------------------------------
+          // GREEN PULSE = WIFI CONNECTED AND IDLE
+          // ------------------------------------------------
+
+          else {
+
+            static int green_phase = 0;
+            const float brightness_steps[] = {
+              0.02, 0.06, 0.12, 0.22, 0.35,
+              0.50, 0.35, 0.22, 0.12, 0.06
+            };
+
+            call.set_transition_length(200);
+            call.set_red(0.0);
+            call.set_green(1.0);
+            call.set_blue(0.0);
+            call.set_brightness(brightness_steps[green_phase]);
+
+            green_phase = (green_phase + 1) % 10;
+
+          }
+
+          call.perform();
