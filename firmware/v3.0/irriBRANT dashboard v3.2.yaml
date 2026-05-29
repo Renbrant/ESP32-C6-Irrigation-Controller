@@ -45,7 +45,7 @@ header:
           - font-size: 13px
           - font-weight: 700
     custom_fields:
-      title: irriBRANT PRO v3.1
+      title: irriBRANT PRO v3.2
       subtitle: Smart irrigation control, scheduling, rain delay, and zone monitoring.
       status: |
         [[[
@@ -516,6 +516,8 @@ sections:
                   name: Source
                 - entity: number.irribrant_pro_rain_delay_hours
                   name: Delay Hours
+                - entity: number.irribrant_pro_rain_probability_threshold
+                  name: Probability Threshold
                 - entity: number.irribrant_pro_rain_intensity_block_threshold
                   name: Block Threshold
             - type: grid

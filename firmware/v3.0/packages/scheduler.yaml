@@ -8,11 +8,6 @@
 
 globals:
 
-  - id: rain_delay_until
-    type: int64_t
-    restore_value: yes
-    initial_value: '0'
-
   - id: last_scheduler_minute
     type: int
     restore_value: no
@@ -451,38 +446,6 @@ button:
     on_press:
       - script.execute: program_c_run
 
-  - platform: template
-    name: "Apply Rain Delay"
-    on_press:
-      - lambda: |-
-          auto now = id(ha_time).now();
-
-          if (!now.is_valid()) {
-            ESP_LOGW("scheduler", "Cannot apply rain delay: Home Assistant time is not valid");
-            return;
-          }
-
-          if (id(rain_delay_hours).state <= 0) {
-            id(rain_delay_until) = 0;
-            id(rain_lock) = false;
-            ESP_LOGI("scheduler", "Rain delay cleared");
-            return;
-          }
-
-          id(rain_delay_until) = now.timestamp + (int64_t) (id(rain_delay_hours).state * 3600);
-          id(rain_lock) = true;
-          ESP_LOGI("scheduler", "Rain delay applied for %.0f hour(s)", id(rain_delay_hours).state);
-
-  - platform: template
-    name: "Clear Rain Delay"
-    on_press:
-      - globals.set:
-          id: rain_delay_until
-          value: '0'
-      - globals.set:
-          id: rain_lock
-          value: 'false'
-
 # =========================================================
 # TIME
 # =========================================================
@@ -491,21 +454,6 @@ time:
 
   - platform: homeassistant
     id: ha_time
-
-# =========================================================
-# WEATHER
-# =========================================================
-
-sensor:
-
-  - platform: homeassistant
-    id: rain_intensity
-    entity_id: sensor.openweathermap_rain_intensity
-
-    filters:
-      - sliding_window_moving_average:
-          window_size: 5
-          send_every: 1
 
 # =========================================================
 # SCRIPTS
@@ -527,47 +475,6 @@ script:
       - delay: 2s
 
       - light.turn_off: status_led
-
-  - id: refresh_rain_lock
-    mode: restart
-
-    then:
-
-      - lambda: |-
-          auto now = id(ha_time).now();
-          const bool rain_disabled = id(rain_source).current_option() == "Disabled";
-
-          if (rain_disabled) {
-            id(rain_delay_until) = 0;
-            id(rain_lock) = false;
-            return;
-          }
-
-          bool delay_active = false;
-
-          if (now.is_valid()) {
-            if (id(rain_delay_until) > now.timestamp) {
-              delay_active = true;
-            } else if (id(rain_delay_until) != 0) {
-              id(rain_delay_until) = 0;
-            }
-          }
-
-          bool rain_active = false;
-
-          if (id(rain_source).current_option() == "Home Assistant" &&
-              id(rain_intensity).has_state() &&
-              id(rain_intensity).state > 0 &&
-              id(rain_intensity).state >= id(rain_threshold).state) {
-            rain_active = true;
-
-            if (now.is_valid() && id(rain_delay_hours).state > 0) {
-              id(rain_delay_until) = now.timestamp + (int64_t) (id(rain_delay_hours).state * 3600);
-              delay_active = true;
-            }
-          }
-
-          id(rain_lock) = delay_active || rain_active;
 
   - id: scheduler_tick
     mode: single

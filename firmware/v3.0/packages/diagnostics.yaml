@@ -3,17 +3,6 @@
 # =========================================================
 
 # =========================================================
-# GLOBALS
-# =========================================================
-
-globals:
-
-  - id: rain_lock
-    type: bool
-    restore_value: true
-    initial_value: 'false'
-
-# =========================================================
 # SENSORS
 # =========================================================
 
@@ -76,35 +65,9 @@ binary_sensor:
              id(program_b_schedule_enabled).state ||
              id(program_c_schedule_enabled).state;
 
-  - platform: template
-    id: rain_lock_status
-    name: "Rain Lock"
-
-    lambda: |-
-      return id(rain_lock);
-
   - platform: status
     id: wifi_status
     name: "WiFi Status"
-# =========================================================
-# SELECTS
-# =========================================================
-
-select:
-
-  - platform: template
-    id: rain_source
-    name: "Rain Source"
-
-    optimistic: true
-    restore_value: true
-
-    options:
-      - "Disabled"
-      - "Home Assistant"
-      - "Local Sensor"
-
-    initial_option: "Home Assistant"
 
 # =========================================================
 # DASHBOARD CONTROLS

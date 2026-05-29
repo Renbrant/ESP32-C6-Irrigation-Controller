@@ -1,32 +1,9 @@
 # =========================================================
-# irriBRANT v3.1
+# irriBRANT v3.2
 # irrigation.yaml
 # =========================================================
 
-# =========================================================
-# RAIN SETTINGS
-# =========================================================
 number:
-  - platform: template
-    id: rain_delay_hours
-    name: "Rain Delay Hours"
-    optimistic: true
-    min_value: 0
-    max_value: 240
-    step: 1
-    initial_value: 0
-    restore_value: true
-
-  - platform: template
-    id: rain_threshold
-    name: "Rain Intensity Block Threshold"
-    optimistic: true
-    min_value: 0
-    max_value: 100
-    step: 1
-    initial_value: 20
-    restore_value: true
-
   - platform: template
     id: cycle_repeat_count
     name: "Cycle Repeat Count"
