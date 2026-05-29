@@ -77,6 +77,13 @@ badges:
     show_icon: true
     entity: sensor.irribrant_pro_uptime
     name: Uptime
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.irribrant_rain_probability_12h
+    icon: mdi:weather-lightning-rainy
+    name: Rain probability 24h
 sections:
   - type: grid
     column_span: 4
@@ -367,7 +374,7 @@ sections:
           cards:
             - type: heading
               icon: mdi:sprinkler-variant
-              heading: Zone Control
+              heading: Zone Timing
               heading_style: title
             - type: custom:mushroom-title-card
               title: Zone Timing
@@ -442,6 +449,18 @@ sections:
                   row:
                     entity: number.irribrant_pro_zone_9_duration
                     name: Zone 9
+      - type: conditional
+        conditions:
+          - entity: switch.irribrant_pro_show_zone_settings
+            state: "on"
+        card:
+          type: custom:stack-in-card
+          mode: vertical
+          cards:
+            - type: heading
+              icon: mdi:toggle-switch
+              heading: Zone Availability
+              heading_style: title
             - type: custom:mushroom-title-card
               title: Zone Availability
               subtitle: Turning a zone off also removes it from program setup.
@@ -965,6 +984,14 @@ sections:
               target:
                 entity_id: []
                 device_id: 621db464145f6903e4af03fe37e4f53a
+      - type: conditional
+        conditions:
+          - entity: switch.irribrant_pro_show_history
+            state: "on"
+        card:
+          type: custom:stack-in-card
+          mode: vertical
+          cards:
             - type: entities
               title: System Status
               entities:
@@ -978,6 +1005,14 @@ sections:
                   name: Schedule
                 - entity: binary_sensor.irribrant_pro_rain_lock
                   name: Rain Lock
+      - type: conditional
+        conditions:
+          - entity: switch.irribrant_pro_show_history
+            state: "on"
+        card:
+          type: custom:stack-in-card
+          mode: vertical
+          cards:
             - graph: line
               type: sensor
               detail: 2
@@ -986,28 +1021,92 @@ sections:
               limits:
                 min: 0
                 max: 100
-            - type: history-graph
-              title: Watering Activity
-              entities:
-                - entity: switch.irribrant_pro_active_cycle
-                  name: Active Cycle
-                - entity: switch.irribrant_pro_zone_1_valve
-                  name: Zone 1
-                - entity: switch.irribrant_pro_zone_2_valve
-                  name: Zone 2
-                - entity: switch.irribrant_pro_zone_3_valve
-                  name: Zone 3
-                - entity: switch.irribrant_pro_zone_4_valve
-                  name: Zone 4
-                - entity: switch.irribrant_pro_zone_5_valve
-                  name: Zone 5
-                - entity: switch.irribrant_pro_zone_6_valve
-                  name: Zone 6
-                - entity: switch.irribrant_pro_zone_7_valve
-                  name: Zone 7
-                - entity: switch.irribrant_pro_zone_8_valve
-                  name: Zone 8
-                - entity: switch.irribrant_pro_zone_9_valve
-                  name: Zone 9
-              hours_to_show: 120
+        grid_options:
+          rows: 1
+  - type: grid
+    cards:
+      - type: history-graph
+        title: Watering Activity
+        entities:
+          - entity: switch.irribrant_pro_active_cycle
+            name: Active Cycle
+          - entity: switch.irribrant_pro_zone_1_valve
+            name: Zone 1
+          - entity: switch.irribrant_pro_zone_2_valve
+            name: Zone 2
+          - entity: switch.irribrant_pro_zone_3_valve
+            name: Zone 3
+          - entity: switch.irribrant_pro_zone_4_valve
+            name: Zone 4
+          - entity: switch.irribrant_pro_zone_5_valve
+            name: Zone 5
+          - entity: switch.irribrant_pro_zone_6_valve
+            name: Zone 6
+          - entity: switch.irribrant_pro_zone_7_valve
+            name: Zone 7
+          - entity: switch.irribrant_pro_zone_8_valve
+            name: Zone 8
+          - entity: switch.irribrant_pro_zone_9_valve
+            name: Zone 9
+        grid_options:
+          columns: full
+        logarithmic_scale: false
+        hours_to_show: 24
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Rain History & Forecast
+          show_states: true
+          colorize_states: true
+        graph_span: 24h
+        now:
+          show: true
+          label: Now
+        apex_config:
+          chart:
+            height: 300
+            width: 100%
+          stroke:
+            width:
+              - 2
+              - 3
+            curve: smooth
+          yaxis:
+            - id: rain
+              title:
+                text: Rain Intensity (in/h)
+              min: 0
+              decimalsInFloat: 2
+              opposite: false
+            - id: probability
+              title:
+                text: Rain Probability (%)
+              min: 0
+              max: 100
+              decimalsInFloat: 0
+              opposite: true
+          legend:
+            show: true
+        series:
+          - entity: sensor.irribrant_current_rain_intensity
+            name: Rain Intensity
+            type: area
+            yaxis_id: rain
+            group_by:
+              duration: 10min
+              func: avg
+          - entity: sensor.irribrant_rain_probability_12h
+            name: Rain Probability
+            type: line
+            yaxis_id: probability
+            group_by:
+              duration: 10min
+              func: avg
+        grid_options:
+          columns: full
+    column_span: 4
+  - type: grid
+    cards:
+      - type: heading
+        heading: New section
 cards: []

@@ -44,7 +44,7 @@ number:
     name: "Rain Delay Hours"
     optimistic: true
     min_value: 0
-    max_value: 240
+    max_value: 48
     step: 1
     initial_value: 0
     restore_value: true
