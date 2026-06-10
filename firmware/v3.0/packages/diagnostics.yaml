@@ -51,6 +51,21 @@ sensor:
     type: seconds
 
 # =========================================================
+# TEXT SENSORS
+# =========================================================
+
+text_sensor:
+
+  - platform: template
+    id: firmware_version
+    name: "Firmware Version"
+    icon: mdi:chip
+    entity_category: diagnostic
+    update_interval: 60s
+    lambda: |-
+      return {"v${firmware_version} - Build " __DATE__ " " __TIME__};
+
+# =========================================================
 # BINARY SENSORS
 # =========================================================
 

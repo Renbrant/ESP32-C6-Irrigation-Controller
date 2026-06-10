@@ -8,7 +8,7 @@ esphome:
 
   project:
     name: renbrant.irribrant
-    version: "3.3"
+    version: "${firmware_version}"
 
   on_boot:
     priority: 600

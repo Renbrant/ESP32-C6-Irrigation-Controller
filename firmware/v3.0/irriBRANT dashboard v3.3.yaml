@@ -103,31 +103,43 @@ sections:
         cards:
           - type: tile
             entity: button.irribrant_pro_run_program_a
-            name: Program A
+            name: Run A
             icon: mdi:alpha-a-circle
+            show_entity_picture: false
+            hide_state: true
+            vertical: false
             tap_action:
               action: call-service
               service: button.press
               target:
                 entity_id: button.irribrant_pro_run_program_a
+            features_position: bottom
           - type: tile
             entity: button.irribrant_pro_run_program_b
-            name: Program B
+            name: Run B
             icon: mdi:alpha-b-circle
+            hide_state: true
+            vertical: false
             tap_action:
               action: call-service
               service: button.press
               target:
                 entity_id: button.irribrant_pro_run_program_b
+            features_position: bottom
           - type: tile
             entity: button.irribrant_pro_run_program_c
-            name: Program C
+            name: Run C
             icon: mdi:alpha-c-circle
+            hide_state: true
+            vertical: false
             tap_action:
               action: call-service
               service: button.press
               target:
                 entity_id: button.irribrant_pro_run_program_c
+            features_position: bottom
+        grid_options:
+          rows: 1
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -383,75 +395,6 @@ sections:
         popup_mode: adaptive-dialog
         cards:
           - type: custom:mushroom-title-card
-            title: Manual Zone Timing
-            subtitle: Runtime used when zones are operated outside a program.
-          - type: entities
-            show_header_toggle: false
-            entities:
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_1
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_1_duration
-                  name: Zone 1 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_2
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_2_duration
-                  name: Zone 2 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_3
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_3_duration
-                  name: Zone 3 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_4
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_4_duration
-                  name: Zone 4 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_5
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_5_duration
-                  name: Zone 5 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_6
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_6_duration
-                  name: Zone 6 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_7
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_7_duration
-                  name: Zone 7 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_8
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_8_duration
-                  name: Zone 8 Duration
-              - type: conditional
-                conditions:
-                  - entity: switch.irribrant_pro_enable_zone_9
-                    state: "on"
-                row:
-                  entity: number.irribrant_pro_zone_9_duration
-                  name: Zone 9 Duration
-          - type: custom:mushroom-title-card
             title: Zone Availability
             subtitle: Enable or disable zones used by the system.
           - type: grid
@@ -550,6 +493,8 @@ sections:
                 name: Signal
               - entity: sensor.irribrant_pro_uptime
                 name: Uptime
+              - entity: sensor.irrabrant_firmware_version
+                name: Firmware Version
               - entity: binary_sensor.irribrant_pro_system_has_schedule
                 name: Schedule
               - entity: binary_sensor.irribrant_pro_rain_lock
@@ -571,6 +516,10 @@ sections:
                 - switch.irribrant_pro_zone_7_valve
                 - switch.irribrant_pro_zone_8_valve
                 - switch.irribrant_pro_zone_9_valve
+        button_type: name
+        sub_button:
+          main: []
+          bottom: []
       - type: custom:bubble-card
         card_type: pop-up
         hash: "#program-a-popup"
@@ -591,75 +540,79 @@ sections:
               - entity: number.irribrant_pro_program_a_minute
                 name: Minute
           - type: entities
-            title: Irrigation
+            title: Cycle & Transition
             show_header_toggle: false
             entities:
-              - entity: number.irribrant_pro_program_a_cycle_count
+              - entity: number.backyard_irribrant_pro_program_a_cycle_count
                 name: Cycle Count
-              - entity: number.irribrant_pro_program_a_zone_transition_delay
+              - entity: number.backyard_irribrant_pro_program_a_zone_transition_delay
                 name: Zone Transition Delay
+          - type: entities
+            title: Zone Durations
+            show_header_toggle: false
+            entities:
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_1
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_1_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_1_duration
                   name: Zone 1 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_2
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_2_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_2_duration
                   name: Zone 2 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_3
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_3_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_3_duration
                   name: Zone 3 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_4
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_4_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_4_duration
                   name: Zone 4 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_5
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_5_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_5_duration
                   name: Zone 5 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_6
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_6_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_6_duration
                   name: Zone 6 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_7
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_7_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_7_duration
                   name: Zone 7 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_8
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_8_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_8_duration
                   name: Zone 8 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_9
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_a_zone_9_duration
+                  entity: number.backyard_irribrant_pro_program_a_zone_9_duration
                   name: Zone 9 Duration
           - type: entities
             title: Days
@@ -802,75 +755,79 @@ sections:
               - entity: number.irribrant_pro_program_b_minute
                 name: Minute
           - type: entities
-            title: Irrigation
+            title: Cycle & Transition
             show_header_toggle: false
             entities:
-              - entity: number.irribrant_pro_program_b_cycle_count
+              - entity: number.backyard_irribrant_pro_program_b_cycle_count
                 name: Cycle Count
-              - entity: number.irribrant_pro_program_b_zone_transition_delay
+              - entity: number.backyard_irribrant_pro_program_b_zone_transition_delay
                 name: Zone Transition Delay
+          - type: entities
+            title: Zone Durations
+            show_header_toggle: false
+            entities:
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_1
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_1_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_1_duration
                   name: Zone 1 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_2
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_2_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_2_duration
                   name: Zone 2 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_3
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_3_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_3_duration
                   name: Zone 3 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_4
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_4_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_4_duration
                   name: Zone 4 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_5
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_5_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_5_duration
                   name: Zone 5 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_6
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_6_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_6_duration
                   name: Zone 6 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_7
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_7_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_7_duration
                   name: Zone 7 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_8
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_8_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_8_duration
                   name: Zone 8 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_9
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_b_zone_9_duration
+                  entity: number.backyard_irribrant_pro_program_b_zone_9_duration
                   name: Zone 9 Duration
           - type: entities
             title: Days
@@ -1013,75 +970,79 @@ sections:
               - entity: number.irribrant_pro_program_c_minute
                 name: Minute
           - type: entities
-            title: Irrigation
+            title: Cycle & Transition
             show_header_toggle: false
             entities:
-              - entity: number.irribrant_pro_program_c_cycle_count
+              - entity: number.backyard_irribrant_pro_program_c_cycle_count
                 name: Cycle Count
-              - entity: number.irribrant_pro_program_c_zone_transition_delay
+              - entity: number.backyard_irribrant_pro_program_c_zone_transition_delay
                 name: Zone Transition Delay
+          - type: entities
+            title: Zone Durations
+            show_header_toggle: false
+            entities:
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_1
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_1_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_1_duration
                   name: Zone 1 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_2
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_2_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_2_duration
                   name: Zone 2 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_3
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_3_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_3_duration
                   name: Zone 3 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_4
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_4_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_4_duration
                   name: Zone 4 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_5
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_5_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_5_duration
                   name: Zone 5 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_6
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_6_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_6_duration
                   name: Zone 6 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_7
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_7_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_7_duration
                   name: Zone 7 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_8
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_8_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_8_duration
                   name: Zone 8 Duration
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_9
                     state: "on"
                 row:
-                  entity: number.irribrant_pro_program_c_zone_9_duration
+                  entity: number.backyard_irribrant_pro_program_c_zone_9_duration
                   name: Zone 9 Duration
           - type: entities
             title: Days
