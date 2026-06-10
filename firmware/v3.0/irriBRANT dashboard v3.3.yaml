@@ -97,49 +97,54 @@ sections:
                   action: toggle
                 features_position: bottom
                 vertical: false
-      - type: grid
-        columns: 3
-        square: false
+      - type: vertical-stack
         cards:
-          - type: tile
-            entity: button.irribrant_pro_run_program_a
-            name: Run A
-            icon: mdi:alpha-a-circle
-            show_entity_picture: false
-            hide_state: true
-            vertical: false
-            tap_action:
-              action: call-service
-              service: button.press
-              target:
-                entity_id: button.irribrant_pro_run_program_a
-            features_position: bottom
-          - type: tile
-            entity: button.irribrant_pro_run_program_b
-            name: Run B
-            icon: mdi:alpha-b-circle
-            hide_state: true
-            vertical: false
-            tap_action:
-              action: call-service
-              service: button.press
-              target:
-                entity_id: button.irribrant_pro_run_program_b
-            features_position: bottom
-          - type: tile
-            entity: button.irribrant_pro_run_program_c
-            name: Run C
-            icon: mdi:alpha-c-circle
-            hide_state: true
-            vertical: false
-            tap_action:
-              action: call-service
-              service: button.press
-              target:
-                entity_id: button.irribrant_pro_run_program_c
-            features_position: bottom
-        grid_options:
-          rows: 1
+          - type: custom:mushroom-title-card
+            title: Run program
+            subtitle: Select the program to run now
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: tile
+                entity: button.irribrant_pro_run_program_a
+                name: Run A
+                icon: mdi:alpha-a-circle
+                show_entity_picture: false
+                hide_state: true
+                vertical: false
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  target:
+                    entity_id: button.irribrant_pro_run_program_a
+                features_position: bottom
+              - type: tile
+                entity: button.irribrant_pro_run_program_b
+                name: Run B
+                icon: mdi:alpha-b-circle
+                hide_state: true
+                vertical: false
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  target:
+                    entity_id: button.irribrant_pro_run_program_b
+                features_position: bottom
+              - type: tile
+                entity: button.irribrant_pro_run_program_c
+                name: Run C
+                icon: mdi:alpha-c-circle
+                hide_state: true
+                vertical: false
+                tap_action:
+                  action: call-service
+                  service: button.press
+                  target:
+                    entity_id: button.irribrant_pro_run_program_c
+                features_position: bottom
+            grid_options:
+              rows: 1
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
