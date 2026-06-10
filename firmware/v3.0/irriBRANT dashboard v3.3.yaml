@@ -1,0 +1,1207 @@
+type: sections
+title: irriBRANT
+path: irribrant
+icon: mdi:sprinkler-variant
+max_columns: 4
+theme: Frosted Glass Dark
+header:
+  layout: center
+  badges_position: top
+  badges_wrap: wrap
+  card:
+    type: custom:mushroom-template-card
+    entity: switch.irribrant_pro_active_cycle
+    primary: irriBRANT PRO v3.3
+    secondary: >-
+      {{ 'Watering now' if is_state('switch.irribrant_pro_active_cycle', 'on')
+      else 'System ready' }} - Smart irrigation control and monitoring
+    icon: mdi:sprinkler-variant
+    multiline_secondary: true
+    tap_action:
+      action: none
+badges:
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: switch.irribrant_pro_main_irrigation_system
+    name: irriBRANT PRO
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: switch.irribrant_pro_active_cycle
+    name: Cycle
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.irribrant_pro_wifi_signal
+    name: WiFi Signal
+    show_entity_picture: false
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.irribrant_pro_uptime
+    name: Uptime
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.irribrant_rain_probability_12h
+    icon: mdi:weather-lightning-rainy
+    name: Rain probability 24h
+sections:
+  - type: grid
+    column_span: 4
+    cards:
+      - type: heading
+        icon: mdi:view-dashboard
+        heading: Command Center
+        heading_style: title
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Upcoming Watering
+            secondary: |
+              {{ states('sensor.irribrant_pro_next_activities') }}
+            icon: mdi:calendar-clock
+            multiline_secondary: true
+            layout: vertical
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: tile
+                entity: switch.irribrant_pro_main_irrigation_system
+                name: Main
+                icon: mdi:power
+                tap_action:
+                  action: toggle
+                features_position: bottom
+                vertical: false
+              - type: tile
+                entity: switch.irribrant_pro_active_cycle
+                name: Cycle
+                icon: mdi:sprinkler
+                tap_action:
+                  action: toggle
+                features_position: bottom
+                vertical: false
+              - type: tile
+                entity: switch.irribrant_pro_auto_advance_zones
+                name: Advance
+                icon: mdi:skip-next-circle
+                tap_action:
+                  action: toggle
+                features_position: bottom
+                vertical: false
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: tile
+            entity: button.irribrant_pro_run_program_a
+            name: Program A
+            icon: mdi:alpha-a-circle
+            tap_action:
+              action: call-service
+              service: button.press
+              target:
+                entity_id: button.irribrant_pro_run_program_a
+          - type: tile
+            entity: button.irribrant_pro_run_program_b
+            name: Program B
+            icon: mdi:alpha-b-circle
+            tap_action:
+              action: call-service
+              service: button.press
+              target:
+                entity_id: button.irribrant_pro_run_program_b
+          - type: tile
+            entity: button.irribrant_pro_run_program_c
+            name: Program C
+            icon: mdi:alpha-c-circle
+            tap_action:
+              action: call-service
+              service: button.press
+              target:
+                entity_id: button.irribrant_pro_run_program_c
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Active Zones
+            subtitle: Disabled zones are hidden from operation and scheduling.
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_1_valve
+                  name: Zone 1
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_2_valve
+                  name: Zone 2
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_3_valve
+                  name: Zone 3
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_4_valve
+                  name: Zone 4
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_5_valve
+                  name: Zone 5
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_6_valve
+                  name: Zone 6
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_7_valve
+                  name: Zone 7
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_8_valve
+                  name: Zone 8
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                card:
+                  type: custom:mushroom-entity-card
+                  entity: switch.irribrant_pro_zone_9_valve
+                  name: Zone 9
+                  icon: mdi:sprinkler-variant
+                  tap_action:
+                    action: toggle
+                  secondary_info: last-changed
+      - type: vertical-stack
+        cards:
+          - type: custom:mushroom-title-card
+            title: Settings
+            subtitle: Open only the configuration panels you need.
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Zones
+                icon: mdi:tune-variant
+                tap_action:
+                  action: navigate
+                  navigation_path: "#zones-popup"
+              - type: custom:mushroom-template-card
+                primary: Rain
+                icon: mdi:weather-pouring
+                tap_action:
+                  action: navigate
+                  navigation_path: "#rain-popup"
+              - type: custom:mushroom-template-card
+                primary: Status
+                icon: mdi:chart-timeline-variant
+                tap_action:
+                  action: navigate
+                  navigation_path: "#status-popup"
+              - type: custom:mushroom-template-card
+                primary: Program A
+                icon: mdi:alpha-a-circle
+                tap_action:
+                  action: navigate
+                  navigation_path: "#program-a-popup"
+              - type: custom:mushroom-template-card
+                primary: Program B
+                icon: mdi:alpha-b-circle
+                tap_action:
+                  action: navigate
+                  navigation_path: "#program-b-popup"
+              - type: custom:mushroom-template-card
+                primary: Program C
+                icon: mdi:alpha-c-circle
+                tap_action:
+                  action: navigate
+                  navigation_path: "#program-c-popup"
+  - type: grid
+    cards:
+      - type: history-graph
+        title: Watering Activity
+        entities:
+          - entity: switch.irribrant_pro_active_cycle
+            name: Active Cycle
+          - entity: switch.irribrant_pro_zone_1_valve
+            name: Zone 1
+          - entity: switch.irribrant_pro_zone_2_valve
+            name: Zone 2
+          - entity: switch.irribrant_pro_zone_3_valve
+            name: Zone 3
+          - entity: switch.irribrant_pro_zone_4_valve
+            name: Zone 4
+          - entity: switch.irribrant_pro_zone_5_valve
+            name: Zone 5
+          - entity: switch.irribrant_pro_zone_6_valve
+            name: Zone 6
+          - entity: switch.irribrant_pro_zone_7_valve
+            name: Zone 7
+          - entity: switch.irribrant_pro_zone_8_valve
+            name: Zone 8
+          - entity: switch.irribrant_pro_zone_9_valve
+            name: Zone 9
+        grid_options:
+          columns: full
+        logarithmic_scale: false
+        hours_to_show: 24
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Rain History & Forecast
+          show_states: true
+          colorize_states: true
+        graph_span: 24h
+        now:
+          show: true
+          label: Now
+        apex_config:
+          chart:
+            height: 300
+            width: 100%
+          stroke:
+            width:
+              - 2
+              - 3
+            curve: smooth
+          yaxis:
+            - id: rain
+              title:
+                text: Rain Intensity (in/h)
+              min: 0
+              decimalsInFloat: 2
+              opposite: false
+            - id: probability
+              title:
+                text: Rain Probability (%)
+              min: 0
+              max: 100
+              decimalsInFloat: 0
+              opposite: true
+          legend:
+            show: true
+        series:
+          - entity: sensor.irribrant_current_rain_intensity
+            name: Rain Intensity
+            type: area
+            yaxis_id: rain
+            group_by:
+              duration: 10min
+              func: avg
+          - entity: sensor.irribrant_rain_probability_12h
+            name: Rain Probability
+            type: line
+            yaxis_id: probability
+            group_by:
+              duration: 10min
+              func: avg
+        grid_options:
+          columns: full
+    column_span: 4
+  - type: grid
+    column_span: 4
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#zones-popup"
+        name: Zone Settings
+        icon: mdi:tune-variant
+        popup_mode: adaptive-dialog
+        cards:
+          - type: custom:mushroom-title-card
+            title: Manual Zone Timing
+            subtitle: Runtime used when zones are operated outside a program.
+          - type: entities
+            show_header_toggle: false
+            entities:
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_1_duration
+                  name: Zone 1 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_2_duration
+                  name: Zone 2 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_3_duration
+                  name: Zone 3 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_4_duration
+                  name: Zone 4 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_5_duration
+                  name: Zone 5 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_6_duration
+                  name: Zone 6 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_7_duration
+                  name: Zone 7 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_8_duration
+                  name: Zone 8 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_zone_9_duration
+                  name: Zone 9 Duration
+          - type: custom:mushroom-title-card
+            title: Zone Availability
+            subtitle: Enable or disable zones used by the system.
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_1
+                name: Zone 1
+                icon: mdi:numeric-1-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_2
+                name: Zone 2
+                icon: mdi:numeric-2-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_3
+                name: Zone 3
+                icon: mdi:numeric-3-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_4
+                name: Zone 4
+                icon: mdi:numeric-4-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_5
+                name: Zone 5
+                icon: mdi:numeric-5-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_6
+                name: Zone 6
+                icon: mdi:numeric-6-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_7
+                name: Zone 7
+                icon: mdi:numeric-7-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_8
+                name: Zone 8
+                icon: mdi:numeric-8-circle
+                tap_action:
+                  action: toggle
+              - type: tile
+                entity: switch.irribrant_pro_enable_zone_9
+                name: Zone 9
+                icon: mdi:numeric-9-circle
+                tap_action:
+                  action: toggle
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#rain-popup"
+        name: Rain Settings
+        icon: mdi:weather-pouring
+        popup_mode: adaptive-dialog
+        cards:
+          - type: entities
+            title: Rain Settings
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.irribrant_pro_rain_lock
+                name: Rain Lock
+              - entity: number.irribrant_pro_rain_delay_hours
+                name: Rain Delay Hours
+              - entity: sensor.irribrant_current_rain_intensity
+                name: Current Rain Intensity
+              - entity: sensor.irribrant_rain_probability_12h
+                name: Rain Probability
+              - entity: sensor.irribrant_pro_rain_delay_until
+                name: Rain Delay Until
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#status-popup"
+        name: System Status
+        icon: mdi:chart-timeline-variant
+        popup_mode: adaptive-dialog
+        cards:
+          - type: entities
+            title: System Status
+            show_header_toggle: false
+            entities:
+              - entity: binary_sensor.irribrant_pro_wifi_status
+                name: WiFi
+              - entity: sensor.irribrant_pro_wifi_signal
+                name: Signal
+              - entity: sensor.irribrant_pro_uptime
+                name: Uptime
+              - entity: binary_sensor.irribrant_pro_system_has_schedule
+                name: Schedule
+              - entity: binary_sensor.irribrant_pro_rain_lock
+                name: Rain Lock
+              - entity: switch.irribrant_pro_active_cycle
+                name: Active Cycle
+              - entity: switch.irribrant_pro_main_irrigation_system
+                name: Main System
+          - type: logbook
+            target:
+              entity_id:
+                - switch.irribrant_pro_active_cycle
+                - switch.irribrant_pro_zone_1_valve
+                - switch.irribrant_pro_zone_2_valve
+                - switch.irribrant_pro_zone_3_valve
+                - switch.irribrant_pro_zone_4_valve
+                - switch.irribrant_pro_zone_5_valve
+                - switch.irribrant_pro_zone_6_valve
+                - switch.irribrant_pro_zone_7_valve
+                - switch.irribrant_pro_zone_8_valve
+                - switch.irribrant_pro_zone_9_valve
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#program-a-popup"
+        name: Program A
+        icon: mdi:alpha-a-circle
+        popup_mode: adaptive-dialog
+        cards:
+          - type: entities
+            title: Schedule
+            show_header_toggle: false
+            entities:
+              - entity: switch.irribrant_pro_program_a_schedule_enabled
+                name: Enabled
+              - entity: select.irribrant_pro_program_a_frequency
+                name: Frequency
+              - entity: number.irribrant_pro_program_a_hour
+                name: Hour
+              - entity: number.irribrant_pro_program_a_minute
+                name: Minute
+          - type: entities
+            title: Irrigation
+            show_header_toggle: false
+            entities:
+              - entity: number.irribrant_pro_program_a_cycle_count
+                name: Cycle Count
+              - entity: number.irribrant_pro_program_a_zone_transition_delay
+                name: Zone Transition Delay
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_1_duration
+                  name: Zone 1 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_2_duration
+                  name: Zone 2 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_3_duration
+                  name: Zone 3 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_4_duration
+                  name: Zone 4 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_5_duration
+                  name: Zone 5 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_6_duration
+                  name: Zone 6 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_7_duration
+                  name: Zone 7 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_8_duration
+                  name: Zone 8 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_a_zone_9_duration
+                  name: Zone 9 Duration
+          - type: entities
+            title: Days
+            show_header_toggle: false
+            entities:
+              - entity: switch.irribrant_pro_program_a_sunday
+                name: Sunday
+              - entity: switch.irribrant_pro_program_a_monday
+                name: Monday
+              - entity: switch.irribrant_pro_program_a_tuesday
+                name: Tuesday
+              - entity: switch.irribrant_pro_program_a_wednesday
+                name: Wednesday
+              - entity: switch.irribrant_pro_program_a_thursday
+                name: Thursday
+              - entity: switch.irribrant_pro_program_a_friday
+                name: Friday
+              - entity: switch.irribrant_pro_program_a_saturday
+                name: Saturday
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_1_enabled
+                  name: Z1
+                  icon: mdi:numeric-1-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_2_enabled
+                  name: Z2
+                  icon: mdi:numeric-2-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_3_enabled
+                  name: Z3
+                  icon: mdi:numeric-3-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_4_enabled
+                  name: Z4
+                  icon: mdi:numeric-4-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_5_enabled
+                  name: Z5
+                  icon: mdi:numeric-5-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_6_enabled
+                  name: Z6
+                  icon: mdi:numeric-6-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_7_enabled
+                  name: Z7
+                  icon: mdi:numeric-7-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_8_enabled
+                  name: Z8
+                  icon: mdi:numeric-8-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_a_zone_9_enabled
+                  name: Z9
+                  icon: mdi:numeric-9-circle
+                  tap_action:
+                    action: toggle
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#program-b-popup"
+        name: Program B
+        icon: mdi:alpha-b-circle
+        popup_mode: adaptive-dialog
+        cards:
+          - type: entities
+            title: Schedule
+            show_header_toggle: false
+            entities:
+              - entity: switch.irribrant_pro_program_b_schedule_enabled
+                name: Enabled
+              - entity: select.irribrant_pro_program_b_frequency
+                name: Frequency
+              - entity: number.irribrant_pro_program_b_hour
+                name: Hour
+              - entity: number.irribrant_pro_program_b_minute
+                name: Minute
+          - type: entities
+            title: Irrigation
+            show_header_toggle: false
+            entities:
+              - entity: number.irribrant_pro_program_b_cycle_count
+                name: Cycle Count
+              - entity: number.irribrant_pro_program_b_zone_transition_delay
+                name: Zone Transition Delay
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_1_duration
+                  name: Zone 1 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_2_duration
+                  name: Zone 2 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_3_duration
+                  name: Zone 3 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_4_duration
+                  name: Zone 4 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_5_duration
+                  name: Zone 5 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_6_duration
+                  name: Zone 6 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_7_duration
+                  name: Zone 7 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_8_duration
+                  name: Zone 8 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_b_zone_9_duration
+                  name: Zone 9 Duration
+          - type: entities
+            title: Days
+            show_header_toggle: false
+            entities:
+              - entity: switch.irribrant_pro_program_b_sunday
+                name: Sunday
+              - entity: switch.irribrant_pro_program_b_monday
+                name: Monday
+              - entity: switch.irribrant_pro_program_b_tuesday
+                name: Tuesday
+              - entity: switch.irribrant_pro_program_b_wednesday
+                name: Wednesday
+              - entity: switch.irribrant_pro_program_b_thursday
+                name: Thursday
+              - entity: switch.irribrant_pro_program_b_friday
+                name: Friday
+              - entity: switch.irribrant_pro_program_b_saturday
+                name: Saturday
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_1_enabled
+                  name: Z1
+                  icon: mdi:numeric-1-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_2_enabled
+                  name: Z2
+                  icon: mdi:numeric-2-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_3_enabled
+                  name: Z3
+                  icon: mdi:numeric-3-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_4_enabled
+                  name: Z4
+                  icon: mdi:numeric-4-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_5_enabled
+                  name: Z5
+                  icon: mdi:numeric-5-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_6_enabled
+                  name: Z6
+                  icon: mdi:numeric-6-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_7_enabled
+                  name: Z7
+                  icon: mdi:numeric-7-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_8_enabled
+                  name: Z8
+                  icon: mdi:numeric-8-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_b_zone_9_enabled
+                  name: Z9
+                  icon: mdi:numeric-9-circle
+                  tap_action:
+                    action: toggle
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#program-c-popup"
+        name: Program C
+        icon: mdi:alpha-c-circle
+        popup_mode: adaptive-dialog
+        cards:
+          - type: entities
+            title: Schedule
+            show_header_toggle: false
+            entities:
+              - entity: switch.irribrant_pro_program_c_schedule_enabled
+                name: Enabled
+              - entity: select.irribrant_pro_program_c_frequency
+                name: Frequency
+              - entity: number.irribrant_pro_program_c_hour
+                name: Hour
+              - entity: number.irribrant_pro_program_c_minute
+                name: Minute
+          - type: entities
+            title: Irrigation
+            show_header_toggle: false
+            entities:
+              - entity: number.irribrant_pro_program_c_cycle_count
+                name: Cycle Count
+              - entity: number.irribrant_pro_program_c_zone_transition_delay
+                name: Zone Transition Delay
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_1_duration
+                  name: Zone 1 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_2_duration
+                  name: Zone 2 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_3_duration
+                  name: Zone 3 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_4_duration
+                  name: Zone 4 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_5_duration
+                  name: Zone 5 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_6_duration
+                  name: Zone 6 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_7_duration
+                  name: Zone 7 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_8_duration
+                  name: Zone 8 Duration
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                row:
+                  entity: number.irribrant_pro_program_c_zone_9_duration
+                  name: Zone 9 Duration
+          - type: entities
+            title: Days
+            show_header_toggle: false
+            entities:
+              - entity: switch.irribrant_pro_program_c_sunday
+                name: Sunday
+              - entity: switch.irribrant_pro_program_c_monday
+                name: Monday
+              - entity: switch.irribrant_pro_program_c_tuesday
+                name: Tuesday
+              - entity: switch.irribrant_pro_program_c_wednesday
+                name: Wednesday
+              - entity: switch.irribrant_pro_program_c_thursday
+                name: Thursday
+              - entity: switch.irribrant_pro_program_c_friday
+                name: Friday
+              - entity: switch.irribrant_pro_program_c_saturday
+                name: Saturday
+          - type: grid
+            columns: 3
+            square: false
+            cards:
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_1
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_1_enabled
+                  name: Z1
+                  icon: mdi:numeric-1-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_2
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_2_enabled
+                  name: Z2
+                  icon: mdi:numeric-2-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_3
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_3_enabled
+                  name: Z3
+                  icon: mdi:numeric-3-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_4
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_4_enabled
+                  name: Z4
+                  icon: mdi:numeric-4-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_5
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_5_enabled
+                  name: Z5
+                  icon: mdi:numeric-5-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_6
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_6_enabled
+                  name: Z6
+                  icon: mdi:numeric-6-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_7
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_7_enabled
+                  name: Z7
+                  icon: mdi:numeric-7-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_8
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_8_enabled
+                  name: Z8
+                  icon: mdi:numeric-8-circle
+                  tap_action:
+                    action: toggle
+              - type: conditional
+                conditions:
+                  - entity: switch.irribrant_pro_enable_zone_9
+                    state: "on"
+                card:
+                  type: tile
+                  entity: switch.irribrant_pro_program_c_zone_9_enabled
+                  name: Z9
+                  icon: mdi:numeric-9-circle
+                  tap_action:
+                    action: toggle
+cards: []

@@ -1,29 +1,7 @@
 # =========================================================
-# irriBRANT v3.2
+# irriBRANT v3.3
 # irrigation.yaml
 # =========================================================
-
-number:
-  - platform: template
-    id: cycle_repeat_count
-    name: "Cycle Repeat Count"
-    optimistic: true
-    min_value: 1
-    max_value: 5
-    step: 1
-    initial_value: 1
-    restore_value: true
-
-  - platform: template
-    id: cycle_repeat_delay
-    name: "Cycle Repeat Delay"
-    optimistic: true
-    min_value: 0
-    max_value: 120
-    step: 1
-    initial_value: 20
-    restore_value: true
-    unit_of_measurement: "min"
 
 # =========================================================
 # PHYSICAL OUTPUTS & MASTER SWITCH

@@ -1,0 +1,377 @@
+# =========================================================
+# PROGRAM-SPECIFIC IRRIGATION SETTINGS
+# =========================================================
+
+number:
+
+  # -------------------------------------------------------
+  # PROGRAM A
+  # -------------------------------------------------------
+
+  - platform: template
+    id: program_a_cycle_count
+    name: "Program A Cycle Count"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 5
+    step: 1
+    initial_value: 1
+
+  - platform: template
+    id: program_a_transition_delay
+    name: "Program A Zone Transition Delay"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 5
+    unit_of_measurement: "s"
+
+  - platform: template
+    id: program_a_zone_1_duration
+    name: "Program A Zone 1 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_2_duration
+    name: "Program A Zone 2 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_3_duration
+    name: "Program A Zone 3 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_4_duration
+    name: "Program A Zone 4 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_5_duration
+    name: "Program A Zone 5 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_6_duration
+    name: "Program A Zone 6 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_7_duration
+    name: "Program A Zone 7 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_8_duration
+    name: "Program A Zone 8 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_a_zone_9_duration
+    name: "Program A Zone 9 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  # -------------------------------------------------------
+  # PROGRAM B
+  # -------------------------------------------------------
+
+  - platform: template
+    id: program_b_cycle_count
+    name: "Program B Cycle Count"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 5
+    step: 1
+    initial_value: 1
+
+  - platform: template
+    id: program_b_transition_delay
+    name: "Program B Zone Transition Delay"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 5
+    unit_of_measurement: "s"
+
+  - platform: template
+    id: program_b_zone_1_duration
+    name: "Program B Zone 1 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_2_duration
+    name: "Program B Zone 2 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_3_duration
+    name: "Program B Zone 3 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_4_duration
+    name: "Program B Zone 4 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_5_duration
+    name: "Program B Zone 5 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_6_duration
+    name: "Program B Zone 6 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_7_duration
+    name: "Program B Zone 7 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_8_duration
+    name: "Program B Zone 8 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_b_zone_9_duration
+    name: "Program B Zone 9 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  # -------------------------------------------------------
+  # PROGRAM C
+  # -------------------------------------------------------
+
+  - platform: template
+    id: program_c_cycle_count
+    name: "Program C Cycle Count"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 5
+    step: 1
+    initial_value: 1
+
+  - platform: template
+    id: program_c_transition_delay
+    name: "Program C Zone Transition Delay"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 5
+    unit_of_measurement: "s"
+
+  - platform: template
+    id: program_c_zone_1_duration
+    name: "Program C Zone 1 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_2_duration
+    name: "Program C Zone 2 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_3_duration
+    name: "Program C Zone 3 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_4_duration
+    name: "Program C Zone 4 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_5_duration
+    name: "Program C Zone 5 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_6_duration
+    name: "Program C Zone 6 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_7_duration
+    name: "Program C Zone 7 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_8_duration
+    name: "Program C Zone 8 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
+
+  - platform: template
+    id: program_c_zone_9_duration
+    name: "Program C Zone 9 Duration"
+    optimistic: true
+    restore_value: true
+    min_value: 1
+    max_value: 30
+    step: 1
+    initial_value: 10
+    unit_of_measurement: "min"
