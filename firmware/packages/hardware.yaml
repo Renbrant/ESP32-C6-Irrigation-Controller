@@ -13,6 +13,8 @@ esphome:
   on_boot:
     priority: 600
     then:
+      - script.execute: stop_all_irrigation
+      - script.execute: enforce_master_valve_mode
       - script.execute: led_boot_animation
 
 esp32:

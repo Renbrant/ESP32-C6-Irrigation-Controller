@@ -1,0 +1,661 @@
+# =========================================================
+# irriBRANT v4.0
+# irrigation.yaml
+# =========================================================
+
+# =========================================================
+# PHYSICAL OUTPUTS & MASTER SWITCH
+# =========================================================
+globals:
+
+  - id: zone_9_enabled_before_master_valve
+    type: bool
+    restore_value: yes
+    initial_value: 'true'
+
+switch:
+  # --- MASTER VALVE MODE ---
+  - platform: template
+    id: use_master_valve
+    name: "Use Master Valve"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    turn_on_action:
+      - logger.log: "Master Valve mode enabled: Zone 9 output will be used as the Master Valve"
+      - lambda: |-
+          id(zone_9_enabled_before_master_valve) = id(zone_9_enabled).state;
+      - switch.template.publish:
+          id: zone_9_enabled
+          state: OFF
+      - switch.template.publish:
+          id: zone_9_output
+          state: OFF
+      - if:
+          condition:
+            lambda: |-
+              return !id(zone_1_relay).state &&
+                     !id(zone_2_relay).state &&
+                     !id(zone_3_relay).state &&
+                     !id(zone_4_relay).state &&
+                     !id(zone_5_relay).state &&
+                     !id(zone_6_relay).state &&
+                     !id(zone_7_relay).state &&
+                     !id(zone_8_relay).state;
+          then:
+            - switch.turn_off: zone_9_relay
+    turn_off_action:
+      - logger.log: "Master Valve mode disabled: Zone 9 output is available as a normal irrigation zone"
+      - switch.turn_off: zone_9_relay
+      - switch.template.publish:
+          id: zone_9_enabled
+          state: !lambda |-
+            return id(zone_9_enabled_before_master_valve);
+      - switch.template.publish:
+          id: zone_9_output
+          state: OFF
+
+  # --- MASTER SYSTEM ENABLE SWITCH ---
+  # Atua como um "Disjuntor Lógico". Se desligado, corta a rega imediatamente
+  # e o painel de automação ignorará os agendamentos.
+  - platform: template
+    id: main_irrigation_switch
+    name: "Main Irrigation System"
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    turn_off_action:
+      - switch.turn_off: sprinkler_active_cycle
+      - script.execute: stop_all_irrigation
+
+  # ZONE 1 (Mapped to MCP23017 - GPB0)
+  - platform: gpio
+    id: zone_1_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 8  
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 2 (Botão 9 -> Z2)
+  - platform: gpio
+    id: zone_2_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 7  
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 3 (Botão 8 -> Z3)
+  - platform: gpio
+    id: zone_3_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 6
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 4 (Botão 7 -> Z4)
+  - platform: gpio
+    id: zone_4_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 5
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 5 (Botão 6 -> Z5)
+  - platform: gpio
+    id: zone_5_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 4
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 6 (Botão 5 -> Z6)
+  - platform: gpio
+    id: zone_6_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 3
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 7 (Botão 4 -> Z7)
+  - platform: gpio
+    id: zone_7_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 2
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 8 (Botão 3 -> Z8)
+  - platform: gpio
+    id: zone_8_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 1
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  # ZONE 9 (Botão 2 -> Z9)
+  - platform: gpio
+    id: zone_9_relay
+    pin:
+      mcp23xxx: mcp23017_hub
+      number: 0 
+    restore_mode: ALWAYS_OFF
+    internal: true
+
+  - platform: template
+    id: zone_1_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 1
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 1
+
+  - platform: template
+    id: zone_2_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 2
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 2
+
+  - platform: template
+    id: zone_3_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 3
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 3
+
+  - platform: template
+    id: zone_4_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 4
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 4
+
+  - platform: template
+    id: zone_5_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 5
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 5
+
+  - platform: template
+    id: zone_6_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 6
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 6
+
+  - platform: template
+    id: zone_7_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 7
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 7
+
+  - platform: template
+    id: zone_8_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - script.execute:
+          id: open_irrigation_zone
+          zone: 8
+    turn_off_action:
+      - script.execute:
+          id: close_irrigation_zone
+          zone: 8
+
+  - platform: template
+    id: zone_9_output
+    optimistic: true
+    internal: true
+    turn_on_action:
+      - if:
+          condition:
+            lambda: |-
+              return id(use_master_valve).state;
+          then:
+            - logger.log:
+                level: WARN
+                format: "Zone 9 irrigation request ignored because Master Valve mode is enabled"
+            - switch.template.publish:
+                id: zone_9_output
+                state: OFF
+          else:
+            - switch.turn_on: zone_9_relay
+    turn_off_action:
+      - if:
+          condition:
+            lambda: |-
+              return id(use_master_valve).state;
+          then:
+            - if:
+                condition:
+                  lambda: |-
+                    return !id(zone_1_relay).state &&
+                           !id(zone_2_relay).state &&
+                           !id(zone_3_relay).state &&
+                           !id(zone_4_relay).state &&
+                           !id(zone_5_relay).state &&
+                           !id(zone_6_relay).state &&
+                           !id(zone_7_relay).state &&
+                           !id(zone_8_relay).state;
+                then:
+                  - switch.turn_off: zone_9_relay
+          else:
+            - switch.turn_off: zone_9_relay
+
+# =========================================================
+# MASTER VALVE SETTINGS
+# =========================================================
+number:
+
+  - platform: template
+    id: master_valve_delay
+    name: "Master Valve Delay"
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 10
+    step: 1
+    initial_value: 2
+    unit_of_measurement: "s"
+
+# =========================================================
+# SAFE IRRIGATION CONTROL
+# =========================================================
+script:
+
+  - id: open_irrigation_zone
+    mode: parallel
+    parameters:
+      zone: int
+    then:
+      - if:
+          condition:
+            lambda: |-
+              return zone == 9 && id(use_master_valve).state;
+          then:
+            - logger.log:
+                level: WARN
+                format: "Zone 9 irrigation request ignored because Master Valve mode is enabled"
+            - switch.template.publish:
+                id: zone_9_output
+                state: OFF
+          else:
+            - if:
+                condition:
+                  lambda: |-
+                    return id(use_master_valve).state && zone >= 1 && zone <= 8 && !id(zone_9_relay).state;
+                then:
+                  - switch.turn_on: zone_9_relay
+                  - delay: !lambda |-
+                      return (uint32_t) (id(master_valve_delay).state * 1000);
+            - lambda: |-
+                switch (zone) {
+                  case 1: id(zone_1_relay).turn_on(); break;
+                  case 2: id(zone_2_relay).turn_on(); break;
+                  case 3: id(zone_3_relay).turn_on(); break;
+                  case 4: id(zone_4_relay).turn_on(); break;
+                  case 5: id(zone_5_relay).turn_on(); break;
+                  case 6: id(zone_6_relay).turn_on(); break;
+                  case 7: id(zone_7_relay).turn_on(); break;
+                  case 8: id(zone_8_relay).turn_on(); break;
+                  case 9:
+                    if (!id(use_master_valve).state) {
+                      id(zone_9_relay).turn_on();
+                    }
+                    break;
+                  default:
+                    ESP_LOGW("irrigation", "Ignoring invalid irrigation zone %d", zone);
+                    break;
+                }
+
+  - id: close_irrigation_zone
+    mode: parallel
+    parameters:
+      zone: int
+    then:
+      - lambda: |-
+          switch (zone) {
+            case 1: id(zone_1_relay).turn_off(); break;
+            case 2: id(zone_2_relay).turn_off(); break;
+            case 3: id(zone_3_relay).turn_off(); break;
+            case 4: id(zone_4_relay).turn_off(); break;
+            case 5: id(zone_5_relay).turn_off(); break;
+            case 6: id(zone_6_relay).turn_off(); break;
+            case 7: id(zone_7_relay).turn_off(); break;
+            case 8: id(zone_8_relay).turn_off(); break;
+            case 9:
+              if (!id(use_master_valve).state) {
+                id(zone_9_relay).turn_off();
+              }
+              break;
+            default:
+              ESP_LOGW("irrigation", "Ignoring invalid irrigation zone %d", zone);
+              break;
+          }
+      - if:
+          condition:
+            lambda: |-
+              return id(use_master_valve).state &&
+                     !id(zone_1_relay).state &&
+                     !id(zone_2_relay).state &&
+                     !id(zone_3_relay).state &&
+                     !id(zone_4_relay).state &&
+                     !id(zone_5_relay).state &&
+                     !id(zone_6_relay).state &&
+                     !id(zone_7_relay).state &&
+                     !id(zone_8_relay).state;
+          then:
+            - switch.turn_off: zone_9_relay
+
+  - id: stop_all_irrigation
+    mode: restart
+    then:
+      - lambda: |-
+          id(irribrant_controller).clear_queued_valves();
+      - switch.template.publish:
+          id: zone_1_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_2_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_3_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_4_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_5_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_6_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_7_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_8_output
+          state: OFF
+      - switch.template.publish:
+          id: zone_9_output
+          state: OFF
+      - switch.turn_off: zone_1_relay
+      - switch.turn_off: zone_2_relay
+      - switch.turn_off: zone_3_relay
+      - switch.turn_off: zone_4_relay
+      - switch.turn_off: zone_5_relay
+      - switch.turn_off: zone_6_relay
+      - switch.turn_off: zone_7_relay
+      - switch.turn_off: zone_8_relay
+      - switch.turn_off: zone_9_relay
+
+  - id: enforce_master_valve_mode
+    mode: restart
+    then:
+      - if:
+          condition:
+            lambda: |-
+              return id(use_master_valve).state;
+          then:
+            - switch.template.publish:
+                id: zone_9_enabled
+                state: OFF
+            - switch.template.publish:
+                id: zone_9_output
+                state: OFF
+            - if:
+                condition:
+                  lambda: |-
+                    return !id(zone_1_relay).state &&
+                           !id(zone_2_relay).state &&
+                           !id(zone_3_relay).state &&
+                           !id(zone_4_relay).state &&
+                           !id(zone_5_relay).state &&
+                           !id(zone_6_relay).state &&
+                           !id(zone_7_relay).state &&
+                           !id(zone_8_relay).state;
+                then:
+                  - switch.turn_off: zone_9_relay
+
+# =========================================================
+# IRRIGATION CONTROLLER
+# =========================================================
+sprinkler:
+  - id: irribrant_controller
+    main_switch:
+      name: "Active Cycle"
+      id: sprinkler_active_cycle
+    auto_advance_switch: "Auto Advance Zones"
+    
+    valves:
+      - valve_switch: "Zone 1 Valve"
+        valve_switch_id: zone_1_output
+        enable_switch:
+          name: "Enable Zone 1"
+          id: zone_1_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_1_enabled
+            - switch.turn_off: program_b_zone_1_enabled
+            - switch.turn_off: program_c_zone_1_enabled
+        run_duration_number:
+          id: zone_1_duration
+          name: "Zone 1 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 2 Valve"
+        valve_switch_id: zone_2_output
+        enable_switch:
+          name: "Enable Zone 2"
+          id: zone_2_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_2_enabled
+            - switch.turn_off: program_b_zone_2_enabled
+            - switch.turn_off: program_c_zone_2_enabled
+        run_duration_number:
+          id: zone_2_duration
+          name: "Zone 2 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 3 Valve"
+        valve_switch_id: zone_3_output
+        enable_switch:
+          name: "Enable Zone 3"
+          id: zone_3_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_3_enabled
+            - switch.turn_off: program_b_zone_3_enabled
+            - switch.turn_off: program_c_zone_3_enabled
+        run_duration_number:
+          id: zone_3_duration
+          name: "Zone 3 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 4 Valve"
+        valve_switch_id: zone_4_output
+        enable_switch:
+          name: "Enable Zone 4"
+          id: zone_4_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_4_enabled
+            - switch.turn_off: program_b_zone_4_enabled
+            - switch.turn_off: program_c_zone_4_enabled
+        run_duration_number:
+          id: zone_4_duration
+          name: "Zone 4 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 5 Valve"
+        valve_switch_id: zone_5_output
+        enable_switch:
+          name: "Enable Zone 5"
+          id: zone_5_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_5_enabled
+            - switch.turn_off: program_b_zone_5_enabled
+            - switch.turn_off: program_c_zone_5_enabled
+        run_duration_number:
+          id: zone_5_duration
+          name: "Zone 5 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 6 Valve"
+        valve_switch_id: zone_6_output
+        enable_switch:
+          name: "Enable Zone 6"
+          id: zone_6_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_6_enabled
+            - switch.turn_off: program_b_zone_6_enabled
+            - switch.turn_off: program_c_zone_6_enabled
+        run_duration_number:
+          id: zone_6_duration
+          name: "Zone 6 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 7 Valve"
+        valve_switch_id: zone_7_output
+        enable_switch:
+          name: "Enable Zone 7"
+          id: zone_7_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_7_enabled
+            - switch.turn_off: program_b_zone_7_enabled
+            - switch.turn_off: program_c_zone_7_enabled
+        run_duration_number:
+          id: zone_7_duration
+          name: "Zone 7 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 8 Valve"
+        valve_switch_id: zone_8_output
+        enable_switch:
+          name: "Enable Zone 8"
+          id: zone_8_enabled
+          on_turn_off:
+            - switch.turn_off: program_a_zone_8_enabled
+            - switch.turn_off: program_b_zone_8_enabled
+            - switch.turn_off: program_c_zone_8_enabled
+        run_duration_number:
+          id: zone_8_duration
+          name: "Zone 8 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
+
+      - valve_switch: "Zone 9 Valve"
+        valve_switch_id: zone_9_output
+        enable_switch:
+          name: "Enable Zone 9"
+          id: zone_9_enabled
+          on_turn_on:
+            - if:
+                condition:
+                  lambda: |-
+                    return id(use_master_valve).state;
+                then:
+                  - logger.log:
+                      level: WARN
+                      format: "Enable Zone 9 request ignored because Master Valve mode is enabled"
+                  - switch.template.publish:
+                      id: zone_9_enabled
+                      state: OFF
+          on_turn_off:
+            - switch.turn_off: program_a_zone_9_enabled
+            - switch.turn_off: program_b_zone_9_enabled
+            - switch.turn_off: program_c_zone_9_enabled
+        run_duration_number:
+          id: zone_9_duration
+          name: "Zone 9 Duration"
+          initial_value: 10
+          restore_value: true
+          min_value: 1
+          max_value: 30
+          step: 1
+          unit_of_measurement: "min"
