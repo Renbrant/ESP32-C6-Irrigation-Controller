@@ -1,7 +1,7 @@
 # irriBRANT - Advanced Smart Irrigation Controller
 
 <p align="center">
-  <img src="Photos/Promo" alt="irriBRANT Banner">
+  <img src="Photos/Promo/banner.png" alt="irriBRANT Banner">
 </p>
 
 <p align="center">
