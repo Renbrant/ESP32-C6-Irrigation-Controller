@@ -53,7 +53,7 @@ script:
                        (id(zone_6_enabled).state && id(program_a_zone_6_enabled).state) ||
                        (id(zone_7_enabled).state && id(program_a_zone_7_enabled).state) ||
                        (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) ||
-                       (id(zone_9_enabled).state && id(program_a_zone_9_enabled).state)
+                       (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state)
                      );
           then:
 
@@ -107,7 +107,7 @@ script:
                       if (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_a_zone_8_duration).state * 60));
                       }
-                      if (id(zone_9_enabled).state && id(program_a_zone_9_enabled).state) {
+                      if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_a_zone_9_duration).state * 60));
                       }
 
@@ -167,7 +167,7 @@ script:
                        (id(zone_6_enabled).state && id(program_b_zone_6_enabled).state) ||
                        (id(zone_7_enabled).state && id(program_b_zone_7_enabled).state) ||
                        (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) ||
-                       (id(zone_9_enabled).state && id(program_b_zone_9_enabled).state)
+                       (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state)
                      );
           then:
 
@@ -221,7 +221,7 @@ script:
                       if (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_b_zone_8_duration).state * 60));
                       }
-                      if (id(zone_9_enabled).state && id(program_b_zone_9_enabled).state) {
+                      if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_b_zone_9_duration).state * 60));
                       }
 
@@ -281,7 +281,7 @@ script:
                        (id(zone_6_enabled).state && id(program_c_zone_6_enabled).state) ||
                        (id(zone_7_enabled).state && id(program_c_zone_7_enabled).state) ||
                        (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) ||
-                       (id(zone_9_enabled).state && id(program_c_zone_9_enabled).state)
+                       (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state)
                      );
           then:
 
@@ -335,7 +335,7 @@ script:
                       if (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_c_zone_8_duration).state * 60));
                       }
-                      if (id(zone_9_enabled).state && id(program_c_zone_9_enabled).state) {
+                      if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state) {
                         id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_c_zone_9_duration).state * 60));
                       }
 

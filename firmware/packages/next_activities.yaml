@@ -111,7 +111,7 @@ text_sensor:
           add_zone(id(zone_6_enabled).state && id(program_a_zone_6_enabled).state, id(program_a_zone_6_duration).state);
           add_zone(id(zone_7_enabled).state && id(program_a_zone_7_enabled).state, id(program_a_zone_7_duration).state);
           add_zone(id(zone_8_enabled).state && id(program_a_zone_8_enabled).state, id(program_a_zone_8_duration).state);
-          add_zone(id(zone_9_enabled).state && id(program_a_zone_9_enabled).state, id(program_a_zone_9_duration).state);
+          add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state, id(program_a_zone_9_duration).state);
           cycles = (int) id(program_a_cycle_count).state;
           transition_delay = (uint32_t) id(program_a_transition_delay).state;
         } else if (program == 'B') {
@@ -123,7 +123,7 @@ text_sensor:
           add_zone(id(zone_6_enabled).state && id(program_b_zone_6_enabled).state, id(program_b_zone_6_duration).state);
           add_zone(id(zone_7_enabled).state && id(program_b_zone_7_enabled).state, id(program_b_zone_7_duration).state);
           add_zone(id(zone_8_enabled).state && id(program_b_zone_8_enabled).state, id(program_b_zone_8_duration).state);
-          add_zone(id(zone_9_enabled).state && id(program_b_zone_9_enabled).state, id(program_b_zone_9_duration).state);
+          add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state, id(program_b_zone_9_duration).state);
           cycles = (int) id(program_b_cycle_count).state;
           transition_delay = (uint32_t) id(program_b_transition_delay).state;
         } else if (program == 'C') {
@@ -135,7 +135,7 @@ text_sensor:
           add_zone(id(zone_6_enabled).state && id(program_c_zone_6_enabled).state, id(program_c_zone_6_duration).state);
           add_zone(id(zone_7_enabled).state && id(program_c_zone_7_enabled).state, id(program_c_zone_7_duration).state);
           add_zone(id(zone_8_enabled).state && id(program_c_zone_8_enabled).state, id(program_c_zone_8_duration).state);
-          add_zone(id(zone_9_enabled).state && id(program_c_zone_9_enabled).state, id(program_c_zone_9_duration).state);
+          add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state, id(program_c_zone_9_duration).state);
           cycles = (int) id(program_c_cycle_count).state;
           transition_delay = (uint32_t) id(program_c_transition_delay).state;
         }
@@ -394,7 +394,7 @@ text_sensor:
           add_zone(id(zone_6_enabled).state && id(program_a_zone_6_enabled).state, id(program_a_zone_6_duration).state);
           add_zone(id(zone_7_enabled).state && id(program_a_zone_7_enabled).state, id(program_a_zone_7_duration).state);
           add_zone(id(zone_8_enabled).state && id(program_a_zone_8_enabled).state, id(program_a_zone_8_duration).state);
-          add_zone(id(zone_9_enabled).state && id(program_a_zone_9_enabled).state, id(program_a_zone_9_duration).state);
+          add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state, id(program_a_zone_9_duration).state);
           cycles = (int) id(program_a_cycle_count).state;
           transition_delay = (uint32_t) id(program_a_transition_delay).state;
         } else if (program == 'B') {
@@ -406,7 +406,7 @@ text_sensor:
           add_zone(id(zone_6_enabled).state && id(program_b_zone_6_enabled).state, id(program_b_zone_6_duration).state);
           add_zone(id(zone_7_enabled).state && id(program_b_zone_7_enabled).state, id(program_b_zone_7_duration).state);
           add_zone(id(zone_8_enabled).state && id(program_b_zone_8_enabled).state, id(program_b_zone_8_duration).state);
-          add_zone(id(zone_9_enabled).state && id(program_b_zone_9_enabled).state, id(program_b_zone_9_duration).state);
+          add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state, id(program_b_zone_9_duration).state);
           cycles = (int) id(program_b_cycle_count).state;
           transition_delay = (uint32_t) id(program_b_transition_delay).state;
         } else if (program == 'C') {
@@ -418,7 +418,7 @@ text_sensor:
           add_zone(id(zone_6_enabled).state && id(program_c_zone_6_enabled).state, id(program_c_zone_6_duration).state);
           add_zone(id(zone_7_enabled).state && id(program_c_zone_7_enabled).state, id(program_c_zone_7_duration).state);
           add_zone(id(zone_8_enabled).state && id(program_c_zone_8_enabled).state, id(program_c_zone_8_duration).state);
-          add_zone(id(zone_9_enabled).state && id(program_c_zone_9_enabled).state, id(program_c_zone_9_duration).state);
+          add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state, id(program_c_zone_9_duration).state);
           cycles = (int) id(program_c_cycle_count).state;
           transition_delay = (uint32_t) id(program_c_transition_delay).state;
         }
