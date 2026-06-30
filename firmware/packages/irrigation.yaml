@@ -1,5 +1,5 @@
 # =========================================================
-# irriBRANT v4.0
+# irriBRANT v4.1
 # irrigation.yaml
 # =========================================================
 
@@ -297,14 +297,25 @@ switch:
 number:
 
   - platform: template
-    id: master_valve_delay
-    name: "Master Valve Delay"
+    id: master_valve_open_offset_seconds
+    name: "Master Valve Open Offset"
     optimistic: true
     restore_value: true
-    min_value: 0
+    min_value: -10
     max_value: 10
     step: 1
-    initial_value: 2
+    initial_value: -2
+    unit_of_measurement: "s"
+
+  - platform: template
+    id: master_valve_close_offset_seconds
+    name: "Master Valve Close Offset"
+    optimistic: true
+    restore_value: true
+    min_value: -10
+    max_value: 10
+    step: 1
+    initial_value: 0
     unit_of_measurement: "s"
 
 # =========================================================
@@ -332,11 +343,16 @@ script:
             - if:
                 condition:
                   lambda: |-
-                    return id(use_master_valve).state && zone >= 1 && zone <= 8 && !id(zone_9_relay).state;
+                    return id(use_master_valve).state &&
+                           zone >= 1 &&
+                           zone <= 8 &&
+                           !id(zone_9_relay).state &&
+                           id(master_valve_open_offset_seconds).state <= 0;
                 then:
                   - switch.turn_on: zone_9_relay
                   - delay: !lambda |-
-                      return (uint32_t) (id(master_valve_delay).state * 1000);
+                      int offset = (int) id(master_valve_open_offset_seconds).state;
+                      return (uint32_t) (abs(offset) * 1000);
             - lambda: |-
                 switch (zone) {
                   case 1: id(zone_1_relay).turn_on(); break;
@@ -356,12 +372,82 @@ script:
                     ESP_LOGW("irrigation", "Ignoring invalid irrigation zone %d", zone);
                     break;
                 }
+            - if:
+                condition:
+                  lambda: |-
+                    return id(use_master_valve).state &&
+                           zone >= 1 &&
+                           zone <= 8 &&
+                           !id(zone_9_relay).state &&
+                           id(master_valve_open_offset_seconds).state > 0;
+                then:
+                  - delay: !lambda |-
+                      return (uint32_t) (id(master_valve_open_offset_seconds).state * 1000);
+                  - if:
+                      condition:
+                        lambda: |-
+                          return id(use_master_valve).state &&
+                                 !id(zone_9_relay).state &&
+                                 (id(zone_1_relay).state ||
+                                  id(zone_2_relay).state ||
+                                  id(zone_3_relay).state ||
+                                  id(zone_4_relay).state ||
+                                  id(zone_5_relay).state ||
+                                  id(zone_6_relay).state ||
+                                  id(zone_7_relay).state ||
+                                  id(zone_8_relay).state);
+                      then:
+                        - switch.turn_on: zone_9_relay
 
   - id: close_irrigation_zone
     mode: parallel
     parameters:
       zone: int
     then:
+      - if:
+          condition:
+            lambda: |-
+              bool other_zone_active = false;
+              switch (zone) {
+                case 1:
+                  other_zone_active = id(zone_2_relay).state || id(zone_3_relay).state || id(zone_4_relay).state || id(zone_5_relay).state || id(zone_6_relay).state || id(zone_7_relay).state || id(zone_8_relay).state;
+                  break;
+                case 2:
+                  other_zone_active = id(zone_1_relay).state || id(zone_3_relay).state || id(zone_4_relay).state || id(zone_5_relay).state || id(zone_6_relay).state || id(zone_7_relay).state || id(zone_8_relay).state;
+                  break;
+                case 3:
+                  other_zone_active = id(zone_1_relay).state || id(zone_2_relay).state || id(zone_4_relay).state || id(zone_5_relay).state || id(zone_6_relay).state || id(zone_7_relay).state || id(zone_8_relay).state;
+                  break;
+                case 4:
+                  other_zone_active = id(zone_1_relay).state || id(zone_2_relay).state || id(zone_3_relay).state || id(zone_5_relay).state || id(zone_6_relay).state || id(zone_7_relay).state || id(zone_8_relay).state;
+                  break;
+                case 5:
+                  other_zone_active = id(zone_1_relay).state || id(zone_2_relay).state || id(zone_3_relay).state || id(zone_4_relay).state || id(zone_6_relay).state || id(zone_7_relay).state || id(zone_8_relay).state;
+                  break;
+                case 6:
+                  other_zone_active = id(zone_1_relay).state || id(zone_2_relay).state || id(zone_3_relay).state || id(zone_4_relay).state || id(zone_5_relay).state || id(zone_7_relay).state || id(zone_8_relay).state;
+                  break;
+                case 7:
+                  other_zone_active = id(zone_1_relay).state || id(zone_2_relay).state || id(zone_3_relay).state || id(zone_4_relay).state || id(zone_5_relay).state || id(zone_6_relay).state || id(zone_8_relay).state;
+                  break;
+                case 8:
+                  other_zone_active = id(zone_1_relay).state || id(zone_2_relay).state || id(zone_3_relay).state || id(zone_4_relay).state || id(zone_5_relay).state || id(zone_6_relay).state || id(zone_7_relay).state;
+                  break;
+                default:
+                  other_zone_active = true;
+                  break;
+              }
+              return id(use_master_valve).state &&
+                     zone >= 1 &&
+                     zone <= 8 &&
+                     id(zone_9_relay).state &&
+                     id(master_valve_close_offset_seconds).state < 0 &&
+                     !other_zone_active;
+          then:
+            - switch.turn_off: zone_9_relay
+            - delay: !lambda |-
+                int offset = (int) id(master_valve_close_offset_seconds).state;
+                return (uint32_t) (abs(offset) * 1000);
       - lambda: |-
           switch (zone) {
             case 1: id(zone_1_relay).turn_off(); break;
@@ -394,11 +480,33 @@ script:
                      !id(zone_7_relay).state &&
                      !id(zone_8_relay).state;
           then:
-            - switch.turn_off: zone_9_relay
+            - if:
+                condition:
+                  lambda: |-
+                    return id(master_valve_close_offset_seconds).state > 0 && id(zone_9_relay).state;
+                then:
+                  - delay: !lambda |-
+                      return (uint32_t) (id(master_valve_close_offset_seconds).state * 1000);
+            - if:
+                condition:
+                  lambda: |-
+                    return id(use_master_valve).state &&
+                           !id(zone_1_relay).state &&
+                           !id(zone_2_relay).state &&
+                           !id(zone_3_relay).state &&
+                           !id(zone_4_relay).state &&
+                           !id(zone_5_relay).state &&
+                           !id(zone_6_relay).state &&
+                           !id(zone_7_relay).state &&
+                           !id(zone_8_relay).state;
+                then:
+                  - switch.turn_off: zone_9_relay
 
   - id: stop_all_irrigation
     mode: restart
     then:
+      - script.stop: open_irrigation_zone
+      - script.stop: close_irrigation_zone
       - lambda: |-
           id(irribrant_controller).clear_queued_valves();
       - switch.template.publish:

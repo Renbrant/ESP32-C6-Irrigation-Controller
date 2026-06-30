@@ -12,13 +12,14 @@
 
 ## Project Status
 
+**Current active firmware:** `v4.1`  
 **Current stable firmware:** `v4.0-stable`  
 **Current hardware revision:** `PCB v1.2`  
 **Current stage:** **Field Validated / Active Reliability Testing**
 
 irriBRANT has moved beyond prototype validation. The PCB has been designed, fabricated, assembled, flashed, integrated with Home Assistant, and validated with real irrigation valves.
 
-The latest firmware release, **v4.0**, adds optional **Master Valve support using Zone 9** and has been successfully tested in the field.
+The latest firmware release, **v4.1**, adds independent signed **Master Valve open and close offsets** on top of the field-tested v4.0 Master Valve support.
 
 ---
 
@@ -56,10 +57,53 @@ The result is a flexible, reliable, and expandable irrigation platform for smart
 
 | Version | Type | Status | Description |
 |---|---|---|---|
+| `v4.1` | Firmware | Active Development | Adds independent signed Master Valve open and close offsets while preserving v4.0 Zone 9 Master Valve behavior. |
 | `v4.0-stable` | Firmware | Stable / Field Validated | Adds optional Master Valve support using Zone 9, updates firmware structure, and introduces dashboard support for Master Valve mode. |
 | `v3.3-stable` | Firmware | Stable Rollback | Stable 9-zone irrigation firmware before Master Valve support. All 9 zones operate as standard irrigation zones. |
 | `PCB v1.2` | Hardware | Field Test / Validation | Adds MOV surge protection, NTC inrush limiting, improved AC architecture, updated routing, and TO-252 triac output design. |
 | `PCB v1.01` | Hardware | Functional Prototype | First assembled and tested board with ESP32-C6, MCP23017, 9 triac outputs, RGB LED, and zone LEDs. |
+
+---
+
+# v4.1 - Master Valve Timing Offsets
+
+Firmware `v4.1` keeps the v4.0 Master Valve behavior and adds two independent signed timing controls.
+
+## Master Valve Offset Configuration
+
+The firmware exposes:
+
+| Control | Purpose |
+|---|---|
+| `Use Master Valve` | Enables or disables Master Valve mode. |
+| `Master Valve Open Offset` | Controls whether the Master Valve opens before, with, or after the irrigation zone. |
+| `Master Valve Close Offset` | Controls whether the Master Valve closes before, with, or after the final irrigation zone. |
+
+Both offset controls use seconds, restore across reboot, and support values from `-10` to `10` in 1-second steps.
+
+Open offset behavior:
+
+- Negative value: Master Valve opens before the zone valve.
+- Zero: Master Valve and zone valve open together, with the Master Valve command first.
+- Positive value: Master Valve opens after the zone valve.
+
+Close offset behavior:
+
+- Negative value: Master Valve closes before the zone valve.
+- Zero: zone valve and Master Valve close together, with the zone valve command first.
+- Positive value: Master Valve closes after the zone valve.
+
+Default behavior:
+
+```text
+Use Master Valve: OFF
+Master Valve Open Offset: -2 seconds
+Master Valve Close Offset: 0 seconds
+```
+
+These offsets only apply when Master Valve mode is enabled. When Master Valve mode is disabled, Zone 9 remains a normal irrigation zone and the controller behaves as a standard 9-zone irrigation controller.
+
+Safety shutdown paths still force all outputs off immediately and do not wait for Master Valve close offsets.
 
 ---
 
@@ -92,7 +136,7 @@ The firmware exposes:
 | Control | Purpose |
 |---|---|
 | `Use Master Valve` | Enables or disables Master Valve mode. |
-| `Master Valve Delay` | Defines the delay between opening the Master Valve and opening the irrigation zone. |
+| `Master Valve Delay` | Defines the delay between opening the Master Valve and opening the irrigation zone in v4.0. In v4.1 this is replaced by signed open and close offsets. |
 
 Default behavior:
 
@@ -445,7 +489,8 @@ Current diagnostics include:
 - Main irrigation system state
 - Zone activity
 - Master Valve mode
-- Master Valve delay
+- Master Valve open offset
+- Master Valve close offset
 - Next activities
 - 5-day schedule
 
@@ -724,6 +769,7 @@ Ongoing validation includes:
 - Rain lock logic
 - Next activity and 5-day schedule sensors
 - Master Valve support using Zone 9
+- Master Valve open and close timing offsets
 - Dashboard v4.0 Master Valve support
 - OTA field update
 - Real valve testing
