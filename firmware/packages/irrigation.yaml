@@ -1,5 +1,5 @@
 # =========================================================
-# irriBRANT v4.1
+# irriBRANT v4.2
 # irrigation.yaml
 # =========================================================
 
@@ -317,6 +317,24 @@ number:
     step: 1
     initial_value: 0
     unit_of_measurement: "s"
+
+# =========================================================
+# OUTPUT STATUS SENSORS
+# =========================================================
+binary_sensor:
+
+  - platform: template
+    id: master_valve_output_status
+    name: "Master Valve Output"
+
+interval:
+
+  - interval: 250ms
+    then:
+      - binary_sensor.template.publish:
+          id: master_valve_output_status
+          state: !lambda |-
+            return id(zone_9_relay).state;
 
 # =========================================================
 # SAFE IRRIGATION CONTROL
