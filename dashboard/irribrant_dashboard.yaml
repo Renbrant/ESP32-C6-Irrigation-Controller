@@ -11,10 +11,13 @@ header:
   card:
     type: custom:mushroom-template-card
     entity: switch.irribrant_pro_active_cycle
-    primary: irriBRANT PRO v4.1
-    secondary: >-
-      {{ 'Watering now' if is_state('switch.irribrant_pro_active_cycle', 'on')
-      else 'System ready' }} - Smart irrigation control and monitoring
+    primary: irriBRANT PRO v4.2
+    secondary: |-
+      {% if is_state('switch.irribrant_pro_active_cycle', 'on') %}
+        Watering now
+      {% else %}
+        System ready
+      {% endif %} - Smart irrigation control and monitoring
     icon: mdi:sprinkler-variant
     multiline_secondary: true
     tap_action:
@@ -33,20 +36,32 @@ badges:
     entity: switch.irribrant_pro_active_cycle
     name: Cycle
   - type: custom:mushroom-template-badge
-    content: >-
-      Master {{ 'Yes' if
-      is_state('switch.backyard_irribrant_pro_use_master_valve', 'on') else 'No'
-      }}
-    icon: >-
-      {{ 'mdi:valve-open' if
-      is_state('switch.backyard_irribrant_pro_use_master_valve', 'on') else
-      'mdi:valve-closed' }}
-    color: >-
-      {{ 'blue' if is_state('switch.backyard_irribrant_pro_use_master_valve',
-      'on') else 'grey' }}
     entity: switch.backyard_irribrant_pro_use_master_valve
+    content: >-
+      Master {% if is_state('switch.backyard_irribrant_pro_use_master_valve',
+      'on') %}Yes{% else %}No{% endif %}
+    icon: >-
+      {% if is_state('switch.backyard_irribrant_pro_use_master_valve', 'on')
+      %}mdi:valve{% else %}mdi:valve-closed{% endif %}
+    color: >-
+      {% if is_state('switch.backyard_irribrant_pro_use_master_valve', 'on')
+      %}blue{% else %}grey{% endif %}
     tap_action:
       action: toggle
+  - type: custom:mushroom-template-badge
+    entity: binary_sensor.backyard_irribrant_pro_master_valve_output
+    content: >-
+      Output {% if
+      is_state('binary_sensor.backyard_irribrant_pro_master_valve_output', 'on')
+      %}Open{% else %}Closed{% endif %}
+    icon: >-
+      {% if is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+      'on') %}mdi:valve-open{% else %}mdi:valve-closed{% endif %}
+    color: >-
+      {% if is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+      'on') %}blue{% else %}grey{% endif %}
+    tap_action:
+      action: more-info
   - type: entity
     show_name: true
     show_state: true
@@ -80,6 +95,8 @@ sections:
             icon: mdi:calendar-clock
             multiline_secondary: true
             layout: vertical
+            tap_action:
+              action: more-info
           - type: grid
             columns: 3
             square: false
@@ -121,7 +138,6 @@ sections:
                 entity: button.irribrant_pro_run_program_a
                 name: Run A
                 icon: mdi:alpha-a-circle
-                show_entity_picture: false
                 hide_state: true
                 vertical: false
                 tap_action:
@@ -154,15 +170,13 @@ sections:
                   target:
                     entity_id: button.irribrant_pro_run_program_c
                 features_position: bottom
-            grid_options:
-              rows: 1
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
             title: Active Zones
             subtitle: >-
-              Disabled zones are hidden. Zone 9 becomes Master Valve when
-              enabled.
+              Disabled zones are hidden. Zone 9 becomes the physical Master
+              Valve when Master Valve mode is enabled.
           - type: grid
             columns: 3
             square: false
@@ -172,97 +186,161 @@ sections:
                   - entity: switch.irribrant_pro_enable_zone_1
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_1_valve
-                  name: Zone 1
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 1
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_1_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_1_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_1_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_2
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_2_valve
-                  name: Zone 2
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 2
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_2_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_2_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_2_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_3
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_3_valve
-                  name: Zone 3
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 3
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_3_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_3_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_3_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_4
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_4_valve
-                  name: Zone 4
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 4
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_4_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_4_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_4_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_5
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_5_valve
-                  name: Zone 5
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 5
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_5_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_5_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_5_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_6
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_6_valve
-                  name: Zone 6
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 6
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_6_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_6_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_6_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_7
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_7_valve
-                  name: Zone 7
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 7
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_7_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_7_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_7_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.irribrant_pro_enable_zone_8
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_8_valve
-                  name: Zone 8
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 8
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_8_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_8_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_8_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.backyard_irribrant_pro_use_master_valve
@@ -270,56 +348,43 @@ sections:
                   - entity: switch.irribrant_pro_enable_zone_9
                     state: "on"
                 card:
-                  type: custom:mushroom-entity-card
+                  type: custom:mushroom-template-card
                   entity: switch.irribrant_pro_zone_9_valve
-                  name: Zone 9
-                  icon: mdi:sprinkler-variant
+                  primary: Zone 9
+                  secondary: >-
+                    {{ 'OPEN' if is_state('switch.irribrant_pro_zone_9_valve',
+                    'on') else 'Closed' }}
+                  icon: >-
+                    {{ 'mdi:sprinkler' if
+                    is_state('switch.irribrant_pro_zone_9_valve', 'on') else
+                    'mdi:sprinkler-variant' }}
+                  icon_color: >-
+                    {{ 'blue' if is_state('switch.irribrant_pro_zone_9_valve',
+                    'on') else 'grey' }}
                   tap_action:
                     action: toggle
-                  secondary_info: last-changed
               - type: conditional
                 conditions:
                   - entity: switch.backyard_irribrant_pro_use_master_valve
                     state: "on"
                 card:
                   type: custom:mushroom-template-card
+                  entity: binary_sensor.backyard_irribrant_pro_master_valve_output
                   primary: Master Valve
-                  secondary: |-
-                    {% set master_open =
-                      is_state('switch.irribrant_pro_zone_1_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_2_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_3_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_4_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_5_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_6_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_7_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_8_valve', 'on')
-                    %} {{ 'Open' if master_open else 'Closed' }}
+                  secondary: >-
+                    {{ 'OPEN' if
+                    is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+                    'on') else 'Closed' }}
                   icon: >-
-                    {% set master_open =
-                      is_state('switch.irribrant_pro_zone_1_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_2_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_3_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_4_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_5_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_6_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_7_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_8_valve', 'on')
-                    %} {{ 'mdi:valve-open' if master_open else
-                    'mdi:valve-closed' }}
-                  icon_color: |-
-                    {% set master_open =
-                      is_state('switch.irribrant_pro_zone_1_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_2_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_3_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_4_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_5_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_6_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_7_valve', 'on') or
-                      is_state('switch.irribrant_pro_zone_8_valve', 'on')
-                    %} {{ 'blue' if master_open else 'grey' }}
+                    {{ 'mdi:valve-open' if
+                    is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+                    'on') else 'mdi:valve-closed' }}
+                  icon_color: >-
+                    {{ 'blue' if
+                    is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+                    'on') else 'grey' }}
                   tap_action:
-                    action: none
+                    action: more-info
       - type: vertical-stack
         cards:
           - type: custom:mushroom-title-card
@@ -366,6 +431,7 @@ sections:
                   action: navigate
                   navigation_path: "#program-c-popup"
   - type: grid
+    column_span: 4
     cards:
       - type: history-graph
         grid_options:
@@ -373,6 +439,8 @@ sections:
         entities:
           - entity: switch.backyard_irribrant_pro_use_master_valve
             name: Master Mode
+          - entity: binary_sensor.backyard_irribrant_pro_master_valve_output
+            name: Master Output
           - entity: switch.irribrant_pro_active_cycle
             name: Active Cycle
           - entity: switch.irribrant_pro_zone_1_valve
@@ -393,8 +461,8 @@ sections:
             name: Zone 8
           - entity: switch.irribrant_pro_zone_9_valve
             name: Zone 9
-        title: Watering Activity
-        hours_to_show: 0.1
+        title: Watering Activity / Offset Check
+        hours_to_show: 24
         logarithmic_scale: false
       - type: custom:apexcharts-card
         header:
@@ -448,7 +516,6 @@ sections:
               func: avg
         grid_options:
           columns: full
-    column_span: 4
   - type: grid
     column_span: 4
     cards:
@@ -461,55 +528,41 @@ sections:
         cards:
           - type: custom:mushroom-title-card
             title: Master Valve
-            subtitle: When enabled, Zone 9 output is used as the Master Valve.
+            subtitle: >-
+              When enabled, Zone 9 output is reserved as the physical Master
+              Valve. Use the offsets to validate the opening and closing
+              sequence.
           - type: entities
             title: Master Valve Settings
             show_header_toggle: false
             entities:
               - entity: switch.backyard_irribrant_pro_use_master_valve
                 name: Use Master Valve
-              - entity: number.backyard_irribrant_pro_master_valve_delay
-                name: Master Valve Delay
+              - entity: number.backyard_irribrant_pro_master_valve_open_offset
+                name: Master Open Offset
+              - entity: number.backyard_irribrant_pro_master_valve_close_offset
+                name: Master Close Offset
           - type: custom:mushroom-template-card
-            primary: Master Valve Status
-            secondary: |-
-              {% set master_open =
-                is_state('switch.backyard_irribrant_pro_use_master_valve', 'on') and (
-                is_state('switch.irribrant_pro_zone_1_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_2_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_3_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_4_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_5_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_6_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_7_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_8_valve', 'on'))
-              %} {{ 'Open' if master_open else 'Closed' }}
-            icon: |-
-              {% set master_open =
-                is_state('switch.backyard_irribrant_pro_use_master_valve', 'on') and (
-                is_state('switch.irribrant_pro_zone_1_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_2_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_3_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_4_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_5_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_6_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_7_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_8_valve', 'on'))
-              %} {{ 'mdi:valve-open' if master_open else 'mdi:valve-closed' }}
-            icon_color: |-
-              {% set master_open =
-                is_state('switch.backyard_irribrant_pro_use_master_valve', 'on') and (
-                is_state('switch.irribrant_pro_zone_1_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_2_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_3_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_4_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_5_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_6_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_7_valve', 'on') or
-                is_state('switch.irribrant_pro_zone_8_valve', 'on'))
-              %} {{ 'blue' if master_open else 'grey' }}
+            entity: binary_sensor.backyard_irribrant_pro_master_valve_output
+            primary: Master Valve Output
+            secondary: >-
+              {{ 'OPEN' if
+              is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+              'on') else 'Closed' }} · Open offset: {{
+              states('number.backyard_irribrant_pro_master_valve_open_offset')
+              }}s · Close offset: {{
+              states('number.backyard_irribrant_pro_master_valve_close_offset')
+              }}s
+            icon: >-
+              {{ 'mdi:valve-open' if
+              is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+              'on') else 'mdi:valve-closed' }}
+            icon_color: >-
+              {{ 'blue' if
+              is_state('binary_sensor.backyard_irribrant_pro_master_valve_output',
+              'on') else 'grey' }}
             tap_action:
-              action: none
+              action: more-info
           - type: custom:mushroom-title-card
             title: Zone Availability
             subtitle: Zone 9 is available only when Master Valve mode is disabled.
@@ -588,6 +641,10 @@ sections:
                   icon_color: blue
                   tap_action:
                     action: none
+        button_type: name
+        sub_button:
+          main: []
+          bottom: []
       - type: custom:bubble-card
         card_type: pop-up
         hash: "#rain-popup"
@@ -601,12 +658,20 @@ sections:
             entities:
               - entity: binary_sensor.irribrant_pro_rain_lock
                 name: Rain Lock
+              - entity: select.irribrant_pro_rain_source
+                name: Rain Source
               - entity: number.irribrant_pro_rain_delay_hours
                 name: Rain Delay Hours
+              - entity: number.irribrant_pro_rain_probability_threshold
+                name: Probability Threshold
+              - entity: number.irribrant_pro_rain_intensity_block_threshold
+                name: Intensity Block Threshold
               - entity: sensor.irribrant_current_rain_intensity
                 name: Current Rain Intensity
               - entity: sensor.irribrant_rain_probability_12h
                 name: Rain Probability
+              - entity: button.irribrant_pro_apply_rain_delay
+                name: Apply Rain Delay
         button_type: name
         sub_button:
           main: []
@@ -636,8 +701,12 @@ sections:
                 name: Rain Lock
               - entity: switch.backyard_irribrant_pro_use_master_valve
                 name: Use Master Valve
-              - entity: number.backyard_irribrant_pro_master_valve_delay
-                name: Master Valve Delay
+              - entity: binary_sensor.backyard_irribrant_pro_master_valve_output
+                name: Master Valve Output
+              - entity: number.backyard_irribrant_pro_master_valve_open_offset
+                name: Master Open Offset
+              - entity: number.backyard_irribrant_pro_master_valve_close_offset
+                name: Master Close Offset
               - entity: switch.irribrant_pro_active_cycle
                 name: Active Cycle
               - entity: switch.irribrant_pro_main_irrigation_system
@@ -647,6 +716,7 @@ sections:
               entity_id:
                 - switch.irribrant_pro_active_cycle
                 - switch.backyard_irribrant_pro_use_master_valve
+                - binary_sensor.backyard_irribrant_pro_master_valve_output
                 - switch.irribrant_pro_zone_1_valve
                 - switch.irribrant_pro_zone_2_valve
                 - switch.irribrant_pro_zone_3_valve
@@ -774,6 +844,9 @@ sections:
                 name: Friday
               - entity: switch.irribrant_pro_program_a_saturday
                 name: Saturday
+          - type: custom:mushroom-title-card
+            title: Enabled Zones
+            subtitle: Zone 9 is hidden when Master Valve mode is enabled.
           - type: grid
             columns: 3
             square: false
@@ -879,6 +952,10 @@ sections:
                   icon: mdi:numeric-9-circle
                   tap_action:
                     action: toggle
+        button_type: name
+        sub_button:
+          main: []
+          bottom: []
       - type: custom:bubble-card
         card_type: pop-up
         hash: "#program-b-popup"
@@ -993,6 +1070,9 @@ sections:
                 name: Friday
               - entity: switch.irribrant_pro_program_b_saturday
                 name: Saturday
+          - type: custom:mushroom-title-card
+            title: Enabled Zones
+            subtitle: Zone 9 is hidden when Master Valve mode is enabled.
           - type: grid
             columns: 3
             square: false
@@ -1098,6 +1178,10 @@ sections:
                   icon: mdi:numeric-9-circle
                   tap_action:
                     action: toggle
+        button_type: name
+        sub_button:
+          main: []
+          bottom: []
       - type: custom:bubble-card
         card_type: pop-up
         hash: "#program-c-popup"
@@ -1212,6 +1296,9 @@ sections:
                 name: Friday
               - entity: switch.irribrant_pro_program_c_saturday
                 name: Saturday
+          - type: custom:mushroom-title-card
+            title: Enabled Zones
+            subtitle: Zone 9 is hidden when Master Valve mode is enabled.
           - type: grid
             columns: 3
             square: false
@@ -1317,11 +1404,8 @@ sections:
                   icon: mdi:numeric-9-circle
                   tap_action:
                     action: toggle
+        button_type: name
+        sub_button:
+          main: []
+          bottom: []
 cards: []
-visible:
-  - user: 4e737e86aa2b4b6da7c078041671d2fc
-  - user: 3f2bacca24c144a7813687b9e6db7ab3
-  - user: ebe53adf0c434bce98e334cddeb5af5d
-  - user: 7470821ab02143d890ca2401b92375e9
-  - user: d18acedbbd604107894587509fce60cb
-  - user: 97e50181ba57426ea2e631024d72f48b
