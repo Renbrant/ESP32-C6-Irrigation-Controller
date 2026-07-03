@@ -90,15 +90,14 @@ text_sensor:
       };
 
       auto program_duration = [&](char program) -> uint32_t {
-        uint32_t duration = 0;
+        uint32_t zone_durations[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         uint32_t zone_count = 0;
         int cycles = 1;
-        uint32_t transition_delay = 1;
+        int transition_delay = (int) id(zone_transition_delay).state;
 
         auto add_zone = [&](bool enabled, float minutes) {
           if (enabled) {
-            duration += (uint32_t) (minutes * 60);
-            zone_count++;
+            zone_durations[zone_count++] = (uint32_t) (minutes * 60);
           }
         };
 
@@ -113,7 +112,6 @@ text_sensor:
           add_zone(id(zone_8_enabled).state && id(program_a_zone_8_enabled).state, id(program_a_zone_8_duration).state);
           add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state, id(program_a_zone_9_duration).state);
           cycles = (int) id(program_a_cycle_count).state;
-          transition_delay = (uint32_t) id(program_a_transition_delay).state;
         } else if (program == 'B') {
           add_zone(id(zone_1_enabled).state && id(program_b_zone_1_enabled).state, id(program_b_zone_1_duration).state);
           add_zone(id(zone_2_enabled).state && id(program_b_zone_2_enabled).state, id(program_b_zone_2_duration).state);
@@ -125,7 +123,6 @@ text_sensor:
           add_zone(id(zone_8_enabled).state && id(program_b_zone_8_enabled).state, id(program_b_zone_8_duration).state);
           add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state, id(program_b_zone_9_duration).state);
           cycles = (int) id(program_b_cycle_count).state;
-          transition_delay = (uint32_t) id(program_b_transition_delay).state;
         } else if (program == 'C') {
           add_zone(id(zone_1_enabled).state && id(program_c_zone_1_enabled).state, id(program_c_zone_1_duration).state);
           add_zone(id(zone_2_enabled).state && id(program_c_zone_2_enabled).state, id(program_c_zone_2_duration).state);
@@ -137,7 +134,6 @@ text_sensor:
           add_zone(id(zone_8_enabled).state && id(program_c_zone_8_enabled).state, id(program_c_zone_8_duration).state);
           add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state, id(program_c_zone_9_duration).state);
           cycles = (int) id(program_c_cycle_count).state;
-          transition_delay = (uint32_t) id(program_c_transition_delay).state;
         }
 
         if (cycles < 1) {
@@ -150,8 +146,37 @@ text_sensor:
           return 0;
         }
 
-        const uint32_t transitions = (zone_count * cycles) - 1;
-        return (duration * cycles) + (transition_delay * transitions);
+        if (transition_delay < -10) {
+          transition_delay = -10;
+        } else if (transition_delay > 30) {
+          transition_delay = 30;
+        }
+
+        int64_t total_duration = 0;
+        uint32_t previous_duration = 0;
+        uint32_t queued_runs = 0;
+
+        for (int cycle = 0; cycle < cycles; cycle++) {
+          for (uint32_t zone = 0; zone < zone_count; zone++) {
+            const uint32_t current_duration = zone_durations[zone];
+
+            if (queued_runs > 0) {
+              if (transition_delay > 0) {
+                total_duration += transition_delay;
+              } else if (transition_delay < 0) {
+                const uint32_t overlap = (uint32_t) abs(transition_delay);
+                const uint32_t effective_overlap = previous_duration < overlap ? previous_duration : overlap;
+                total_duration -= effective_overlap;
+              }
+            }
+
+            total_duration += current_duration;
+            previous_duration = current_duration;
+            queued_runs++;
+          }
+        }
+
+        return total_duration > 0 ? (uint32_t) total_duration : 0;
       };
 
       auto day_allowed = [&](char program, ESPTime candidate) -> bool {
@@ -373,15 +398,14 @@ text_sensor:
       };
 
       auto program_duration = [&](char program) -> uint32_t {
-        uint32_t duration = 0;
+        uint32_t zone_durations[9] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         uint32_t zone_count = 0;
         int cycles = 1;
-        uint32_t transition_delay = 1;
+        int transition_delay = (int) id(zone_transition_delay).state;
 
         auto add_zone = [&](bool enabled, float minutes) {
           if (enabled) {
-            duration += (uint32_t) (minutes * 60);
-            zone_count++;
+            zone_durations[zone_count++] = (uint32_t) (minutes * 60);
           }
         };
 
@@ -396,7 +420,6 @@ text_sensor:
           add_zone(id(zone_8_enabled).state && id(program_a_zone_8_enabled).state, id(program_a_zone_8_duration).state);
           add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state, id(program_a_zone_9_duration).state);
           cycles = (int) id(program_a_cycle_count).state;
-          transition_delay = (uint32_t) id(program_a_transition_delay).state;
         } else if (program == 'B') {
           add_zone(id(zone_1_enabled).state && id(program_b_zone_1_enabled).state, id(program_b_zone_1_duration).state);
           add_zone(id(zone_2_enabled).state && id(program_b_zone_2_enabled).state, id(program_b_zone_2_duration).state);
@@ -408,7 +431,6 @@ text_sensor:
           add_zone(id(zone_8_enabled).state && id(program_b_zone_8_enabled).state, id(program_b_zone_8_duration).state);
           add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state, id(program_b_zone_9_duration).state);
           cycles = (int) id(program_b_cycle_count).state;
-          transition_delay = (uint32_t) id(program_b_transition_delay).state;
         } else if (program == 'C') {
           add_zone(id(zone_1_enabled).state && id(program_c_zone_1_enabled).state, id(program_c_zone_1_duration).state);
           add_zone(id(zone_2_enabled).state && id(program_c_zone_2_enabled).state, id(program_c_zone_2_duration).state);
@@ -420,7 +442,6 @@ text_sensor:
           add_zone(id(zone_8_enabled).state && id(program_c_zone_8_enabled).state, id(program_c_zone_8_duration).state);
           add_zone(!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state, id(program_c_zone_9_duration).state);
           cycles = (int) id(program_c_cycle_count).state;
-          transition_delay = (uint32_t) id(program_c_transition_delay).state;
         }
 
         if (cycles < 1) {
@@ -433,8 +454,37 @@ text_sensor:
           return 0;
         }
 
-        const uint32_t transitions = (zone_count * cycles) - 1;
-        return (duration * cycles) + (transition_delay * transitions);
+        if (transition_delay < -10) {
+          transition_delay = -10;
+        } else if (transition_delay > 30) {
+          transition_delay = 30;
+        }
+
+        int64_t total_duration = 0;
+        uint32_t previous_duration = 0;
+        uint32_t queued_runs = 0;
+
+        for (int cycle = 0; cycle < cycles; cycle++) {
+          for (uint32_t zone = 0; zone < zone_count; zone++) {
+            const uint32_t current_duration = zone_durations[zone];
+
+            if (queued_runs > 0) {
+              if (transition_delay > 0) {
+                total_duration += transition_delay;
+              } else if (transition_delay < 0) {
+                const uint32_t overlap = (uint32_t) abs(transition_delay);
+                const uint32_t effective_overlap = previous_duration < overlap ? previous_duration : overlap;
+                total_duration -= effective_overlap;
+              }
+            }
+
+            total_duration += current_duration;
+            previous_duration = current_duration;
+            queued_runs++;
+          }
+        }
+
+        return total_duration > 0 ? (uint32_t) total_duration : 0;
       };
 
       auto day_allowed = [&](char program, ESPTime candidate) -> bool {
