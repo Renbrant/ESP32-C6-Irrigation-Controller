@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 ---
 
+## [v4.3]
+
+### Added
+- Configurable Zone Transition Delay from -10s to +30s.
+- Negative values overlap the next zone before closing the current zone to reduce water hammer.
+- Positive values pause between zones.
+- Transition logic applies between zones and between repeated cycles.
+- Master valve timing remains controlled only by the existing v4 Master Valve open/close timing at the start and end of the full program run.
+
+### Removed
+- Removed per-program Cycle Repeat Delay / Zone Transition Delay controls in favor of one continuous queued cycle transition model.
+
+---
+
 ## [v4.1]
 
 ### Added

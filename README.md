@@ -12,14 +12,14 @@
 
 ## Project Status
 
-**Current active firmware:** `v4.1`  
+**Current active firmware:** `v4.3`  
 **Current stable firmware:** `v4.0-stable`  
 **Current hardware revision:** `PCB v1.2`  
 **Current stage:** **Field Validated / Active Reliability Testing**
 
 irriBRANT has moved beyond prototype validation. The PCB has been designed, fabricated, assembled, flashed, integrated with Home Assistant, and validated with real irrigation valves.
 
-The latest firmware release, **v4.1**, adds independent signed **Master Valve open and close offsets** on top of the field-tested v4.0 Master Valve support.
+The latest firmware release, **v4.3**, adds a signed **Zone Transition Delay** for anti-water-hammer tuning while preserving the v4 Master Valve start/end timing model.
 
 ---
 
@@ -57,11 +57,37 @@ The result is a flexible, reliable, and expandable irrigation platform for smart
 
 | Version | Type | Status | Description |
 |---|---|---|---|
+| `v4.3` | Firmware | Active Development | Adds configurable Zone Transition Delay from -10s to +30s for overlap or pause behavior between queued zones and repeated cycles. |
 | `v4.1` | Firmware | Active Development | Adds independent signed Master Valve open and close offsets while preserving v4.0 Zone 9 Master Valve behavior. |
 | `v4.0-stable` | Firmware | Stable / Field Validated | Adds optional Master Valve support using Zone 9, updates firmware structure, and introduces dashboard support for Master Valve mode. |
 | `v3.3-stable` | Firmware | Stable Rollback | Stable 9-zone irrigation firmware before Master Valve support. All 9 zones operate as standard irrigation zones. |
 | `PCB v1.2` | Hardware | Field Test / Validation | Adds MOV surge protection, NTC inrush limiting, improved AC architecture, updated routing, and TO-252 triac output design. |
 | `PCB v1.01` | Hardware | Functional Prototype | First assembled and tested board with ESP32-C6, MCP23017, 9 triac outputs, RGB LED, and zone LEDs. |
+
+---
+
+# v4.3 - Zone Transition Delay
+
+Firmware `v4.3` adds one shared `Zone Transition Delay` control for program runs.
+
+| Control | Purpose |
+|---|---|
+| `Zone Transition Delay` | Controls timing between one active irrigation zone and the next queued active irrigation zone. |
+
+The value is stored in seconds, restores across reboot, and supports `-10` to `30` in 1-second steps.
+
+- Negative values open the next zone before closing the current zone, creating a short two-zone overlap.
+- Zero keeps immediate zone transitions.
+- Positive values close the current zone, pause, then open the next zone.
+- The same transition logic applies between zones and between repeated cycles.
+- Per-program Cycle Repeat Delay / Zone Transition Delay controls were removed; repeated cycles now run as one continuous queue.
+- Master Valve open and close offsets still apply only at the beginning and end of the full program run.
+
+Default behavior:
+
+```text
+Zone Transition Delay: 0 seconds
+```
 
 ---
 
@@ -348,7 +374,7 @@ Each program supports:
 | Included Zones | Each zone can be included or excluded per program |
 | Runtime per Zone | Individual duration per zone per program |
 | Cycle Count | Repeats a program up to 5 times |
-| Transition Delay | Delay between zones and repeated cycles |
+| Zone Transition Delay | Shared signed delay or overlap between consecutive queued zone runs, including repeated cycles |
 | Rain Lock Awareness | Programs are skipped when rain lock is active |
 | Master Valve Awareness | Zone 9 is skipped when Master Valve mode is enabled |
 

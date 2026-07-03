@@ -3,13 +3,13 @@
 # python -m esphome run "C:\GitHub\ESP32-C6-Irrigation-Controller\firmware\irribrant.yaml"
 
 # =========================================================
-# irriBRANT PRO v4.2
+# irriBRANT PRO v4.3
 # GitHub: https://github.com/Renbrant
 # YouTube: https://www.youtube.com/@Brant_Channel
 # =========================================================
 
 substitutions:
-  firmware_version: "4.2"
+  firmware_version: "4.3"
 
 packages:
 

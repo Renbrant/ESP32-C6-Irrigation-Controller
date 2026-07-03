@@ -69,70 +69,64 @@ script:
                   repeats = 5;
                 }
                 id(cycle_repeats_remaining) = repeats;
-                id(irribrant_controller).set_valve_open_delay(
-                  (uint32_t) id(program_a_transition_delay).state
-                );
 
-            - while:
+                int transition_delay = (int) id(zone_transition_delay).state;
+                if (transition_delay < -10) {
+                  transition_delay = -10;
+                } else if (transition_delay > 30) {
+                  transition_delay = 30;
+                }
+
+                if (transition_delay < 0) {
+                  id(irribrant_controller).set_valve_overlap((uint32_t) abs(transition_delay));
+                } else {
+                  id(irribrant_controller).set_valve_open_delay(transition_delay > 0 ? (uint32_t) transition_delay : 1);
+                  if (transition_delay == 0) {
+                    id(irribrant_controller).set_valve_open_delay(0);
+                  }
+                }
+
+                id(irribrant_controller).clear_queued_valves();
+                for (int cycle = 0; cycle < repeats; cycle++) {
+                  if (id(zone_1_enabled).state && id(program_a_zone_1_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 0, (uint32_t) (id(program_a_zone_1_duration).state * 60));
+                  }
+                  if (id(zone_2_enabled).state && id(program_a_zone_2_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 1, (uint32_t) (id(program_a_zone_2_duration).state * 60));
+                  }
+                  if (id(zone_3_enabled).state && id(program_a_zone_3_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 2, (uint32_t) (id(program_a_zone_3_duration).state * 60));
+                  }
+                  if (id(zone_4_enabled).state && id(program_a_zone_4_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 3, (uint32_t) (id(program_a_zone_4_duration).state * 60));
+                  }
+                  if (id(zone_5_enabled).state && id(program_a_zone_5_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 4, (uint32_t) (id(program_a_zone_5_duration).state * 60));
+                  }
+                  if (id(zone_6_enabled).state && id(program_a_zone_6_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 5, (uint32_t) (id(program_a_zone_6_duration).state * 60));
+                  }
+                  if (id(zone_7_enabled).state && id(program_a_zone_7_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 6, (uint32_t) (id(program_a_zone_7_duration).state * 60));
+                  }
+                  if (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_a_zone_8_duration).state * 60));
+                  }
+                  if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_a_zone_9_duration).state * 60));
+                  }
+                }
+
+                id(irribrant_controller).start_from_queue();
+
+            - wait_until:
                 condition:
                   lambda: |-
-                    return id(cycle_repeats_remaining) > 0 &&
-                           id(main_irrigation_switch).state &&
-                           !id(rain_lock);
-                then:
-                  - lambda: |-
-                      id(irribrant_controller).clear_queued_valves();
-
-                      if (id(zone_1_enabled).state && id(program_a_zone_1_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 0, (uint32_t) (id(program_a_zone_1_duration).state * 60));
-                      }
-                      if (id(zone_2_enabled).state && id(program_a_zone_2_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 1, (uint32_t) (id(program_a_zone_2_duration).state * 60));
-                      }
-                      if (id(zone_3_enabled).state && id(program_a_zone_3_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 2, (uint32_t) (id(program_a_zone_3_duration).state * 60));
-                      }
-                      if (id(zone_4_enabled).state && id(program_a_zone_4_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 3, (uint32_t) (id(program_a_zone_4_duration).state * 60));
-                      }
-                      if (id(zone_5_enabled).state && id(program_a_zone_5_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 4, (uint32_t) (id(program_a_zone_5_duration).state * 60));
-                      }
-                      if (id(zone_6_enabled).state && id(program_a_zone_6_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 5, (uint32_t) (id(program_a_zone_6_duration).state * 60));
-                      }
-                      if (id(zone_7_enabled).state && id(program_a_zone_7_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 6, (uint32_t) (id(program_a_zone_7_duration).state * 60));
-                      }
-                      if (id(zone_8_enabled).state && id(program_a_zone_8_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_a_zone_8_duration).state * 60));
-                      }
-                      if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_a_zone_9_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_a_zone_9_duration).state * 60));
-                      }
-
-                      id(irribrant_controller).start_from_queue();
-
-                  - wait_until:
-                      condition:
-                        lambda: |-
-                          return id(irribrant_controller).controller_state() == sprinkler::IDLE;
-
-                  - lambda: |-
-                      id(irribrant_controller).clear_queued_valves();
-                      id(cycle_repeats_remaining) -= 1;
-
-                  - if:
-                      condition:
-                        lambda: |-
-                          return id(cycle_repeats_remaining) > 0 &&
-                                 id(main_irrigation_switch).state &&
-                                 !id(rain_lock);
-                      then:
-                        - delay: !lambda |-
-                            return (uint32_t) (id(program_a_transition_delay).state * 1000);
+                    return id(irribrant_controller).controller_state() == sprinkler::IDLE;
 
             - lambda: |-
+                id(irribrant_controller).clear_queued_valves();
+                id(irribrant_controller).set_valve_open_delay(1);
                 id(irribrant_controller).set_valve_open_delay(0);
             - globals.set:
                 id: prog_a_running
@@ -183,70 +177,64 @@ script:
                   repeats = 5;
                 }
                 id(cycle_repeats_remaining) = repeats;
-                id(irribrant_controller).set_valve_open_delay(
-                  (uint32_t) id(program_b_transition_delay).state
-                );
 
-            - while:
+                int transition_delay = (int) id(zone_transition_delay).state;
+                if (transition_delay < -10) {
+                  transition_delay = -10;
+                } else if (transition_delay > 30) {
+                  transition_delay = 30;
+                }
+
+                if (transition_delay < 0) {
+                  id(irribrant_controller).set_valve_overlap((uint32_t) abs(transition_delay));
+                } else {
+                  id(irribrant_controller).set_valve_open_delay(transition_delay > 0 ? (uint32_t) transition_delay : 1);
+                  if (transition_delay == 0) {
+                    id(irribrant_controller).set_valve_open_delay(0);
+                  }
+                }
+
+                id(irribrant_controller).clear_queued_valves();
+                for (int cycle = 0; cycle < repeats; cycle++) {
+                  if (id(zone_1_enabled).state && id(program_b_zone_1_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 0, (uint32_t) (id(program_b_zone_1_duration).state * 60));
+                  }
+                  if (id(zone_2_enabled).state && id(program_b_zone_2_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 1, (uint32_t) (id(program_b_zone_2_duration).state * 60));
+                  }
+                  if (id(zone_3_enabled).state && id(program_b_zone_3_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 2, (uint32_t) (id(program_b_zone_3_duration).state * 60));
+                  }
+                  if (id(zone_4_enabled).state && id(program_b_zone_4_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 3, (uint32_t) (id(program_b_zone_4_duration).state * 60));
+                  }
+                  if (id(zone_5_enabled).state && id(program_b_zone_5_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 4, (uint32_t) (id(program_b_zone_5_duration).state * 60));
+                  }
+                  if (id(zone_6_enabled).state && id(program_b_zone_6_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 5, (uint32_t) (id(program_b_zone_6_duration).state * 60));
+                  }
+                  if (id(zone_7_enabled).state && id(program_b_zone_7_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 6, (uint32_t) (id(program_b_zone_7_duration).state * 60));
+                  }
+                  if (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_b_zone_8_duration).state * 60));
+                  }
+                  if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_b_zone_9_duration).state * 60));
+                  }
+                }
+
+                id(irribrant_controller).start_from_queue();
+
+            - wait_until:
                 condition:
                   lambda: |-
-                    return id(cycle_repeats_remaining) > 0 &&
-                           id(main_irrigation_switch).state &&
-                           !id(rain_lock);
-                then:
-                  - lambda: |-
-                      id(irribrant_controller).clear_queued_valves();
-
-                      if (id(zone_1_enabled).state && id(program_b_zone_1_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 0, (uint32_t) (id(program_b_zone_1_duration).state * 60));
-                      }
-                      if (id(zone_2_enabled).state && id(program_b_zone_2_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 1, (uint32_t) (id(program_b_zone_2_duration).state * 60));
-                      }
-                      if (id(zone_3_enabled).state && id(program_b_zone_3_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 2, (uint32_t) (id(program_b_zone_3_duration).state * 60));
-                      }
-                      if (id(zone_4_enabled).state && id(program_b_zone_4_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 3, (uint32_t) (id(program_b_zone_4_duration).state * 60));
-                      }
-                      if (id(zone_5_enabled).state && id(program_b_zone_5_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 4, (uint32_t) (id(program_b_zone_5_duration).state * 60));
-                      }
-                      if (id(zone_6_enabled).state && id(program_b_zone_6_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 5, (uint32_t) (id(program_b_zone_6_duration).state * 60));
-                      }
-                      if (id(zone_7_enabled).state && id(program_b_zone_7_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 6, (uint32_t) (id(program_b_zone_7_duration).state * 60));
-                      }
-                      if (id(zone_8_enabled).state && id(program_b_zone_8_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_b_zone_8_duration).state * 60));
-                      }
-                      if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_b_zone_9_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_b_zone_9_duration).state * 60));
-                      }
-
-                      id(irribrant_controller).start_from_queue();
-
-                  - wait_until:
-                      condition:
-                        lambda: |-
-                          return id(irribrant_controller).controller_state() == sprinkler::IDLE;
-
-                  - lambda: |-
-                      id(irribrant_controller).clear_queued_valves();
-                      id(cycle_repeats_remaining) -= 1;
-
-                  - if:
-                      condition:
-                        lambda: |-
-                          return id(cycle_repeats_remaining) > 0 &&
-                                 id(main_irrigation_switch).state &&
-                                 !id(rain_lock);
-                      then:
-                        - delay: !lambda |-
-                            return (uint32_t) (id(program_b_transition_delay).state * 1000);
+                    return id(irribrant_controller).controller_state() == sprinkler::IDLE;
 
             - lambda: |-
+                id(irribrant_controller).clear_queued_valves();
+                id(irribrant_controller).set_valve_open_delay(1);
                 id(irribrant_controller).set_valve_open_delay(0);
             - globals.set:
                 id: prog_b_running
@@ -297,70 +285,64 @@ script:
                   repeats = 5;
                 }
                 id(cycle_repeats_remaining) = repeats;
-                id(irribrant_controller).set_valve_open_delay(
-                  (uint32_t) id(program_c_transition_delay).state
-                );
 
-            - while:
+                int transition_delay = (int) id(zone_transition_delay).state;
+                if (transition_delay < -10) {
+                  transition_delay = -10;
+                } else if (transition_delay > 30) {
+                  transition_delay = 30;
+                }
+
+                if (transition_delay < 0) {
+                  id(irribrant_controller).set_valve_overlap((uint32_t) abs(transition_delay));
+                } else {
+                  id(irribrant_controller).set_valve_open_delay(transition_delay > 0 ? (uint32_t) transition_delay : 1);
+                  if (transition_delay == 0) {
+                    id(irribrant_controller).set_valve_open_delay(0);
+                  }
+                }
+
+                id(irribrant_controller).clear_queued_valves();
+                for (int cycle = 0; cycle < repeats; cycle++) {
+                  if (id(zone_1_enabled).state && id(program_c_zone_1_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 0, (uint32_t) (id(program_c_zone_1_duration).state * 60));
+                  }
+                  if (id(zone_2_enabled).state && id(program_c_zone_2_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 1, (uint32_t) (id(program_c_zone_2_duration).state * 60));
+                  }
+                  if (id(zone_3_enabled).state && id(program_c_zone_3_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 2, (uint32_t) (id(program_c_zone_3_duration).state * 60));
+                  }
+                  if (id(zone_4_enabled).state && id(program_c_zone_4_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 3, (uint32_t) (id(program_c_zone_4_duration).state * 60));
+                  }
+                  if (id(zone_5_enabled).state && id(program_c_zone_5_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 4, (uint32_t) (id(program_c_zone_5_duration).state * 60));
+                  }
+                  if (id(zone_6_enabled).state && id(program_c_zone_6_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 5, (uint32_t) (id(program_c_zone_6_duration).state * 60));
+                  }
+                  if (id(zone_7_enabled).state && id(program_c_zone_7_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 6, (uint32_t) (id(program_c_zone_7_duration).state * 60));
+                  }
+                  if (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_c_zone_8_duration).state * 60));
+                  }
+                  if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state) {
+                    id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_c_zone_9_duration).state * 60));
+                  }
+                }
+
+                id(irribrant_controller).start_from_queue();
+
+            - wait_until:
                 condition:
                   lambda: |-
-                    return id(cycle_repeats_remaining) > 0 &&
-                           id(main_irrigation_switch).state &&
-                           !id(rain_lock);
-                then:
-                  - lambda: |-
-                      id(irribrant_controller).clear_queued_valves();
-
-                      if (id(zone_1_enabled).state && id(program_c_zone_1_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 0, (uint32_t) (id(program_c_zone_1_duration).state * 60));
-                      }
-                      if (id(zone_2_enabled).state && id(program_c_zone_2_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 1, (uint32_t) (id(program_c_zone_2_duration).state * 60));
-                      }
-                      if (id(zone_3_enabled).state && id(program_c_zone_3_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 2, (uint32_t) (id(program_c_zone_3_duration).state * 60));
-                      }
-                      if (id(zone_4_enabled).state && id(program_c_zone_4_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 3, (uint32_t) (id(program_c_zone_4_duration).state * 60));
-                      }
-                      if (id(zone_5_enabled).state && id(program_c_zone_5_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 4, (uint32_t) (id(program_c_zone_5_duration).state * 60));
-                      }
-                      if (id(zone_6_enabled).state && id(program_c_zone_6_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 5, (uint32_t) (id(program_c_zone_6_duration).state * 60));
-                      }
-                      if (id(zone_7_enabled).state && id(program_c_zone_7_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 6, (uint32_t) (id(program_c_zone_7_duration).state * 60));
-                      }
-                      if (id(zone_8_enabled).state && id(program_c_zone_8_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 7, (uint32_t) (id(program_c_zone_8_duration).state * 60));
-                      }
-                      if (!id(use_master_valve).state && id(zone_9_enabled).state && id(program_c_zone_9_enabled).state) {
-                        id(irribrant_controller).queue_valve((size_t) 8, (uint32_t) (id(program_c_zone_9_duration).state * 60));
-                      }
-
-                      id(irribrant_controller).start_from_queue();
-
-                  - wait_until:
-                      condition:
-                        lambda: |-
-                          return id(irribrant_controller).controller_state() == sprinkler::IDLE;
-
-                  - lambda: |-
-                      id(irribrant_controller).clear_queued_valves();
-                      id(cycle_repeats_remaining) -= 1;
-
-                  - if:
-                      condition:
-                        lambda: |-
-                          return id(cycle_repeats_remaining) > 0 &&
-                                 id(main_irrigation_switch).state &&
-                                 !id(rain_lock);
-                      then:
-                        - delay: !lambda |-
-                            return (uint32_t) (id(program_c_transition_delay).state * 1000);
+                    return id(irribrant_controller).controller_state() == sprinkler::IDLE;
 
             - lambda: |-
+                id(irribrant_controller).clear_queued_valves();
+                id(irribrant_controller).set_valve_open_delay(1);
                 id(irribrant_controller).set_valve_open_delay(0);
             - globals.set:
                 id: prog_c_running

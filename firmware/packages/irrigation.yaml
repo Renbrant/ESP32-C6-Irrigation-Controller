@@ -1,5 +1,5 @@
 # =========================================================
-# irriBRANT v4.2
+# irriBRANT v4.3
 # irrigation.yaml
 # =========================================================
 
@@ -496,7 +496,9 @@ script:
                      !id(zone_5_relay).state &&
                      !id(zone_6_relay).state &&
                      !id(zone_7_relay).state &&
-                     !id(zone_8_relay).state;
+                     !id(zone_8_relay).state &&
+                     (!(id(prog_a_running) || id(prog_b_running) || id(prog_c_running)) ||
+                      id(irribrant_controller).controller_state() == sprinkler::STOPPING);
           then:
             - if:
                 condition:

@@ -11,7 +11,7 @@ header:
   card:
     type: custom:mushroom-template-card
     entity: switch.irribrant_pro_active_cycle
-    primary: irriBRANT PRO v4.2
+    primary: irriBRANT PRO v4.3
     secondary: |-
       {% if is_state('switch.irribrant_pro_active_cycle', 'on') %}
         Watering now
@@ -755,7 +755,7 @@ sections:
             entities:
               - entity: number.backyard_irribrant_pro_program_a_cycle_count
                 name: Cycle Count
-              - entity: number.backyard_irribrant_pro_program_a_zone_transition_delay
+              - entity: number.irribrant_pro_zone_transition_delay
                 name: Zone Transition Delay
           - type: entities
             title: Zone Durations
@@ -981,7 +981,7 @@ sections:
             entities:
               - entity: number.backyard_irribrant_pro_program_b_cycle_count
                 name: Cycle Count
-              - entity: number.backyard_irribrant_pro_program_b_zone_transition_delay
+              - entity: number.irribrant_pro_zone_transition_delay
                 name: Zone Transition Delay
           - type: entities
             title: Zone Durations
@@ -1207,7 +1207,7 @@ sections:
             entities:
               - entity: number.backyard_irribrant_pro_program_c_cycle_count
                 name: Cycle Count
-              - entity: number.backyard_irribrant_pro_program_c_zone_transition_delay
+              - entity: number.irribrant_pro_zone_transition_delay
                 name: Zone Transition Delay
           - type: entities
             title: Zone Durations
